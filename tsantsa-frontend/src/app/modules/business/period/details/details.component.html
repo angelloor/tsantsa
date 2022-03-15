@@ -1,0 +1,214 @@
+<div class="flex flex-col w-full">
+	<!-- View mode -->
+	<ng-container *ngIf="!editMode">
+		<!-- Header -->
+		<div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+			<!-- Background -->
+			<div class="w-full h-40 bg-black z-10 opacity-0">
+			</div>
+			<h1 class="absolute z-20 text-white text-3xl" absolute z-20 text-white text-3xl>{{nameEntity}}</h1>
+			<img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+		</div>
+		<!-- Entity -->
+		<div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+			<div class="w-full max-w-3xl">
+				<!-- Actions -->
+				<div
+					class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+					<button mat-stroked-button (click)="toggleEditMode(true)">
+						<mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+						<span class="ml-1">Editar</span>
+					</button>
+					<button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
+						<mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+						<span class="ml-1">Cerrar</span>
+					</button>
+				</div>
+				<div class="flex flex-col mt-4 pt-6 space-y-8">
+					<!-- name_period -->
+					<ng-container *ngIf="period.name_period">
+						<div class="flex sm:items-center">
+							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<div class="ml-6 leading-6">{{period.name_period}}</div>
+						</div>
+					</ng-container> <!-- description_period -->
+					<ng-container *ngIf="period.description_period">
+						<div class="flex sm:items-center">
+							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<div class="ml-6 leading-6">{{period.description_period}}</div>
+						</div>
+					</ng-container> <!-- start_date_period -->
+					<ng-container *ngIf="period.start_date_period">
+						<div class="flex sm:items-center">
+							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<div class="ml-6 leading-6">{{period.start_date_period | date:'mediumDate':'-0500':'en-US'}}
+							</div>
+						</div>
+					</ng-container> <!-- end_date_period -->
+					<ng-container *ngIf="period.end_date_period">
+						<div class="flex sm:items-center">
+							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<div class="ml-6 leading-6">{{period.end_date_period | date:'mediumDate':'-0500':'en-US'}}
+							</div>
+						</div>
+					</ng-container> <!-- maximum_rating -->
+					<ng-container *ngIf="period.maximum_rating">
+						<div class="flex sm:items-center">
+							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<div class="ml-6 leading-6">{{period.maximum_rating}}</div>
+						</div>
+					</ng-container> <!-- approval_note_period -->
+					<ng-container *ngIf="period.approval_note_period">
+						<div class="flex sm:items-center">
+							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<div class="ml-6 leading-6">{{period.approval_note_period}}</div>
+						</div>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- Edit mode -->
+	<ng-container *ngIf="editMode">
+		<!-- Header -->
+		<div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+			<!-- Background -->
+			<div class="w-full h-40 bg-black z-10 opacity-25">
+			</div>
+			<h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+			<img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+		</div>
+		<!-- form -->
+		<div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+			<div class="w-full max-w-3xl">
+				<!-- Actions -->
+				<div
+					class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+					<!-- Save -->
+					<button mat-flat-button [color]="'primary'" [disabled]="periodForm.invalid" [matTooltip]="'Guardar'"
+						(click)="updatePeriod()">
+						Guardar
+					</button>
+					<!-- Delete -->
+					<button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
+						(click)="deletePeriod()">
+						Eliminar
+					</button>
+					<!-- Cancel -->
+					<button mat-stroked-button class="ml-2 mr-2" [matTooltip]="'Cancelar'"
+						(click)="toggleEditMode(false)">
+						Cancelar
+					</button>
+
+					<button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
+						<mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+						<span class="ml-1">Cerrar</span>
+					</button>
+				</div>
+				<form [formGroup]="periodForm" class="mb-8">
+					<!-- Alert -->
+					<angel-alert class="mt-8" *ngIf="periodForm.invalid || showAlert" [appearance]="'outline'"
+						[showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
+						<!-- Message if alert is actived for the component -->
+						{{alert.message}}
+						<!-- name_period -->
+						<mat-error *ngIf="periodForm.get('name_period')?.hasError('required')">
+							• Ingrese name_period
+						</mat-error>
+						<!-- description_period -->
+						<mat-error *ngIf="periodForm.get('description_period')?.hasError('required')">
+							• Ingrese description_period
+						</mat-error>
+						<!-- start_date_period -->
+						<mat-error *ngIf="periodForm.get('start_date_period')?.hasError('required')">
+							• Ingrese start_date_period
+						</mat-error>
+						<!-- end_date_period -->
+						<mat-error *ngIf="periodForm.get('end_date_period')?.hasError('required')">
+							• Ingrese end_date_period
+						</mat-error>
+						<!-- maximum_rating -->
+						<mat-error *ngIf="periodForm.get('maximum_rating')?.hasError('required')">
+							• Ingrese maximum_rating
+						</mat-error>
+						<mat-error *ngIf="periodForm.get('maximum_rating')?.hasError('max')">
+							• max maximum_rating 100
+						</mat-error>
+						<mat-error *ngIf="periodForm.get('maximum_rating')?.hasError('min')">
+							• min maximum_rating 10
+						</mat-error>
+						<!-- approval_note_period -->
+						<mat-error *ngIf="periodForm.get('approval_note_period')?.hasError('required')">
+							• Ingrese approval_note_period
+						</mat-error>
+						<mat-error *ngIf="periodForm.get('approval_note_period')?.hasError('max')">
+							• max approval_note_period 100
+						</mat-error>
+						<mat-error *ngIf="periodForm.get('approval_note_period')?.hasError('min')">
+							• min approval_note_period 5
+						</mat-error>
+					</angel-alert>
+					<!-- Alert -->
+					<!-- name_period -->
+					<div class="mt-8">
+						<mat-form-field class="angel-mat-no-subscript w-full">
+							<mat-label>namePeriod</mat-label>
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							</mat-icon>
+							<input matInput maxlength="100" [formControlName]="'name_period'"
+								[placeholder]="'name_period'" [spellcheck]="false">
+						</mat-form-field>
+					</div> <!-- description_period -->
+					<div class="mt-8">
+						<mat-form-field class="angel-mat-no-subscript w-full">
+							<mat-label>descriptionPeriod</mat-label>
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							</mat-icon>
+							<input matInput maxlength="250" [formControlName]="'description_period'"
+								[placeholder]="'description_period'" [spellcheck]="false">
+						</mat-form-field>
+					</div> <!-- start_date_period -->
+					<div class="mt-8">
+						<mat-form-field class="angel-mat-no-subscript w-full">
+							<mat-label>startDatePeriod</mat-label>
+							<input matInput [matDatepicker]="start_date_period" [formControlName]="'start_date_period'">
+							<mat-datepicker-toggle matSuffix [for]="start_date_period">
+							</mat-datepicker-toggle>
+							<mat-datepicker #start_date_period></mat-datepicker>
+						</mat-form-field>
+					</div> <!-- end_date_period -->
+					<div class="mt-8">
+						<mat-form-field class="angel-mat-no-subscript w-full">
+							<mat-label>end_date_period</mat-label>
+							<input matInput [matDatepicker]="end_date_period" [formControlName]="'end_date_period'">
+							<mat-datepicker-toggle matSuffix [for]="end_date_period">
+							</mat-datepicker-toggle>
+							<mat-datepicker #end_date_period></mat-datepicker>
+						</mat-form-field>
+					</div> <!-- maximum_rating -->
+					<div class="mt-8">
+						<mat-form-field class="angel-mat-no-subscript w-full">
+							<mat-label>maximum_rating</mat-label>
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							</mat-icon>
+							<input matInput [formControlName]="'maximum_rating'" (change)="change()"
+								(keypress)="changeKeyPress(periodForm)" type="number" min="10" max="100"
+								[placeholder]="'maximum_rating'" [spellcheck]="false">
+						</mat-form-field>
+					</div><!-- maximum_rating -->
+					<div class="mt-8">
+						<mat-form-field class="angel-mat-no-subscript w-full">
+							<mat-label>approval_note_period</mat-label>
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							</mat-icon>
+							<span matSuffix>/ {{maximum_rating}}</span>
+							<input matInput [formControlName]="'approval_note_period'" type="number" min="5" max="100"
+								[placeholder]="'approval_note_period'" [spellcheck]="false">
+						</mat-form-field>
+					</div>
+				</form>
+			</div>
+		</div>
+	</ng-container>
+</div>

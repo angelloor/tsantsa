@@ -1,0 +1,118 @@
+[
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.period",
+				"title": "Periodo",
+				"type": "basic",
+				"icon": "heroicons_outline:fire",
+				"link": "/business/period"
+			},
+			{
+				"id": "business.career",
+				"title": "Carrera",
+				"type": "basic",
+				"icon": "heroicons_outline:fire",
+				"link": "/business/career"
+			},
+			{
+				"id": "business.course",
+				"title": "Curso",
+				"type": "basic",
+				"icon": "heroicons_outline:fire",
+				"link": "/business/course"
+			},
+			{
+				"id": "business.task",
+				"title": "Tarea",
+				"type": "basic",
+				"icon": "heroicons_outline:fire",
+				"link": "/business/task"
+			},
+			{
+				"id": "business.my-courses",
+				"title": "Mis cursos",
+				"type": "basic",
+				"icon": "heroicons_outline:fire",
+				"link": "/business/my-courses"
+			},
+			{
+				"id": "business.user-task",
+				"title": "Mis tareas",
+				"type": "basic",
+				"icon": "heroicons_outline:fire",
+				"link": "/business/user-task"
+			}
+		]
+	},
+	{
+		"id": "core",
+		"title": "Core",
+		"subtitle": "Administración core del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:chip",
+		"children": [
+			{
+				"id": "core.company",
+				"title": "Institución",
+				"type": "basic",
+				"icon": "heroicons_outline:office-building",
+				"link": "/core/company"
+			},
+			{
+				"id": "core.validation",
+				"title": "Validaciones",
+				"type": "basic",
+				"icon": "mat_outline:security",
+				"link": "/core/validation"
+			},
+			{
+				"id": "core.navigation",
+				"title": "Navegación",
+				"type": "basic",
+				"icon": "heroicons_outline:template",
+				"link": "/core/navigation"
+			},
+			{
+				"id": "core.profile",
+				"title": "Perfil",
+				"type": "basic",
+				"icon": "heroicons_outline:user-group",
+				"link": "/core/profile"
+			},
+			{
+				"id": "core.user",
+				"title": "Usuario",
+				"type": "basic",
+				"icon": "heroicons_outline:user",
+				"link": "/core/user"
+			},
+			{
+				"id": "core.session",
+				"title": "Sesiones",
+				"type": "basic",
+				"icon": "heroicons_outline:login",
+				"link": "/core/session"
+			},
+			{
+				"id": "core.system-event",
+				"title": "Eventos del sistema",
+				"type": "basic",
+				"icon": "mat_outline:event",
+				"link": "/core/system-event"
+			}
+		]
+	}
+]

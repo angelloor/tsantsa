@@ -1,0 +1,73 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Recurso</div>
+        <button mat-icon-button (click)="closeModalResource()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- Modal curso -->
+    <form class="flex flex-col flex-auto p-6 sm:p-8 overflow-y-auto" [formGroup]="resourceForm">
+        <!-- Alert -->
+        <angel-alert *ngIf="resourceForm.invalid || showAlert" [appearance]="'outline'" [showIcon]="false"
+            [type]="alert.type" [@shake]="alert.type === 'error'">
+            <!-- Message if alert is actived for the component -->
+            {{alert.message}}
+            <!-- name_resource -->
+            <mat-error *ngIf="resourceForm.get('name_resource')?.hasError('required')">
+                • Ingrese name_resource
+            </mat-error>
+            <!-- description_resource -->
+            <mat-error *ngIf="resourceForm.get('description_resource')?.hasError('required')">
+                • Ingrese description_resource
+            </mat-error>
+            <!-- link_resource -->
+            <mat-error *ngIf="resourceForm.get('link_resource')?.hasError('required')">
+                • Ingrese link_resource
+            </mat-error>
+        </angel-alert>
+        <!-- Alert -->
+        <!-- name_resource -->
+        <div class="mt-8">
+            <mat-form-field class="angel-mat-no-subscript w-full">
+                <mat-label>nameResource</mat-label>
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                </mat-icon>
+                <input matInput maxlength="100" [formControlName]="'name_resource'" [placeholder]="'name_resource'"
+                    [spellcheck]="false">
+            </mat-form-field>
+        </div> <!-- description_resource -->
+        <div class="mt-8">
+            <mat-form-field class="angel-mat-no-subscript w-full">
+                <mat-label>descriptionResource</mat-label>
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                </mat-icon>
+                <input matInput maxlength="250" [formControlName]="'description_resource'"
+                    [placeholder]="'description_resource'" [spellcheck]="false">
+            </mat-form-field>
+        </div> <!-- link_resource -->
+        <div class="mt-8">
+            <mat-form-field class="angel-mat-no-subscript w-full">
+                <mat-label>linkResource</mat-label>
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                </mat-icon>
+                <input matInput maxlength="500" [formControlName]="'link_resource'" [placeholder]="'link_resource'"
+                    [spellcheck]="false">
+            </mat-form-field>
+        </div>
+        <div class="flex items-center justify-center sm:justify-end py-2 space-x-3 ng-star-inserted br-10 pt-6">
+            <!-- Delete -->
+            <button mat-flat-button
+                class="mat-focus-indicator mat-flat-button mat-button-base mat-warn ng-star-inserted"
+                (click)="closeModalResource()">
+                Cancelar
+            </button>
+            <!-- Send -->
+            <button class="order-first sm:order-last" mat-stroked-button [color]="'primary'" (click)="updateResource()"
+                [disabled]="resourceForm.invalid">
+                Aceptar
+            </button>
+        </div>
+    </form>
+</div>

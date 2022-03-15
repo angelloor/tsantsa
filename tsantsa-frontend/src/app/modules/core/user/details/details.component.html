@@ -1,0 +1,540 @@
+<div class="flex flex-col w-full">
+    <!-- View mode -->
+    <ng-container *ngIf="!editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+            <!-- Background -->
+            <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+            <div class="absolute w-full h-40 bg-black inset-0 opacity-0">
+            </div>
+            <h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+            <!-- Close button -->
+            <div class="absolute z-20 top-6 right-6">
+                <button mat-icon-button [matTooltip]="'Cerrar'" [routerLink]="['../']">
+                    <mat-icon class="text-white" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <!-- Entity -->
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+
+                <!-- Avatar and actions -->
+                <div class="flex flex-auto items-end -mt-16">
+                    <!-- Avatar -->
+                    <div
+                        class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                        <img class="object-cover w-full h-full" *ngIf="user.avatar_user"
+                            [src]="_urlPathAvatar+user.avatar_user">
+                        <div class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                            *ngIf="!user.avatar_user">
+                            {{user.person.name_person.charAt(0)}}
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="flex items-center ml-auto mb-1">
+                        <button mat-stroked-button (click)="byUserReleaseAll()" class="mr-2">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+                            <span class="ml-1">Cerrar sesiones</span>
+                        </button>
+                        <button mat-stroked-button (click)="toggleEditMode(true)">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                            <span class="ml-1">Editar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col mt-4 pt-6 space-y-8">
+                    <!-- type_user -->
+                    <ng-container *ngIf="user.type_user">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'mat_outline:category'"></mat-icon>
+                            <div class="ml-6 leading-6">{{typeSelect.name_type}}</div>
+                        </div>
+                    </ng-container> <!-- name_user -->
+                    <ng-container *ngIf="user.name_user">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.name_user}}</div>
+                        </div>
+                    </ng-container> <!-- password_user -->
+                    <ng-container *ngIf="aesDecrypt(user.password_user)">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'mat_outline:password'"></mat-icon>
+                            <div class="ml-6 leading-6">{{aesDecrypt(user.password_user)}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- status_user -->
+                    <ng-container>
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:status-online'"></mat-icon>
+                            <div *ngIf="user.status_user" class="ml-6 mt-1 w-3 h-3 bg-green-700 rounded-full">
+                            </div>
+                            <div *ngIf="!user.status_user" class="ml-6 mt-1 w-3 h-3 bg-red-600 rounded-full">
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- name_company -->
+                    <ng-container *ngIf="selectedCompany.name_company">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <div class="ml-6 leading-6">{{selectedCompany.name_company}}</div>
+                        </div>
+                    </ng-container> <!-- name_profile -->
+                    <ng-container *ngIf="selectedProfile &&  selectedProfile.name_profile">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:user-group'"></mat-icon>
+                            <div class="ml-6 leading-6">{{selectedProfile.name_profile}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- dni_person -->
+                    <ng-container *ngIf="user.person.dni_person">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:hashtag'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.dni_person}}</div>
+                        </div>
+                    </ng-container> <!-- name_person -->
+                    <ng-container *ngIf="user.person.name_person">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:identification'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.name_person}}</div>
+                        </div>
+                    </ng-container> <!-- last_name_person -->
+                    <ng-container *ngIf="user.person.last_name_person">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:identification'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.last_name_person}}</div>
+                        </div>
+                    </ng-container> <!-- address_person -->
+                    <ng-container *ngIf="user.person.address_person">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.address_person}}</div>
+                        </div>
+                    </ng-container> <!-- phone_person -->
+                    <ng-container *ngIf="user.person.phone_person">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.phone_person}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- title_academic -->
+                    <ng-container *ngIf="user.person.academic.title_academic">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.academic.title_academic}}</div>
+                        </div>
+                    </ng-container> <!-- abbreviation_academic -->
+                    <ng-container *ngIf="user.person.academic.abbreviation_academic">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'mat_outline:short_text'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.academic.abbreviation_academic}}</div>
+                        </div>
+                    </ng-container> <!-- nivel_academic -->
+                    <ng-container *ngIf="user.person.academic.nivel_academic">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.academic.nivel_academic}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- name_job -->
+                    <ng-container *ngIf="user.person.job.name_job">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.job.name_job}}</div>
+                        </div>
+                    </ng-container> <!-- address_job -->
+                    <ng-container *ngIf="user.person.job.address_job">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.job.address_job}}</div>
+                        </div>
+                    </ng-container> <!-- phone_job -->
+                    <ng-container *ngIf="user.person.job.phone_job">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.job.phone_job}}</div>
+                        </div>
+                    </ng-container> <!-- position_job -->
+                    <ng-container *ngIf="user.person.job.position_job">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:collection'"></mat-icon>
+                            <div class="ml-6 leading-6">{{user.person.job.position_job}}</div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+            <!-- Background -->
+            <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+            <div class="absolute w-full h-40 bg-black inset-0 opacity-25">
+            </div>
+            <h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+            <!-- Close button -->
+            <div class="absolute z-20 top-6 right-6">
+                <button mat-icon-button [matTooltip]="'Cerrar'" [routerLink]="['../']">
+                    <mat-icon class="text-white" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <!-- form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+
+                <!-- Avatar -->
+                <div class="flex flex-auto items-end -mt-16">
+                    <div
+                        class="relative flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                        <!-- Upload / Remove avatar -->
+                        <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20">
+                            <div>
+                                <input id="avatar-file-input"
+                                    class="absolute h-0 w-0 opacity-0 invisible pointer-events-none" type="file"
+                                    [multiple]="false" [accept]="'image/jpeg, image/png'"
+                                    (change)="uploadAvatar(avatarFileInput.files!, user)" #avatarFileInput>
+                                <label
+                                    class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover"
+                                    for="avatar-file-input" matRipple>
+                                    <mat-icon class="text-white" [svgIcon]="'heroicons_outline:camera'"></mat-icon>
+                                </label>
+                            </div>
+                            <div>
+                                <button mat-icon-button (click)="removeAvatar(user)">
+                                    <mat-icon class="text-white" [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Image/Letter -->
+                        <img class="object-cover w-full h-full" *ngIf="user.avatar_user"
+                            [src]="_urlPathAvatar+user.avatar_user">
+                        <div class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                            *ngIf="!user.avatar_user">
+                            {{user.person.name_person.charAt(0)}}
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="flex items-center ml-auto mb-1">
+                        <!-- Save -->
+                        <button mat-flat-button [color]="'primary'" [disabled]="userForm.invalid"
+                            [matTooltip]="'Guardar'" (click)="updateUser()">
+                            Guardar
+                        </button>
+                        <!-- Delete -->
+                        <button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
+                            (click)="deleteUser()">
+                            Eliminar
+                        </button>
+                        <!-- Cancel -->
+                        <button mat-stroked-button class="ml-2 mr-2" [matTooltip]="'Cancelar'"
+                            (click)="toggleEditMode(false)">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+
+                <form [formGroup]="userForm" class="mb-8">
+                    <!-- Alert -->
+                    <!-- *ngIf="userForm.invalid || showAlert" -->
+                    <angel-alert *ngIf="userForm.invalid || showAlert" class="mt-8" [appearance]="'outline'"
+                        [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
+                        <!-- Message if alert is actived for the component -->
+                        {{alert.message}}
+                        <!-- type_user -->
+                        <mat-error *ngIf="userForm.get('type_user')?.hasError('required')">
+                            • Ingrese type_user
+                        </mat-error>
+                        <!-- name_user -->
+                        <mat-error *ngIf="userForm.get('name_user')?.hasError('required')">
+                            • Ingrese name_user
+                        </mat-error>
+                        <!-- password_user -->
+                        <mat-error *ngIf="userForm.get('password_user')?.hasError('required')">
+                            • Ingrese password_user
+                        </mat-error>
+                        <ng-container *ngIf="validationPassword.type_validation == 'validationPassword'">
+                            <mat-error *ngIf="userForm.get('password_user')?.hasError('pattern')">
+                                • {{validationPassword.message_validation}}
+                            </mat-error>
+                        </ng-container>
+                        <!-- status_user -->
+                        <mat-error *ngIf="userForm.get('status_user')?.hasError('required')">
+                            • Ingrese status_user
+                        </mat-error>
+                        <!-- id_company -->
+                        <mat-error *ngIf="userForm.get('id_company')?.hasError('required')">
+                            • Seleccione id_company
+                        </mat-error>
+                        <!-- id_profile -->
+                        <mat-error *ngIf="userForm.get('id_profile')?.hasError('required')">
+                            • Seleccione id_profile
+                        </mat-error>
+                        <!-- dni_person -->
+                        <mat-error *ngIf="userForm.get('dni_person')?.hasError('required')">
+                            • Ingrese dni_person
+                        </mat-error>
+                        <ng-container *ngIf="validationDNI.type_validation == 'validationDNI'">
+                            <mat-error *ngIf="userForm.get('dni_person')?.hasError('pattern')">
+                                • {{validationDNI.message_validation}}
+                            </mat-error>
+                        </ng-container>
+                        <!-- name_person -->
+                        <mat-error *ngIf="userForm.get('name_person')?.hasError('required')">
+                            • Ingrese name_person
+                        </mat-error>
+                        <!-- last_name_person -->
+                        <mat-error *ngIf="userForm.get('last_name_person')?.hasError('required')">
+                            • Ingrese last_name_person
+                        </mat-error>
+                        <!-- address_person -->
+                        <mat-error *ngIf="userForm.get('address_person')?.hasError('required')">
+                            • Ingrese address_person
+                        </mat-error>
+                        <!-- phone_person -->
+                        <mat-error *ngIf="userForm.get('phone_person')?.hasError('required')">
+                            • Ingrese phone_person
+                        </mat-error>
+                        <ng-container *ngIf="validationPhoneNumber.type_validation == 'validationPhoneNumber'">
+                            <mat-error *ngIf="userForm.get('phone_person')?.hasError('pattern')">
+                                • {{validationPhoneNumber.message_validation}}
+                            </mat-error>
+                        </ng-container>
+                        <!-- title_academic -->
+                        <mat-error *ngIf="userForm.get('title_academic')?.hasError('required')">
+                            • Ingrese title_academic
+                        </mat-error>
+                        <!-- abbreviation_academic -->
+                        <mat-error *ngIf="userForm.get('abbreviation_academic')?.hasError('required')">
+                            • Ingrese abbreviation_academic
+                        </mat-error>
+                        <!-- nivel_academic -->
+                        <mat-error *ngIf="userForm.get('nivel_academic')?.hasError('required')">
+                            • Ingrese nivel_academic
+                        </mat-error>
+                        <!-- name_job -->
+                        <mat-error *ngIf="userForm.get('name_job')?.hasError('required')">
+                            • Ingrese name_job
+                        </mat-error>
+                        <!-- address_job -->
+                        <mat-error *ngIf="userForm.get('address_job')?.hasError('required')">
+                            • Ingrese address_job
+                        </mat-error>
+                        <!-- phone_job -->
+                        <mat-error *ngIf="userForm.get('phone_job')?.hasError('required')">
+                            • Ingrese phone_job
+                        </mat-error>
+                        <ng-container *ngIf="validationPhoneNumber.type_validation == 'validationPhoneNumber'">
+                            <mat-error *ngIf="userForm.get('phone_job')?.hasError('pattern')">
+                                • {{validationPhoneNumber.message_validation}}
+                            </mat-error>
+                        </ng-container>
+                        <!-- position_job -->
+                        <mat-error *ngIf="userForm.get('position_job')?.hasError('required')">
+                            • Ingrese position_job
+                        </mat-error>
+                    </angel-alert>
+                    <!-- Alert -->
+                    <!-- type_user -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>type_user</mat-label>
+                            <mat-select [formControlName]="'type_user'">
+                                <ng-container *ngFor="let type of typeUser">
+                                    <mat-option [value]="type.value_type">
+                                        {{type.name_type}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!-- name_user -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>nameUser</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:mail'">
+                            </mat-icon>
+                            <input matInput maxlength="50" [formControlName]="'name_user'" [placeholder]="'nameUser'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- password_user -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>passwordUser</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:password'">
+                            </mat-icon>
+                            <input matInput maxlength="250" [formControlName]="'password_user'"
+                                [placeholder]="'passwordUser'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- status_user -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>status_user</mat-label>
+                            <mat-select [formControlName]="'status_user'">
+                                <mat-option [value]="true">Activo</mat-option>
+                                <mat-option [value]="false">Inactivo</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- id_company -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>Company</mat-label>
+                            <mat-select [formControlName]="'id_company'" [value]="selectedCompany.id_company">
+                                <ng-container *ngFor="let category of categoriesCompany">
+                                    <mat-option [value]="category.id_company">
+                                        {{category.name_company}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div><!-- id_profile -->
+                    <div *ngIf="type_profile === 'administator' &&categoriesProfile.length > 0">
+                        <div class="mt-8">
+                            <mat-form-field class="angel-mat-no-subscript w-full">
+                                <mat-label>Profile</mat-label>
+                                <mat-select [formControlName]="'id_profile'"
+                                    [value]="selectedProfile ? selectedProfile.id_profile : false">
+                                    <ng-container *ngFor="let category of categoriesProfile">
+                                        <mat-option [value]="category.id_profile">
+                                            {{category.name_profile}}</mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <!-- dni_person -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>dniPerson</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:hashtag'">
+                            </mat-icon>
+                            <input matInput maxlength="20" [formControlName]="'dni_person'" [placeholder]="'dniPerson'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- name_person -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>namePerson</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:identification'">
+                            </mat-icon>
+                            <input matInput maxlength="150" [formControlName]="'name_person'"
+                                [placeholder]="'namePerson'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- last_name_person -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>lastNamePerson</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:identification'">
+                            </mat-icon>
+                            <input matInput maxlength="150" [formControlName]="'last_name_person'"
+                                [placeholder]="'lastNamePerson'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- address_person -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>addressPerson</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:location-marker'">
+                            </mat-icon>
+                            <input matInput maxlength="150" [formControlName]="'address_person'"
+                                [placeholder]="'addressPerson'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- phone_person -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>phonePerson</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:phone'">
+                            </mat-icon>
+                            <input matInput maxlength="13" [formControlName]="'phone_person'"
+                                [placeholder]="'phonePerson'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- title_academic -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>titleAcademic</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:academic-cap'">
+                            </mat-icon>
+                            <input matInput maxlength="250" [formControlName]="'title_academic'"
+                                [placeholder]="'titleAcademic'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- abbreviation_academic -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>abbreviationAcademic</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:short_text'">
+                            </mat-icon>
+                            <input matInput maxlength="50" [formControlName]="'abbreviation_academic'"
+                                [placeholder]="'abbreviationAcademic'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- nivel_academic -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>nivelAcademic</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:menu-alt-2'">
+                            </mat-icon>
+                            <input matInput maxlength="100" [formControlName]="'nivel_academic'"
+                                [placeholder]="'nivelAcademic'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- name_job -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>nameJob</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:office-building'">
+                            </mat-icon>
+                            <input matInput maxlength="200" [formControlName]="'name_job'" [placeholder]="'nameJob'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- address_job -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>addressJob</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:location-marker'">
+                            </mat-icon>
+                            <input matInput maxlength="200" [formControlName]="'address_job'"
+                                [placeholder]="'addressJob'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- phone_job -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>phoneJob</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:phone'">
+                            </mat-icon>
+                            <input matInput maxlength="13" [formControlName]="'phone_job'" [placeholder]="'phoneJob'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- position_job -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>positionJob</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:collection'">
+                            </mat-icon>
+                            <input matInput maxlength="150" [formControlName]="'position_job'"
+                                [placeholder]="'positionJob'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </ng-container>
+</div>

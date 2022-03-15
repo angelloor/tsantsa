@@ -1,0 +1,296 @@
+<div class="flex flex-col w-full">
+    <!-- View mode -->
+    <ng-container *ngIf="!editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+            <!-- Background -->
+            <div class="w-full h-40 bg-black z-10 opacity-0">
+            </div>
+            <h1 class="absolute z-20 text-white text-3xl" absolute z-20 text-white text-3xl>{{nameEntity}}</h1>
+            <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+        </div>
+        <!-- Entity -->
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+                <!-- Actions -->
+                <div
+                    class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                    <button mat-stroked-button (click)="toggleEditMode(true)">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                        <span class="ml-1">Editar</span>
+                    </button>
+                    <button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        <span class="ml-1">Cerrar</span>
+                    </button>
+                </div>
+                <div class="flex flex-col mt-4 pt-6 space-y-8">
+                    <!-- name_company -->
+                    <ng-container *ngIf="company.name_company">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <div class="ml-6 leading-6">{{company.name_company}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- acronym_company -->
+                    <ng-container *ngIf="company.acronym_company">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:ticket'"></mat-icon>
+                            <div class="ml-6 leading-6">{{company.acronym_company}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- address_company -->
+                    <ng-container *ngIf="company.address_company">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
+                            <div class="ml-6 leading-6">{{company.address_company}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- status_company -->
+                    <ng-container>
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:status-online'"></mat-icon>
+                            <div *ngIf="company.status_company" class="ml-6 mt-1 w-3 h-3 bg-green-700 rounded-full">
+                            </div>
+                            <div *ngIf="!company.status_company" class="ml-6 mt-1 w-3 h-3 bg-red-600 rounded-full">
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- expiration_token -->
+                    <ng-container *ngIf="company.setting.expiration_token">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:clock'"></mat-icon>
+                            <div class="ml-6 leading-6">
+                                {{company.setting.expiration_token}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- expiration_verification_code -->
+                    <ng-container *ngIf="company.setting.expiration_verification_code">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:clock'"></mat-icon>
+                            <div class="ml-6 leading-6">
+                                {{company.setting.expiration_verification_code}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- inactivity_time -->
+                    <ng-container *ngIf="company.setting.inactivity_time">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:clock'"></mat-icon>
+                            <div class="ml-6 leading-6">
+                                {{company.setting.inactivity_time}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- session_limit -->
+                    <ng-container *ngIf="company.setting.session_limit">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:login'"></mat-icon>
+                            <div class="ml-6 leading-6">
+                                {{company.setting.session_limit}}</div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+            <!-- Background -->
+            <div class="w-full h-40 bg-black z-10 opacity-25">
+            </div>
+            <h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+            <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+        </div>
+        <!-- form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <!-- Actions -->
+                <div
+                    class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                    <!-- Save -->
+                    <button mat-flat-button [color]="'primary'" [disabled]="companyForm.invalid"
+                        [matTooltip]="'Guardar'" (click)="updateCompany()">
+                        Guardar
+                    </button>
+                    <!-- Delete -->
+                    <button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
+                        (click)="deleteCompany()">
+                        Eliminar
+                    </button>
+                    <!-- Cancel -->
+                    <button mat-stroked-button class="ml-2 mr-2" [matTooltip]="'Cancelar'"
+                        (click)="toggleEditMode(false)">
+                        Cancelar
+                    </button>
+
+                    <button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        <span class="ml-1">Cerrar</span>
+                    </button>
+                </div>
+                <form [formGroup]="companyForm" class="mb-8">
+                    <!-- Alert -->
+                    <angel-alert class="mt-8" *ngIf="companyForm.invalid || showAlert" [appearance]="'outline'"
+                        [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
+                        <!-- Message if alert is actived for the component -->
+                        {{alert.message}}
+                        <!-- name_company -->
+                        <mat-error *ngIf="companyForm.get('name_company')?.hasError('required')">
+                            • Ingrese name_company
+                        </mat-error>
+                        <!-- acronym_company -->
+                        <mat-error *ngIf="companyForm.get('acronym_company')?.hasError('required')">
+                            • Ingrese acronym_company
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('acronym_company')?.hasError('minlength')">
+                            • Valor minimo acronym_company 5 caracteres
+                        </mat-error>
+
+                        <!-- address_company -->
+                        <mat-error *ngIf="companyForm.get('address_company')?.hasError('required')">
+                            • Ingrese address_company
+                        </mat-error>
+                        <!-- status_company -->
+                        <mat-error *ngIf="companyForm.get('status_company')?.hasError('required')">
+                            • Seleccione status_company
+                        </mat-error>
+
+                        <!-- expiration_token -->
+                        <mat-error *ngIf="companyForm.get('expiration_token')?.hasError('required')">
+                            • Ingrese expiration_token
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('expiration_token')?.hasError('max')">
+                            • Valor maximo 9999999999
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('expiration_token')?.hasError('min')">
+                            • Valor minimo expiration_token
+                        </mat-error>
+
+                        <!-- expiration_verification_code -->
+                        <mat-error *ngIf="companyForm.get('expiration_verification_code')?.hasError('required')">
+                            • Ingrese expiration_verification_code
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('expiration_verification_code')?.hasError('max')">
+                            • Valor maximo 9999999999
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('expiration_verification_code')?.hasError('min')">
+                            • Valor minimo expiration_verification_code
+                        </mat-error>
+
+                        <!-- inactivity_time -->
+                        <mat-error *ngIf="companyForm.get('inactivity_time')?.hasError('required')">
+                            • Ingrese inactivity_time
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('inactivity_time')?.hasError('max')">
+                            • Valor maximo 9999999999
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('inactivity_time')?.hasError('min')">
+                            • Valor minimo inactivity_time
+                        </mat-error>
+
+                        <!-- session_limit -->
+                        <mat-error *ngIf="companyForm.get('session_limit')?.hasError('required')">
+                            • Ingrese session_limit
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('session_limit')?.hasError('max')">
+                            • Valor maximo 99
+                        </mat-error>
+                        <mat-error *ngIf="companyForm.get('session_limit')?.hasError('min')">
+                            • Valor minimo session_limit
+                        </mat-error>
+
+                    </angel-alert>
+                    <!-- Alert -->
+                    <!-- name_company -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>nameCompany</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:office-building'">
+                            </mat-icon>
+                            <input matInput maxlength="100" [formControlName]="'name_company'"
+                                [placeholder]="'nameCompany'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- acronym_company -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>acronym_company</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:ticket'">
+                            </mat-icon>
+                            <input matInput maxlength="50" [formControlName]="'acronym_company'"
+                                [placeholder]="'acronym_company'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- address_company -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>address_company</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:location-marker'">
+                            </mat-icon>
+                            <input matInput maxlength="250" [formControlName]="'address_company'"
+                                [placeholder]="'address_company'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- status_company -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>statusCompany</mat-label>
+                            <mat-select [formControlName]="'status_company'">
+                                <mat-option [value]=" true">Activo</mat-option>
+                                <mat-option [value]="false">Inactivo</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <!-- expiration_token -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>expiration_token</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <span matSuffix>Segundos</span>
+                            <input class="delete_arrow" matInput [formControlName]="'expiration_token'" type="number"
+                                max="9999999999" [placeholder]="'expiration_token'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- expiration_verification_code -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>expiration_verification_code</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <span matSuffix>Segundos</span>
+                            <input matInput [formControlName]="'expiration_verification_code'" type="number"
+                                max="9999999999" [placeholder]="'expiration_verification_code'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- inactivity_time -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>inactivity_time</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <span matSuffix>Segundos</span>
+                            <input matInput [formControlName]="'inactivity_time'" type="number" max="9999999999"
+                                [placeholder]="'inactivity_time'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- session_limit -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>session_limit</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:login'">
+                            </mat-icon>
+                            <span matSuffix>Segundos</span>
+                            <input matInput [formControlName]="'session_limit'" type="number" max="99"
+                                [placeholder]="'session_limit'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </ng-container>
+</div>

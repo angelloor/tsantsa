@@ -1,0 +1,269 @@
+<div class="flex flex-col w-full">
+    <!-- View mode -->
+    <ng-container *ngIf="!editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+            <!-- Background -->
+            <div class="w-full h-40 bg-black z-10 opacity-0">
+            </div>
+            <h1 class="absolute z-20 text-white text-3xl" absolute z-20 text-white text-3xl>{{nameEntity}}</h1>
+            <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+        </div>
+        <!-- Entity -->
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+                <!-- Actions -->
+                <div
+                    class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                    <button mat-stroked-button (click)="toggleEditMode(true)">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                        <span class="ml-1">Editar</span>
+                    </button>
+                    <button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        <span class="ml-1">Cerrar</span>
+                    </button>
+                </div>
+                <div class="flex flex-col mt-4 pt-6 space-y-8">
+                    <!-- id_period -->
+                    <ng-container *ngIf="course.period.id_period">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{selectedPeriod.name_period}}</div>
+                        </div>
+                    </ng-container> <!-- id_career -->
+                    <ng-container *ngIf="course.career.id_career">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{selectedCareer.name_career}}</div>
+                        </div>
+                    </ng-container> <!-- name_course -->
+                    <ng-container *ngIf="course.name_course">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.name_course}}</div>
+                        </div>
+                    </ng-container> <!-- description_course -->
+                    <ng-container *ngIf="course.description_course">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.description_course}}</div>
+                        </div>
+                    </ng-container> <!-- status_course -->
+                    <ng-container>
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:status-online'"></mat-icon>
+                            <div *ngIf="course.status_course" class="ml-6 mt-1 w-3 h-3 bg-green-700 rounded-full">
+                            </div>
+                            <div *ngIf="!course.status_course" class="ml-6 mt-1 w-3 h-3 bg-red-600 rounded-full">
+                            </div>
+                        </div>
+                    </ng-container> <!-- creation_date_course -->
+                    <ng-container *ngIf="course.creation_date_course">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.creation_date_course | date:'medium'}}</div>
+                        </div>
+                    </ng-container><!-- start_date_schedule -->
+                    <ng-container *ngIf="course.schedule.start_date_schedule">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.schedule.start_date_schedule}}</div>
+                        </div>
+                    </ng-container> <!-- end_date_schedule -->
+                    <ng-container *ngIf="course.schedule.end_date_schedule">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.schedule.end_date_schedule}}</div>
+                        </div>
+                    </ng-container> <!-- tolerance_schedule -->
+                    <ng-container *ngIf="course.schedule.tolerance_schedule">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.schedule.tolerance_schedule}}</div>
+                        </div>
+                    </ng-container> <!-- creation_date_schedule -->
+                    <ng-container *ngIf="course.schedule.creation_date_schedule">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <div class="ml-6 leading-6">{{course.schedule.creation_date_schedule | date:'medium'}}</div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+            <!-- Background -->
+            <div class="w-full h-40 bg-black z-10 opacity-25">
+            </div>
+            <h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+            <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+        </div>
+        <!-- form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <!-- Actions -->
+                <div
+                    class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                    <!-- Save -->
+                    <button mat-flat-button [color]="'primary'" [disabled]="courseForm.invalid" [matTooltip]="'Guardar'"
+                        (click)="updateCourse()">
+                        Guardar
+                    </button>
+                    <!-- Delete -->
+                    <button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
+                        (click)="deleteCourse()">
+                        Eliminar
+                    </button>
+                    <!-- Cancel -->
+                    <button mat-stroked-button class="ml-2 mr-2" [matTooltip]="'Cancelar'"
+                        (click)="toggleEditMode(false)">
+                        Cancelar
+                    </button>
+
+                    <button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                        <span class="ml-1">Cerrar</span>
+                    </button>
+                </div>
+                <form [formGroup]="courseForm" class="mb-8">
+                    <!-- Alert -->
+                    <angel-alert class="mt-8" *ngIf="courseForm.invalid || showAlert" [appearance]="'outline'"
+                        [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
+                        <!-- Message if alert is actived for the component -->
+                        {{alert.message}}
+                        <!-- id_period -->
+                        <mat-error *ngIf="courseForm.get('id_period')?.hasError('required')">
+                            • Seleccione id_period
+                        </mat-error>
+                        <!-- id_career -->
+                        <mat-error *ngIf="courseForm.get('id_career')?.hasError('required')">
+                            • Seleccione id_career
+                        </mat-error>
+                        <!-- name_course -->
+                        <mat-error *ngIf="courseForm.get('name_course')?.hasError('required')">
+                            • Ingrese name_course
+                        </mat-error>
+                        <!-- description_course -->
+                        <mat-error *ngIf="courseForm.get('description_course')?.hasError('required')">
+                            • Ingrese description_course
+                        </mat-error>
+                        <!-- status_course -->
+                        <mat-error *ngIf="courseForm.get('status_course')?.hasError('required')">
+                            • Ingrese status_course
+                        </mat-error>
+                        <!-- start_date_schedule -->
+                        <mat-error *ngIf="courseForm.get('start_date_schedule')?.hasError('required')">
+                            • Ingrese start_date_schedule
+                        </mat-error>
+                        <!-- end_date_schedule -->
+                        <mat-error *ngIf="courseForm.get('end_date_schedule')?.hasError('required')">
+                            • Ingrese end_date_schedule
+                        </mat-error>
+                        <!-- tolerance_schedule -->
+                        <mat-error *ngIf="courseForm.get('tolerance_schedule')?.hasError('required')">
+                            • Ingrese tolerance_schedule
+                        </mat-error>
+                        <mat-error *ngIf="courseForm.get('tolerance_schedule')?.hasError('max')">
+                            • Valor maximo 9999 segundos
+                        </mat-error>
+                        <mat-error *ngIf="courseForm.get('tolerance_schedule')?.hasError('min')">
+                            • Valor minimo 60 segundos
+                        </mat-error>
+                    </angel-alert>
+                    <!-- Alert -->
+                    <!-- id_period -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>Period</mat-label>
+                            <mat-select [formControlName]="'id_period'" [value]="selectedPeriod.id_period">
+                                <ng-container *ngFor="let category of categoriesPeriod">
+                                    <mat-option [value]="category.id_period">
+                                        {{category.name_period}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div><!-- id_career -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>Career</mat-label>
+                            <mat-select [formControlName]="'id_career'" [value]="selectedCareer.id_career">
+                                <ng-container *ngFor="let category of categoriesCareer">
+                                    <mat-option [value]="category.id_career">
+                                        {{category.name_career}}</mat-option>
+                                </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div><!-- name_course -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>nameCourse</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                            </mat-icon>
+                            <input matInput maxlength="250" [formControlName]="'name_course'"
+                                [placeholder]="'name_course'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- description_course -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>descriptionCourse</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                            </mat-icon>
+                            <input matInput maxlength="250" [formControlName]="'description_course'"
+                                [placeholder]="'description_course'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div> <!-- status_course -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>status_course</mat-label>
+                            <mat-select [formControlName]="'status_course'">
+                                <mat-option [value]="true">Activo</mat-option>
+                                <mat-option [value]="false">Inactivo</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div><!-- start_date_schedule -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>start_date_schedule</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <input matInput type="time" [formControlName]="'start_date_schedule'">
+                        </mat-form-field>
+                    </div> <!-- end_date_schedule -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>end_date_schedule</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <input matInput type="time" [formControlName]="'end_date_schedule'">
+                        </mat-form-field>
+                    </div>
+                    <!-- tolerance_schedule -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>tolerance_schedule</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <span matSuffix>Segundos</span>
+                            <input class="delete_arrow" matInput [formControlName]="'tolerance_schedule'" type="number"
+                                max="9999" min="60" [placeholder]="'tolerance_schedule'" [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+                    <!-- Enrollment -->
+                    <div class="mt-4">
+                        <div class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
+                            (click)="openModalEnrollment()">
+                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:view-list'"></mat-icon>
+                            <span class="ml-2 font-medium text-secondary group-hover:underline">Ver matriculas</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </ng-container>
+</div>

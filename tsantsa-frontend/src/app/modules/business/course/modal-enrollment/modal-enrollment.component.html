@@ -1,0 +1,63 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Matriculas</div>
+        <button mat-icon-button (click)="closeModalEnrollment()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <form class="flex flex-col flex-auto px-6 pb-6 sm:px-8 sm:pb-8 overflow-y-auto mt-2" [formGroup]="courseFormModal">
+        <!-- Officials -->
+        <div class="mt-8">
+            <div class="space-y-4">
+                <ng-container
+                    *ngFor="let enrollment of formArrayEnrollment.controls; let i = index; let first = first; let last = last; trackBy: trackByFn">
+                    <div class="relative flex">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-select [formControl]="getFromControl(formArrayEnrollment, i, 'id_user')">
+                                <mat-option *ngFor="let user of users; trackBy: trackByFn" [disabled]="true"
+                                    [value]="user.id_user" [matTooltip]="user.person.dni_person">
+                                    {{user.person.name_person + ' ' +
+                                    user.person.last_name_person}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <ng-container>
+                            <div class="flex items-start w-10 pl-2">
+                                <button class="w-8 h-8 min-h-8 mt-2" mat-icon-button
+                                    [matTooltip]="formArrayEnrollment.getRawValue()[i].date_enrollment">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:information-circle'">
+                                    </mat-icon>
+                                </button>
+                            </div>
+                        </ng-container>
+                        <mat-slide-toggle [formControl]="getFromControl(formArrayEnrollment, i, 'status_enrollment')"
+                            matTooltip="Estado de la matricula" (change)="updateStatusEnrollment(i)" class="mt-3 ml-3"
+                            [color]="'primary'">
+                        </mat-slide-toggle>
+                        <ng-container>
+                            <div class="flex items-start w-10 pl-2">
+                                <button class="w-8 h-8 min-h-8 mt-2" mat-icon-button (click)="removeEnrollmentField(i)"
+                                    matTooltip="Eliminar">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'">
+                                    </mat-icon>
+                                </button>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+
+        <div class="flex items-center justify-center sm:justify-end py-2 space-x-3 ng-star-inserted br-10 pt-6">
+            <!-- Send -->
+            <button class="order-first sm:order-last" mat-stroked-button [color]="'primary'"
+                (click)="openModalSelectUser()">
+                Añadir matricula
+            </button>
+        </div>
+    </form>
+
+</div>

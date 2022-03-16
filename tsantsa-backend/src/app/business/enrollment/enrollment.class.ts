@@ -6,6 +6,7 @@ import {
 	dml_enrollment_create,
 	dml_enrollment_delete,
 	dml_enrollment_update,
+	view_enrollment,
 	view_enrollment_by_course_read,
 	view_enrollment_by_user_read,
 	view_enrollment_specific_read,
@@ -116,6 +117,23 @@ export class Enrollment {
 		});
 	}
 
+	read() {
+		return new Promise<Enrollment[]>(async (resolve, reject) => {
+			await view_enrollment(this)
+				.then((enrollments: Enrollment[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _enrollments = this.mutateResponse(enrollments);
+
+					resolve(_enrollments);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
 	specificRead() {
 		return new Promise<Enrollment>(async (resolve, reject) => {
 			await view_enrollment_specific_read(this)
@@ -211,12 +229,26 @@ export class Enrollment {
 					id_course: item.id_course,
 					period: {
 						id_period: item.id_period,
+						name_period: item.name_period,
+						description_period: item.description_period,
+						start_date_period: item.start_date_period,
+						end_date_period: item.end_date_period,
+						maximum_rating: item.maximum_rating,
+						approval_note_period: item.approval_note_period,
 					},
 					career: {
 						id_career: item.id_career,
+						name_career: item.name_career,
+						description_career: item.description_career,
+						status_career: item.status_career,
+						creation_date_career: item.creation_date_career,
 					},
 					schedule: {
 						id_schedule: item.id_schedule,
+						start_date_schedule: item.start_date_schedule,
+						end_date_schedule: item.end_date_schedule,
+						tolerance_schedule: item.tolerance_schedule,
+						creation_date_schedule: item.creation_date_schedule,
 					},
 					name_course: item.name_course,
 					description_course: item.description_course,
@@ -257,13 +289,30 @@ export class Enrollment {
 			 * delete ids of principal object level
 			 */
 			delete _enrollment.id_course;
-			delete _enrollment.id_period;
-			delete _enrollment.id_career;
-			delete _enrollment.id_schedule;
 			delete _enrollment.name_course;
 			delete _enrollment.description_course;
 			delete _enrollment.status_course;
 			delete _enrollment.creation_date_course;
+
+			delete _enrollment.id_period;
+			delete _enrollment.name_period;
+			delete _enrollment.description_period;
+			delete _enrollment.start_date_period;
+			delete _enrollment.end_date_period;
+			delete _enrollment.maximum_rating;
+			delete _enrollment.approval_note_period;
+
+			delete _enrollment.id_career;
+			delete _enrollment.name_career;
+			delete _enrollment.description_career;
+			delete _enrollment.status_career;
+			delete _enrollment.creation_date_career;
+
+			delete _enrollment.id_schedule;
+			delete _enrollment.start_date_schedule;
+			delete _enrollment.end_date_schedule;
+			delete _enrollment.tolerance_schedule;
+			delete _enrollment.creation_date_schedule;
 
 			delete _enrollment.id_user;
 			delete _enrollment.id_person;

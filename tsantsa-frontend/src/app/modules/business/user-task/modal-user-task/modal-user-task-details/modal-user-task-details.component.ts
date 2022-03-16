@@ -245,7 +245,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
                 this.comments = _comments;
 
                 /**
-                 * Clear the loteSolicitud form arrays
+                 * Clear the lotComments form arrays
                  */
                 (this.userTaskForm.get('lotComments') as FormArray).clear();
 
@@ -303,9 +303,9 @@ export class ModalUserTaskDetailsComponent implements OnInit {
                 /**
                  * Add the elemento form groups to the elemento form array
                  */
-                lotCommentFormGroups.forEach((loteSolicitudFormGroup: any) => {
+                lotCommentFormGroups.forEach((lotCommentFormGroup: any) => {
                   (this.userTaskForm.get('lotComments') as FormArray).push(
-                    loteSolicitudFormGroup
+                    lotCommentFormGroup
                   );
                 });
               });

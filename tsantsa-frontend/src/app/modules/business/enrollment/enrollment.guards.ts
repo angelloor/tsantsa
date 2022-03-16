@@ -6,16 +6,16 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { EnrollmentDetailsComponent } from './details/details.component';
+import { ModalEnrollmentComponent } from './modal-enrollment/modal-enrollment.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanDeactivateEnrollmentDetails
-  implements CanDeactivate<EnrollmentDetailsComponent>
+  implements CanDeactivate<ModalEnrollmentComponent>
 {
   canDeactivate(
-    component: EnrollmentDetailsComponent,
+    component: ModalEnrollmentComponent,
     currentRoute: ActivatedRouteSnapshot,
     currentState: RouterStateSnapshot,
     nextState: RouterStateSnapshot
@@ -51,12 +51,7 @@ export class CanDeactivateEnrollmentDetails
        */
       return true;
     } else {
-      /**
-       * Close the drawer first, and then navigate
-       */
-      return component.closeDrawer().then(() => {
-        return true;
-      });
+      return true;
     }
   }
 }

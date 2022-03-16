@@ -66,7 +66,7 @@ export class ModalTypeValidationComponent implements OnInit {
   }
 
   /**
-   * Go to Solicitud
+   * Go to validation
    * @param id
    */
   goToEntity(id: string): void {
@@ -78,7 +78,7 @@ export class ModalTypeValidationComponent implements OnInit {
       route = route.firstChild;
     }
     /**
-     * Go to Solicitud
+     * Go to validation
      */
     this._router.navigate([this.openMatDrawer ? '../' : './', id], {
       relativeTo: route,
@@ -110,7 +110,7 @@ export class ModalTypeValidationComponent implements OnInit {
     const type_validation =
       this.typeValidationForm.getRawValue().type_validation;
     /**
-     * Create the solicitud
+     * Create the validation
      */
     this._validationService
       .createValidation(id_user, type_validation)
@@ -123,7 +123,7 @@ export class ModalTypeValidationComponent implements OnInit {
               'Validación agregada correctamente'
             );
             /**
-             * Go to new solicitud
+             * Go to new validation
              */
             this.goToEntity(_validation.id_validation);
           } else {

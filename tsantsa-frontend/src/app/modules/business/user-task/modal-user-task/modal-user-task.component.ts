@@ -28,9 +28,6 @@ export class ModalUserTaskComponent implements OnInit {
         width: '40rem',
         maxWidth: '',
         panelClass: ['mat-dialog-cont'],
-        data: {
-          data: '',
-        },
         disableClose: true,
       })
       .afterClosed()

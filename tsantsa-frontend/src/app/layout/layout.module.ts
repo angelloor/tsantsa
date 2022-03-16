@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
 import { SettingsModule } from 'app/layout/common/settings/settings.module';
 import { LayoutComponent } from 'app/layout/layout.component';
 import { EmptyLayoutModule } from 'app/layout/layouts/empty/empty.module';
@@ -52,6 +53,7 @@ const layoutModules = [
   DenseLayoutModule,
   FuturisticLayoutModule,
   ThinLayoutModule,
+  RouterModule,
 ];
 
 @NgModule({

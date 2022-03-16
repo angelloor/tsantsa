@@ -58,7 +58,6 @@ export class CommentService {
                * check the response body to match with the type
                */
               const _comment: Comment = response.body;
-              console.log(_comment);
               /**
                * Update the comment in the store
                */
@@ -144,14 +143,12 @@ export class CommentService {
                * check the response body to match with the type
                */
               const _comment: Comment = response.body;
-              console.log(_comment);
               /**
                * Find the index of the updated comment
                */
               const index = comments.findIndex(
                 (item) => item.id_comment == comment.id_comment
               );
-              console.log(index);
               /**
                * Update the comment
                */
@@ -193,7 +190,6 @@ export class CommentService {
                 const index = comments.findIndex(
                   (item) => item.id_comment == id_comment
                 );
-                console.log(index);
                 /**
                  * Delete the object of array
                  */

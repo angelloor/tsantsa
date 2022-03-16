@@ -1,9 +1,9 @@
 import { Route } from '@angular/router';
-import { EnrollmentDetailsComponent } from './details/details.component';
 import { EnrollmentComponent } from './enrollment.component';
 import { CanDeactivateEnrollmentDetails } from './enrollment.guards';
 import { EnrollmentResolver } from './enrollment.resolvers';
 import { EnrollmentListComponent } from './list/list.component';
+import { ModalEnrollmentComponent } from './modal-enrollment/modal-enrollment.component';
 
 export const enrollmentRoutes: Route[] = [
   {
@@ -16,7 +16,7 @@ export const enrollmentRoutes: Route[] = [
         children: [
           {
             path: ':id',
-            component: EnrollmentDetailsComponent,
+            component: ModalEnrollmentComponent,
             resolve: {
               task: EnrollmentResolver,
             },

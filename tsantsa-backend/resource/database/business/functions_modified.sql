@@ -373,7 +373,7 @@ CREATE OR REPLACE FUNCTION business.dml_enrollment_create_modified(
 	id_user_ numeric,
 	_id_course numeric,
 	_id_user numeric)
-    RETURNS TABLE(id_enrollment numeric, id_course numeric, id_user numeric, date_enrollment timestamp without time zone, status_enrollment boolean, completed_course boolean, deleted_enrollment boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    RETURNS TABLE(id_enrollment numeric, id_course numeric, id_user numeric, date_enrollment timestamp without time zone, status_enrollment boolean, completed_course boolean, deleted_enrollment boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -387,8 +387,11 @@ AS $BODY$
 				_ID_ENROLLMENT = (select * from business.dml_enrollment_create(id_user_, _id_course, _id_user, now()::timestamp, false, false, false));
 
 				IF (_ID_ENROLLMENT >= 1) THEN
-					RETURN QUERY select bve.id_enrollment, bve.id_course, bve.id_user, bve.date_enrollment, bve.status_enrollment, bve.completed_course, bve.deleted_enrollment, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_enrollment bve
+					RETURN QUERY select bve.id_enrollment, bve.id_course, bve.id_user, bve.date_enrollment, bve.status_enrollment, bve.completed_course, bve.deleted_enrollment, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_enrollment bve
 						inner join business.view_course bvc on bve.id_course = bvc.id_course
+						inner join business.view_period bvp on bvc.id_period = bvp.id_period
+						inner join business.view_career bvca on bvc.id_career = bvca.id_career
+						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						inner join core.view_user cvu on bve.id_user = cvu.id_user
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bve.id_enrollment = _ID_ENROLLMENT;
@@ -422,7 +425,7 @@ CREATE OR REPLACE FUNCTION business.dml_enrollment_update_modified(
 	_status_enrollment boolean,
 	_completed_course boolean,
 	_deleted_enrollment boolean)
-    RETURNS TABLE(id_enrollment numeric, id_course numeric, id_user numeric, date_enrollment timestamp without time zone, status_enrollment boolean, completed_course boolean, deleted_enrollment boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    RETURNS TABLE(id_enrollment numeric, id_course numeric, id_user numeric, date_enrollment timestamp without time zone, status_enrollment boolean, completed_course boolean, deleted_enrollment boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -436,8 +439,11 @@ AS $BODY$
 			 	_UPDATE_ENROLLMENT = (select * from business.dml_enrollment_update(id_user_, _id_enrollment, _id_course, _id_user, _date_enrollment, _status_enrollment, _completed_course, _deleted_enrollment));
 
 			 	IF (_UPDATE_ENROLLMENT) THEN
-					RETURN QUERY select bve.id_enrollment, bve.id_course, bve.id_user, bve.date_enrollment, bve.status_enrollment, bve.completed_course, bve.deleted_enrollment, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_enrollment bve
+				RETURN QUERY select bve.id_enrollment, bve.id_course, bve.id_user, bve.date_enrollment, bve.status_enrollment, bve.completed_course, bve.deleted_enrollment, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_enrollment bve
 						inner join business.view_course bvc on bve.id_course = bvc.id_course
+						inner join business.view_period bvp on bvc.id_period = bvp.id_period
+						inner join business.view_career bvca on bvc.id_career = bvca.id_career
+						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						inner join core.view_user cvu on bve.id_user = cvu.id_user
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bve.id_enrollment = _id_enrollment;
@@ -942,4 +948,95 @@ AS $BODY$
 $BODY$;
 
 ALTER FUNCTION business.dml_comment_update_modified(numeric, numeric, numeric, numeric, character varying, timestamp without time zone, boolean)
+    OWNER TO postgres;
+
+-- FUNCTION: business.dml_assistance_create_modified(numeric, numeric)
+-- DROP FUNCTION IF EXISTS business.dml_assistance_create_modified(numeric, numeric);
+
+CREATE OR REPLACE FUNCTION business.dml_assistance_create_modified(
+	id_user_ numeric,
+	_id_course numeric)
+    RETURNS TABLE(id_assistance numeric, id_user numeric, id_course numeric, start_marking_date timestamp without time zone, end_marking_date timestamp without time zone, is_late boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+			DECLARE
+				_ID_ASSISTANCE NUMERIC;
+				_EXCEPTION TEXT DEFAULT 'Internal Error';
+			BEGIN
+				_ID_ASSISTANCE = (select * from business.dml_assistance_create(id_user_, id_user_, _id_course, now()::timestamp, null, false));
+
+				IF (_ID_ASSISTANCE >= 1) THEN
+					RETURN QUERY select bva.id_assistance, bva.id_user, bva.id_course, bva.start_marking_date, bva.end_marking_date, bva.is_late, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_assistance bva
+						inner join business.view_course bvc on bva.id_course = bvc.id_course
+						inner join core.view_user cvu on bva.id_user = cvu.id_user
+						inner join core.view_person cvp on cvu.id_person = cvp.id_person
+						where bva.id_assistance = _ID_ASSISTANCE;
+				ELSE
+					_EXCEPTION = 'Ocurrió un error al ingresar assistance';
+					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+				END IF;
+				exception when others then 
+					-- RAISE NOTICE '%', SQLERRM;
+					IF (_EXCEPTION = 'Internal Error') THEN
+						RAISE EXCEPTION '%',SQLERRM USING DETAIL = '_database';
+					ELSE
+						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+					END IF;
+			END;
+			
+$BODY$;
+
+ALTER FUNCTION business.dml_assistance_create_modified(numeric, numeric)
+    OWNER TO postgres;
+
+-- FUNCTION: business.dml_assistance_update_modified(numeric, numeric, numeric, numeric, timestamp without time zone, timestamp without time zone, boolean)
+-- DROP FUNCTION IF EXISTS business.dml_assistance_update_modified(numeric, numeric, numeric, numeric, timestamp without time zone, timestamp without time zone, boolean);
+
+CREATE OR REPLACE FUNCTION business.dml_assistance_update_modified(
+	id_user_ numeric,
+	_id_assistance numeric,
+	_id_user numeric,
+	_id_course numeric,
+	_start_marking_date timestamp without time zone,
+	_end_marking_date timestamp without time zone,
+	_is_late boolean)
+    RETURNS TABLE(id_assistance numeric, id_user numeric, id_course numeric, start_marking_date timestamp without time zone, end_marking_date timestamp without time zone, is_late boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+			 DECLARE
+			 	_UPDATE_ASSISTANCE BOOLEAN;
+				_EXCEPTION TEXT DEFAULT 'Internal Error';
+			 BEGIN
+			 	_UPDATE_ASSISTANCE = (select * from business.dml_assistance_update(id_user_, _id_assistance, _id_user, _id_course, _start_marking_date, now()::timestamp, _is_late));
+
+			 	IF (_UPDATE_ASSISTANCE) THEN
+					RETURN QUERY select bva.id_assistance, bva.id_user, bva.id_course, bva.start_marking_date, bva.end_marking_date, bva.is_late, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_assistance bva
+						inner join business.view_course bvc on bva.id_course = bvc.id_course
+						inner join core.view_user cvu on bva.id_user = cvu.id_user
+						inner join core.view_person cvp on cvu.id_person = cvp.id_person
+						where bva.id_assistance = _id_assistance;
+				ELSE
+					_EXCEPTION = 'Ocurrió un error al actualizar assistance';
+					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+				END IF;
+				exception when others then 
+					-- RAISE NOTICE '%', SQLERRM;
+					IF (_EXCEPTION = 'Internal Error') THEN
+						RAISE EXCEPTION '%',SQLERRM USING DETAIL = '_database';
+					ELSE
+						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+					END IF;
+			 END;
+			 
+$BODY$;
+
+ALTER FUNCTION business.dml_assistance_update_modified(numeric, numeric, numeric, numeric, timestamp without time zone, timestamp without time zone, boolean)
     OWNER TO postgres;

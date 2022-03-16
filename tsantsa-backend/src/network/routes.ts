@@ -1,3 +1,4 @@
+import { routerAssistance } from '../app/business/assistance/assistance.network';
 import { routerAttached } from '../app/business/attached/attached.network';
 import { routerCareer } from '../app/business/career/career.network';
 import { routerComment } from '../app/business/comment/comment.network';
@@ -47,6 +48,7 @@ export const appRoutes = (app: any) => {
 	app.use('/app/business/user_task', routerUserTask);
 	app.use('/app/business/attached', routerAttached);
 	app.use('/app/business/comment', routerComment);
+	app.use('/app/business/assistance', routerAssistance);
 
 	/**
 	 * Dev Routes

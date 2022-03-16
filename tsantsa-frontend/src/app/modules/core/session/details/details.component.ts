@@ -108,7 +108,7 @@ export class SessionDetailsComponent implements OnInit {
     this.sessionForm = this._formBuilder.group({
       id_session: [''],
       id_user: ['', [Validators.required]],
-      host_session: ['', [Validators.required, Validators.maxLength(15)]],
+      host_session: ['', [Validators.required, Validators.maxLength(22)]],
       agent_session: ['', [Validators.required]],
       date_sign_in_session: ['', [Validators.required]],
       date_sign_out_session: ['', [Validators.required]],

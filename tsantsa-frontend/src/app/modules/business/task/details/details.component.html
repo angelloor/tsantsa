@@ -25,23 +25,23 @@
                     </button>
                 </div>
                 <div class="flex flex-col mt-4 pt-6 space-y-8">
-                    <!-- id_course -->
-                    <ng-container *ngIf="task.course.id_course">
-                        <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
-                            <div class="ml-6 leading-6">{{selectedCourse.name_course}}</div>
-                        </div>
-                    </ng-container> <!-- name_task -->
+                    <!-- name_task -->
                     <ng-container *ngIf="task.name_task">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
                             <div class="ml-6 leading-6">{{task.name_task}}</div>
                         </div>
                     </ng-container> <!-- description_task -->
                     <ng-container *ngIf="task.description_task">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:tag'"></mat-icon>
                             <div class="ml-6 leading-6">{{task.description_task}}</div>
+                        </div>
+                    </ng-container> <!-- id_course -->
+                    <ng-container *ngIf="task.course.id_course">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
+                            <div class="ml-6 leading-6">{{selectedCourse.name_course}}</div>
                         </div>
                     </ng-container> <!-- status_task -->
                     <ng-container>
@@ -55,13 +55,13 @@
                     </ng-container> <!-- creation_date_task -->
                     <ng-container *ngIf="task.creation_date_task">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                             <div class="ml-6 leading-6">{{task.creation_date_task | date:'medium'}}</div>
                         </div>
                     </ng-container> <!-- limit_date -->
                     <ng-container *ngIf="task.limit_date">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                             <div class="ml-6 leading-6">{{task.limit_date | date:'medium'}}</div>
                         </div>
                     </ng-container>
@@ -155,7 +155,27 @@
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
-                    <!-- id_course -->
+                    <!-- name_task -->
+                    <div class="mt-8">
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-label>nameTask</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:credit-card'">
+                            </mat-icon>
+                            <input matInput maxlength="100" [formControlName]="'name_task'" [placeholder]="'name_task'"
+                                [spellcheck]="true">
+                        </mat-form-field>
+                    </div> <!-- description_task -->
+                    <div class="relative flex mt-8">
+                        <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                            <mat-label>description_task</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
+                            </mat-icon>
+                            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
+                                cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_task'"
+                                [placeholder]="'description_task'" [spellcheck]="true"></textarea>
+                        </mat-form-field>
+                    </div> <!-- id_course -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Course</mat-label>
@@ -165,24 +185,6 @@
                                         {{category.name_course}}</mat-option>
                                 </ng-container>
                             </mat-select>
-                        </mat-form-field>
-                    </div><!-- name_task -->
-                    <div class="mt-8">
-                        <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameTask</mat-label>
-                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
-                            </mat-icon>
-                            <input matInput maxlength="100" [formControlName]="'name_task'" [placeholder]="'name_task'"
-                                [spellcheck]="false">
-                        </mat-form-field>
-                    </div> <!-- description_task -->
-                    <div class="mt-8">
-                        <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>descriptionTask</mat-label>
-                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
-                            </mat-icon>
-                            <input matInput maxlength="250" [formControlName]="'description_task'"
-                                [placeholder]="'description_task'" [spellcheck]="false">
                         </mat-form-field>
                     </div> <!-- limit_date -->
                     <div class="mt-8">
@@ -202,7 +204,7 @@
                                 <div class="relative flex">
                                     <mat-form-field class="angel-mat-no-subscript w-full">
                                         <mat-icon matPrefix class="hidden sm:flex icon-size-5"
-                                            [svgIcon]="'heroicons_solid:fire'">
+                                            [svgIcon]="'mat_outline:insert_link'">
                                         </mat-icon>
                                         <input matInput maxlength="100"
                                             [matTooltip]="formArrayResources.getRawValue()[i].link_resource" readonly

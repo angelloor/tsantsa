@@ -15,6 +15,16 @@ routerEnrollment.post('/create', async (req: any, res: any) => {
 		});
 });
 
+routerEnrollment.get('/read/:course', async (req: any, res: any) => {
+	await validation(req.params, req.url, req.headers.token)
+		.then((enrollment: Enrollment[]) => {
+			res.status(200).send(enrollment);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
 routerEnrollment.get(
 	'/specificRead/:id_enrollment',
 	async (req: any, res: any) => {

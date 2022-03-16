@@ -32,25 +32,26 @@
         <div class="mt-8">
             <mat-form-field class="angel-mat-no-subscript w-full">
                 <mat-label>nameResource</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:credit-card'">
                 </mat-icon>
                 <input matInput maxlength="100" [formControlName]="'name_resource'" [placeholder]="'name_resource'"
-                    [spellcheck]="false">
+                    [spellcheck]="true">
             </mat-form-field>
         </div> <!-- description_resource -->
-        <div class="mt-8">
-            <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>descriptionResource</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+        <div class="relative flex mt-8">
+            <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                <mat-label>description_resource</mat-label>
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                 </mat-icon>
-                <input matInput maxlength="250" [formControlName]="'description_resource'"
-                    [placeholder]="'description_resource'" [spellcheck]="false">
+                <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
+                    cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_resource'"
+                    [placeholder]="'description_resource'" [spellcheck]="true"></textarea>
             </mat-form-field>
         </div> <!-- link_resource -->
         <div class="mt-8">
             <mat-form-field class="angel-mat-no-subscript w-full">
                 <mat-label>linkResource</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_outline:insert_link'">
                 </mat-icon>
                 <input matInput maxlength="500" [formControlName]="'link_resource'" [placeholder]="'link_resource'"
                     [spellcheck]="false">

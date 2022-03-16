@@ -8,23 +8,23 @@ import { OverlayRef } from '@angular/cdk/overlay';
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDrawerToggleResult } from '@angular/material/sidenav';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
 import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
-import { EnrollmentService } from '../enrollment.service';
-import { Enrollment } from '../enrollment.types';
-import { EnrollmentListComponent } from '../list/list.component';
+import { EnrollmentService } from '../../enrollment.service';
+import { Enrollment } from '../../enrollment.types';
+import { ModalAssistancesService } from '../../modal-assistances/modal-assistances.service';
 
 @Component({
-  selector: 'enrollment-details',
-  templateUrl: './details.component.html',
+  selector: 'app-modal-enrollment-details',
+  templateUrl: './modal-enrollment-details.component.html',
   animations: angelAnimations,
 })
-export class EnrollmentDetailsComponent implements OnInit {
+export class ModalEnrollmentDetailsComponent implements OnInit {
   nameEntity: string = 'Mis cursos';
   private data!: AppInitialData;
 
@@ -60,7 +60,6 @@ export class EnrollmentDetailsComponent implements OnInit {
   constructor(
     private _store: Store<{ global: AppInitialData }>,
     private _changeDetectorRef: ChangeDetectorRef,
-    private _enrollmentListComponent: EnrollmentListComponent,
     private _enrollmentService: EnrollmentService,
     @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
@@ -68,7 +67,9 @@ export class EnrollmentDetailsComponent implements OnInit {
     private _router: Router,
     private _notificationService: NotificationService,
     private _angelConfirmationService: AngelConfirmationService,
-    private _layoutService: LayoutService
+    private _layoutService: LayoutService,
+    private _matDialog: MatDialog,
+    private _modalAssistancesService: ModalAssistancesService
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -96,10 +97,6 @@ export class EnrollmentDetailsComponent implements OnInit {
     this._store.pipe(takeUntil(this._unsubscribeAll)).subscribe((state) => {
       this.data = state.global;
     });
-    /**
-     * Open the drawer
-     */
-    this._enrollmentListComponent.matDrawer.open();
     /**
      * Create the enrollment form
      */
@@ -130,10 +127,6 @@ export class EnrollmentDetailsComponent implements OnInit {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((enrollment: Enrollment) => {
         /**
-         * Open the drawer in case it is closed
-         */
-        this._enrollmentListComponent.matDrawer.open();
-        /**
          * Get the enrollment
          */
         this.enrollment = enrollment;
@@ -141,10 +134,6 @@ export class EnrollmentDetailsComponent implements OnInit {
          * Patch values to the form
          */
         this.patchForm();
-        /**
-         * Toggle the edit mode off
-         */
-        this.toggleEditMode(false);
         /**
          * Mark for check
          */
@@ -170,16 +159,13 @@ export class EnrollmentDetailsComponent implements OnInit {
            */
           const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
           this._router.navigate([parentUrl]);
-          /**
-           * Close Drawer
-           */
-          this.closeDrawer();
         }
       });
     /**
      * Shortcuts
      */
   }
+
   /**
    * Pacth the form with the information of the database
    */
@@ -206,31 +192,6 @@ export class EnrollmentDetailsComponent implements OnInit {
   /** ----------------------------------------------------------------------------------------------------- */
   /** @ Public methods
 	  /** ----------------------------------------------------------------------------------------------------- */
-
-  /**
-   * Close the drawer
-   */
-  closeDrawer(): Promise<MatDrawerToggleResult> {
-    return this._enrollmentListComponent.matDrawer.close();
-  }
-  /**
-   * Toggle edit mode
-   * @param editMode
-   */
-  toggleEditMode(editMode: boolean | null = null): void {
-    this.patchForm();
-
-    if (editMode === null) {
-      this.editMode = !this.editMode;
-    } else {
-      this.editMode = editMode;
-    }
-    /**
-     * Mark for check
-     */
-    this._changeDetectorRef.markForCheck();
-  }
-
   /**
    * Update the enrollment
    */
@@ -262,15 +223,10 @@ export class EnrollmentDetailsComponent implements OnInit {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe({
         next: (_enrollment: Enrollment) => {
-          console.log(_enrollment);
           if (_enrollment) {
             this._notificationService.success(
               'Mis cursos actualizada correctamente'
             );
-            /**
-             * Toggle the edit mode off
-             */
-            this.toggleEditMode(false);
           } else {
             this._notificationService.error(
               '¡Error interno!, consulte al administrador.'
@@ -278,7 +234,6 @@ export class EnrollmentDetailsComponent implements OnInit {
           }
         },
         error: (error: { error: MessageAPI }) => {
-          console.log(error);
           this._notificationService.error(
             !error.error
               ? '¡Error interno!, consulte al administrador.'
@@ -331,7 +286,6 @@ export class EnrollmentDetailsComponent implements OnInit {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe({
               next: (response: boolean) => {
-                console.log(response);
                 if (response) {
                   /**
                    * Return if the enrollment wasn't deleted...
@@ -359,10 +313,6 @@ export class EnrollmentDetailsComponent implements OnInit {
                      */
                     this._router.navigate(['../'], { relativeTo: route });
                   }
-                  /**
-                   * Toggle the edit mode off
-                   */
-                  this.toggleEditMode(false);
                 } else {
                   this._notificationService.error(
                     '¡Error interno!, consulte al administrador.'
@@ -370,7 +320,6 @@ export class EnrollmentDetailsComponent implements OnInit {
                 }
               },
               error: (error: { error: MessageAPI }) => {
-                console.log(error);
                 this._notificationService.error(
                   !error.error
                     ? '¡Error interno!, consulte al administrador.'
@@ -387,5 +336,14 @@ export class EnrollmentDetailsComponent implements OnInit {
         }
         this._layoutService.setOpenModal(false);
       });
+  }
+
+  closeModalEnrollment(): void {
+    this._matDialog.closeAll();
+  }
+  openModalAssistance(): void {
+    this._modalAssistancesService.openModalAssistances(
+      this.enrollment.course.id_course
+    );
   }
 }

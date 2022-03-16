@@ -28,13 +28,13 @@
                     <!-- name_career -->
                     <ng-container *ngIf="career.name_career">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
                             <div class="ml-6 leading-6">{{career.name_career}}</div>
                         </div>
                     </ng-container> <!-- description_career -->
                     <ng-container *ngIf="career.description_career">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:tag'"></mat-icon>
                             <div class="ml-6 leading-6">{{career.description_career}}</div>
                         </div>
                     </ng-container> <!-- status_career -->
@@ -50,7 +50,7 @@
                     <!-- creation_date_career -->
                     <ng-container *ngIf="career.creation_date_career">
                         <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
                             <div class="ml-6 leading-6">{{career.creation_date_career | date:'medium'}}</div>
                         </div>
                     </ng-container>
@@ -120,19 +120,21 @@
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>nameCareer</mat-label>
-                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:credit-card'">
                             </mat-icon>
                             <input matInput maxlength="100" [formControlName]="'name_career'"
-                                [placeholder]="'name_career'" [spellcheck]="false">
+                                [placeholder]="'name_career'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- description_career -->
-                    <div class="mt-8">
-                        <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>descriptionCareer</mat-label>
-                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+                    <div class="relative flex mt-8">
+                        <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                            <mat-label>description_career</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                             </mat-icon>
-                            <input matInput maxlength="1000" [formControlName]="'description_career'"
-                                [placeholder]="'description_career'" [spellcheck]="false">
+                            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="1000"
+                                cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_career'"
+                                [placeholder]="'description_career'" [spellcheck]="true"></textarea>
                         </mat-form-field>
                     </div> <!-- status_career -->
                     <div class="mt-8">

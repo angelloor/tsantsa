@@ -135,6 +135,17 @@ export const validation = (
 									.catch((error: any) => {
 										reject(error);
 									});
+							} else if (url.substring(0, 5) == '/read') {
+								/** set required attributes for action */
+								_enrollment.course = enrollment.course;
+								await _enrollment
+									.read()
+									.then((_enrollments: Enrollment[]) => {
+										resolve(_enrollments);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
 							} else if (url.substring(0, 13) == '/specificRead') {
 								/** set required attributes for action */
 								_enrollment.id_enrollment = enrollment.id_enrollment;

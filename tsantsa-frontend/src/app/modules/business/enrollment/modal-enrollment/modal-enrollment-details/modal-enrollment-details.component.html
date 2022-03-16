@@ -1,0 +1,95 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Curso {{enrollment.course.name_course}}</div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalEnrollment()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <form [formGroup]="enrollmentForm" class="flex flex-col flex-auto px-6 pb-6 sm:px-8 sm:pb-8 overflow-y-auto">
+        <!-- Alert -->
+        <angel-alert class="mt-8" *ngIf="true" [appearance]="'outline'" [showIcon]="false"
+            [type]="enrollment.completed_course  ? 'success':'warning'" [@shake]="alert.type === 'error'">
+            {{enrollment.completed_course ? 'Curso finalizado': 'El curso esta en marcha'}}
+        </angel-alert>
+        <!-- Alert -->
+        <div class="flex flex-auto mt-8">
+            <div class="flex flex-col w-full">
+                <!-- description_course -->
+                <div>
+                    <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                        <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                            [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
+                        <textarea matInput matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                            cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" disabled
+                            [placeholder]="'description_course'"></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-auto mt-8">
+            <div class="flex flex-col w-2/4 pr-3">
+                <!-- date_enrollment -->
+                <div>
+                    <mat-form-field class="angel-mat-no-subscript w-full">
+                        <mat-label>date_enrollment</mat-label>
+                        <input matInput [matDatepicker]="date_enrollment" [formControlName]="'date_enrollment'"
+                            readonly>
+                        <mat-datepicker-toggle matSuffix [for]="date_enrollment" disabled>
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #date_enrollment></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex flex-col w-2/4 pl-3">
+                <!-- status_enrollment -->
+                <div>
+                    <mat-form-field class="angel-mat-no-subscript w-full">
+                        <mat-label>status_enrollment</mat-label>
+                        <mat-select [value]="enrollment.status_enrollment" [disabled]="true"
+                            [matTooltip]="enrollment.status_enrollment ? 'La matricula se encuentra activa': 'Matricula inactiva'">
+                            <mat-option [value]="true">Activo</mat-option>
+                            <mat-option [value]="false">Inactivo</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-auto mt-8">
+            <div class="flex flex-col w-2/4 pr-3">
+                <!-- name_career -->
+                <div>
+                    <mat-form-field class="angel-mat-no-subscript w-full">
+                        <mat-label>name_career</mat-label>
+                        <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_outline:account_tree'">
+                        </mat-icon>
+                        <input matInput [value]="enrollment.course.career.name_career" readonly
+                            [matTooltip]="enrollment.course.career.description_career">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex flex-col w-2/4 pl-3">
+                <!-- name_period -->
+                <div>
+                    <mat-form-field class="angel-mat-no-subscript w-full">
+                        <mat-label>name_period</mat-label>
+                        <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_outline:timeline'">
+                        </mat-icon>
+                        <input matInput [value]="enrollment.course.period.name_period" readonly
+                            [matTooltip]="enrollment.course.period.start_date_period + ' <-> ' + enrollment.course.period.end_date_period ">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <!-- Enrollment -->
+        <div class="mt-4">
+            <div class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
+                (click)="openModalAssistance()">
+                <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:blur_linear'"></mat-icon>
+                <span class="ml-2 font-medium text-secondary group-hover:underline">Ver asistencias</span>
+            </div>
+        </div>
+    </form>
+</div>

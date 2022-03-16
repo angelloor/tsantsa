@@ -28,39 +28,39 @@
 					<!-- name_period -->
 					<ng-container *ngIf="period.name_period">
 						<div class="flex sm:items-center">
-							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
 							<div class="ml-6 leading-6">{{period.name_period}}</div>
 						</div>
 					</ng-container> <!-- description_period -->
 					<ng-container *ngIf="period.description_period">
 						<div class="flex sm:items-center">
-							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<mat-icon [svgIcon]="'heroicons_outline:tag'"></mat-icon>
 							<div class="ml-6 leading-6">{{period.description_period}}</div>
 						</div>
 					</ng-container> <!-- start_date_period -->
 					<ng-container *ngIf="period.start_date_period">
 						<div class="flex sm:items-center">
-							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
 							<div class="ml-6 leading-6">{{period.start_date_period | date:'mediumDate':'-0500':'en-US'}}
 							</div>
 						</div>
 					</ng-container> <!-- end_date_period -->
 					<ng-container *ngIf="period.end_date_period">
 						<div class="flex sm:items-center">
-							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
 							<div class="ml-6 leading-6">{{period.end_date_period | date:'mediumDate':'-0500':'en-US'}}
 							</div>
 						</div>
 					</ng-container> <!-- maximum_rating -->
 					<ng-container *ngIf="period.maximum_rating">
 						<div class="flex sm:items-center">
-							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<mat-icon [svgIcon]="'heroicons_outline:variable'"></mat-icon>
 							<div class="ml-6 leading-6">{{period.maximum_rating}}</div>
 						</div>
 					</ng-container> <!-- approval_note_period -->
 					<ng-container *ngIf="period.approval_note_period">
 						<div class="flex sm:items-center">
-							<mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+							<mat-icon [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
 							<div class="ml-6 leading-6">{{period.approval_note_period}}</div>
 						</div>
 					</ng-container>
@@ -154,19 +154,21 @@
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
 							<mat-label>namePeriod</mat-label>
-							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5"
+								[svgIcon]="'heroicons_solid:credit-card'">
 							</mat-icon>
 							<input matInput maxlength="100" [formControlName]="'name_period'"
-								[placeholder]="'name_period'" [spellcheck]="false">
+								[placeholder]="'name_period'" [spellcheck]="true">
 						</mat-form-field>
 					</div> <!-- description_period -->
-					<div class="mt-8">
-						<mat-form-field class="angel-mat-no-subscript w-full">
-							<mat-label>descriptionPeriod</mat-label>
-							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+					<div class="relative flex mt-8">
+						<mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+							<mat-label>description_period</mat-label>
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
 							</mat-icon>
-							<input matInput maxlength="250" [formControlName]="'description_period'"
-								[placeholder]="'description_period'" [spellcheck]="false">
+							<textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
+								cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_period'"
+								[placeholder]="'description_period'" [spellcheck]="true"></textarea>
 						</mat-form-field>
 					</div> <!-- start_date_period -->
 					<div class="mt-8">
@@ -190,17 +192,19 @@
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
 							<mat-label>maximum_rating</mat-label>
-							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5"
+								[svgIcon]="'heroicons_solid:variable'">
 							</mat-icon>
 							<input matInput [formControlName]="'maximum_rating'" (change)="change()"
 								(keypress)="changeKeyPress(periodForm)" type="number" min="10" max="100"
 								[placeholder]="'maximum_rating'" [spellcheck]="false">
 						</mat-form-field>
-					</div><!-- maximum_rating -->
+					</div><!-- approval_note_period -->
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
 							<mat-label>approval_note_period</mat-label>
-							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+							<mat-icon matPrefix class="hidden sm:flex icon-size-5"
+								[svgIcon]="'heroicons_solid:check-circle'">
 							</mat-icon>
 							<span matSuffix>/ {{maximum_rating}}</span>
 							<input matInput [formControlName]="'approval_note_period'" type="number" min="5" max="100"

@@ -2,14 +2,25 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Route, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
+import { SharedModule } from 'app/shared/shared.module';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { HomeComponent } from './home/home.component';
 import { ModalSelectCourseComponent } from './shared/modal-select-course/modal-select-course.component';
 
@@ -65,6 +76,13 @@ const businessRoutes: Route[] = [
     loadChildren: () =>
       import('./user-task/user-task.module').then((m) => m.UserTaskModule),
   },
+  {
+    path: 'assistance',
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    loadChildren: () =>
+      import('./assistance/assistance.module').then((m) => m.AssistanceModule),
+  },
 ];
 
 @NgModule({
@@ -79,7 +97,19 @@ const businessRoutes: Route[] = [
     MatSelectModule,
     MatDialogModule,
     MatFormFieldModule,
-
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatSidenavModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule,
+    NgApexchartsModule,
+    SharedModule,
     MatInputModule,
     ReactiveFormsModule,
   ],

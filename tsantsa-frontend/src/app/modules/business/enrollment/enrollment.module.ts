@@ -20,16 +20,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import * as moment from 'moment';
-import { EnrollmentDetailsComponent } from './details/details.component';
 import { EnrollmentComponent } from './enrollment.component';
 import { enrollmentRoutes } from './enrollment.routing';
 import { EnrollmentListComponent } from './list/list.component';
+import { ModalEnrollmentDetailsComponent } from './modal-enrollment/modal-enrollment-details/modal-enrollment-details.component';
+import { ModalEnrollmentComponent } from './modal-enrollment/modal-enrollment.component';
+import { ModalAssistancesComponent } from './modal-assistances/modal-assistances.component';
 
 @NgModule({
   declarations: [
     EnrollmentListComponent,
-    EnrollmentDetailsComponent,
     EnrollmentComponent,
+    ModalEnrollmentComponent,
+    ModalEnrollmentDetailsComponent,
+    ModalAssistancesComponent,
   ],
   imports: [
     RouterModule.forChild(enrollmentRoutes),

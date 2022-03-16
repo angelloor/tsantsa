@@ -23,13 +23,14 @@
         </angel-alert>
         <!-- Alert -->
         <!-- response_user_task -->
-        <div class="mt-8">
-            <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>responseUserTask</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
+        <div class="relative flex mt-8">
+            <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                <mat-label>response_user_task</mat-label>
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_outline:comment'">
                 </mat-icon>
-                <input matInput maxlength="500" [formControlName]="'response_user_task'"
-                    [placeholder]="'response_user_task'" [spellcheck]="false">
+                <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="500"
+                    cdkAutosizeMinRows="5" cdkAutosizeMaxRows="30" [formControlName]="'response_user_task'"
+                    [placeholder]="'response_user_task'" [spellcheck]="true"></textarea>
             </mat-form-field>
         </div> <!-- shipping_date_user_task -->
         <div class="mt-8" *ngIf="userTaskForm.getRawValue().shipping_date_user_task">
@@ -140,9 +141,10 @@
                                 [src]="_urlPathAvatar + formArrayComments.getRawValue()[i].user.avatar_user">
                         </span>
                     </button>
-                    <div class="fuse-mat-no-subscript flex-auto w-full ml-2">
-                        <mat-form-field class="fuse-mat-no-subscript flex-auto w-full">
-                            <textarea matInput maxlength="250" fuseAutogrow [rows]="5"
+                    <div class="angel-mat-no-subscript flex-auto w-full ml-2">
+                        <mat-form-field class="angel-mat-no-subscript flex-auto w-full">
+                            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
+                                cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30"
                                 [formControl]="getFromControl(formArrayComments, i, 'value_comment')"
                                 [placeholder]="'Ingrese el comentario'" [spellcheck]="false"></textarea>
                         </mat-form-field>

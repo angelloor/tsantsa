@@ -492,42 +492,49 @@ BEGIN
         "id": "business.period",
         "title": "Periodo",
         "type": "basic",
-        "icon": "heroicons_outline:fire",
+        "icon": "mat_outline:timeline",
         "link": "/business/period"
       },
       {
         "id": "business.career",
         "title": "Carrera",
         "type": "basic",
-        "icon": "heroicons_outline:fire",
+        "icon": "mat_outline:account_tree",
         "link": "/business/career"
       },
       {
         "id": "business.course",
         "title": "Curso",
         "type": "basic",
-        "icon": "heroicons_outline:fire",
+        "icon": "heroicons_outline:academic-cap",
         "link": "/business/course"
       },
       {
         "id": "business.task",
         "title": "Tarea",
         "type": "basic",
-        "icon": "heroicons_outline:fire",
+        "icon": "heroicons_outline:book-open",
         "link": "/business/task"
+      },
+      {
+        "id": "business.my-courses",
+        "title": "Mis cursos",
+        "type": "basic",
+        "icon": "mat_outline:ballot",
+        "link": "/business/my-courses"
       },
       {
         "id": "business.user-task",
         "title": "Mis tareas",
         "type": "basic",
-        "icon": "heroicons_outline:fire",
+        "icon": "mat_outline:auto_stories",
         "link": "/business/user-task"
       },
       {
         "id": "business.assistance",
         "title": "Mis asistencias",
         "type": "basic",
-        "icon": "heroicons_outline:fire",
+        "icon": "mat_solid:blur_linear",
         "link": "/business/assistance"
       }
     ]

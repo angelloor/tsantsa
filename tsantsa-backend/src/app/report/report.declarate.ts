@@ -632,7 +632,7 @@ const generateHeader = (title: string) => {
 		/**
 		 * Generate Base64 information for the logo
 		 */
-		let b64Logo = await generateImage2B64(`./src/assets/images/logo.png`);
+		let b64Logo = await generateImage2B64(`./public/resource/img/logo.png`);
 		const _getFullDate = getFullDate(new Date().toString());
 
 		resolve(`<div class="header">

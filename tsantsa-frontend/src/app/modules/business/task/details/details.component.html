@@ -52,17 +52,17 @@
                             <div *ngIf="!task.status_task" class="ml-6 mt-1 w-3 h-3 bg-red-600 rounded-full">
                             </div>
                         </div>
-                    </ng-container> <!-- creation_date_task -->
-                    <ng-container *ngIf="task.creation_date_task">
-                        <div class="flex sm:items-center">
-                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                            <div class="ml-6 leading-6">{{task.creation_date_task | date:'medium'}}</div>
-                        </div>
                     </ng-container> <!-- limit_date -->
                     <ng-container *ngIf="task.limit_date">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                            <div class="ml-6 leading-6">{{task.limit_date | date:'medium'}}</div>
+                            <div class="ml-6 leading-6">{{task.limit_date | localDate:'medium'}}</div>
+                        </div>
+                    </ng-container> <!-- creation_date_task -->
+                    <ng-container *ngIf="task.creation_date_task">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                            <div class="ml-6 leading-6">{{task.creation_date_task | localDate:'medium'}}</div>
                         </div>
                     </ng-container>
                     <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
@@ -102,18 +102,20 @@
                 <div
                     class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
                     <!-- Save -->
-                    <button mat-flat-button [color]="'primary'" [disabled]="taskForm.invalid"
+                    <button mat-flat-button [color]="'primary'"
+                        [disabled]="taskForm.invalid || task.enrollment == '0' || havedDependency"
                         [matTooltip]="'Enviar tarea'" (click)="sendTask()">
                         Enviar
                     </button>
                     <!-- Save -->
-                    <button mat-flat-button class="ml-2" [color]="'primary'" [disabled]="taskForm.invalid"
-                        [matTooltip]="'Guardar'" (click)="updateTask()">
+                    <button mat-flat-button class="ml-2" [color]="'primary'"
+                        [disabled]="taskForm.invalid || havedDependency" [matTooltip]="'Guardar'"
+                        (click)="updateTask()">
                         Guardar
                     </button>
                     <!-- Delete -->
-                    <button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
-                        (click)="deleteTask()">
+                    <button mat-stroked-button class="ml-2" [color]="'warn'" [disabled]="havedDependency"
+                        [matTooltip]="'Eliminar'" (click)="deleteTask()">
                         Eliminar
                     </button>
                     <!-- Cancel -->
@@ -129,56 +131,62 @@
                 </div>
                 <form [formGroup]="taskForm" class="mb-8">
                     <!-- Alert -->
+                    <angel-alert class="mt-8" *ngIf="havedDependency" [appearance]="'outline'" [showIcon]="false"
+                        [type]="'warning'" [@shake]="alert.type === 'error'">
+                        La tarea ya ha sido enviada
+                    </angel-alert>
+                    <!-- Alert -->
+                    <!-- Alert -->
                     <angel-alert class="mt-8" *ngIf="taskForm.invalid || showAlert" [appearance]="'outline'"
                         [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
                         <!-- Message if alert is actived for the component -->
                         {{alert.message}}
                         <!-- id_course -->
                         <mat-error *ngIf="taskForm.get('id_course')?.hasError('required')">
-                            • Seleccione id_course
+                            • Seleccione la asignatura
                         </mat-error>
                         <!-- name_task -->
                         <mat-error *ngIf="taskForm.get('name_task')?.hasError('required')">
-                            • Ingrese name_task
+                            • Ingrese el nombre de la tarea
                         </mat-error>
                         <!-- description_task -->
                         <mat-error *ngIf="taskForm.get('description_task')?.hasError('required')">
-                            • Ingrese description_task
+                            • Ingrese la descripción de la tarea
                         </mat-error>
                         <!-- status_task -->
                         <mat-error *ngIf="taskForm.get('status_task')?.hasError('required')">
-                            • Ingrese status_task
+                            • Ingrese el estado de la tarea
                         </mat-error>
                         <!-- limit_date -->
                         <mat-error *ngIf="taskForm.get('limit_date')?.hasError('required')">
-                            • Ingrese limit_date
+                            • Ingrese la fecha límite de entrega
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
                     <!-- name_task -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameTask</mat-label>
+                            <mat-label>Nombre de la tarea</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:credit-card'">
                             </mat-icon>
-                            <input matInput maxlength="100" [formControlName]="'name_task'" [placeholder]="'name_task'"
-                                [spellcheck]="true">
+                            <input matInput maxlength="100" [formControlName]="'name_task'"
+                                [placeholder]="'Ingrese el nombre de la tarea'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- description_task -->
                     <div class="relative flex mt-8">
                         <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
-                            <mat-label>description_task</mat-label>
+                            <mat-label>Descripción de la tarea</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                             </mat-icon>
                             <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
                                 cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_task'"
-                                [placeholder]="'description_task'" [spellcheck]="true"></textarea>
+                                [placeholder]="'Ingrese la descripción de la tarea'" [spellcheck]="true"></textarea>
                         </mat-form-field>
                     </div> <!-- id_course -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>Course</mat-label>
+                            <mat-label>Asignatura</mat-label>
                             <mat-select [formControlName]="'id_course'" [value]="selectedCourse.id_course">
                                 <ng-container *ngFor="let category of categoriesCourse">
                                     <mat-option [value]="category.id_course">
@@ -189,7 +197,7 @@
                     </div> <!-- limit_date -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>limit_date</mat-label>
+                            <mat-label>Fecha límite de entrega</mat-label>
                             <input matInput [matDatepicker]="limit_date" [formControlName]="'limit_date'" readonly>
                             <mat-datepicker-toggle matSuffix [for]="limit_date">
                             </mat-datepicker-toggle>

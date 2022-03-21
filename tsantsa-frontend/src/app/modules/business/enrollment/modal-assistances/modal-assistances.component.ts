@@ -2,8 +2,7 @@ import {
   ActionAngelConfirmation,
   AngelConfirmationService,
 } from '@angel/services/confirmation';
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
@@ -11,8 +10,10 @@ import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
 import { environment } from 'environments/environment';
-import { Observable, Subject } from 'rxjs';
+import moment from 'moment';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AssistanceService } from '../../assistance/assistance.service';
 import { Assistance } from '../../assistance/assistance.types';
@@ -21,16 +22,14 @@ import { ModalAssistancesService } from './modal-assistances.service';
 @Component({
   selector: 'app-modal-assistances',
   templateUrl: './modal-assistances.component.html',
+  providers: [LocalDatePipe],
 })
 export class ModalAssistancesComponent implements OnInit {
   _urlPathAvatar: string = environment.urlBackend + '/resource/img/avatar/';
-
   id_course: string = '';
 
-  count: number = 0;
-  assistances$!: Observable<Assistance[]>;
-
   private data!: AppInitialData;
+  _isMarkedToday: boolean = false;
 
   assistancesForm!: FormGroup;
   assistances: Assistance[] = [];
@@ -46,14 +45,13 @@ export class ModalAssistancesComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public _data: any,
     private _store: Store<{ global: AppInitialData }>,
-    private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _document: any,
     private _assistanceService: AssistanceService,
     private _formBuilder: FormBuilder,
     private _notificationService: NotificationService,
     private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _authService: AuthService,
+    private _localDatePipe: LocalDatePipe,
     private _modalAssistancesService: ModalAssistancesService
   ) {}
 
@@ -100,15 +98,15 @@ export class ModalAssistancesComponent implements OnInit {
     /**
      * Get the assistances
      */
-    this.assistances$ = this._assistanceService.assistances$;
     /**
      *  Count Subscribe and readAll
      */
-    this._assistanceService
-      .byUserRead(this.data.user.id_user)
+    this._assistanceService.assistances$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((_assistances: Assistance[]) => {
         this.assistances = _assistances;
+
+        this._isMarkedToday = this.isMarkedToday(this.assistances);
         /**
          * Clear the lotAssistances form arrays
          */
@@ -128,15 +126,16 @@ export class ModalAssistancesComponent implements OnInit {
               id_assistance: _assistance.id_assistance,
               user: _assistance.user,
               course: _assistance.course,
+              date: _assistance.start_marking_date,
               start_marking_date: [
                 {
-                  value: _assistance.start_marking_date,
+                  value: this.parseTime(_assistance.start_marking_date),
                   disabled: true,
                 },
               ],
               end_marking_date: [
                 {
-                  value: _assistance.end_marking_date,
+                  value: this.parseTime(_assistance.end_marking_date),
                   disabled: true,
                 },
               ],
@@ -152,30 +151,6 @@ export class ModalAssistancesComponent implements OnInit {
             lotAssistanceFormGroup
           );
         });
-
-        /**
-         * Update the counts
-         */
-        this.count = this.assistances.length;
-        /**
-         * Mark for check
-         */
-        this._changeDetectorRef.markForCheck();
-      });
-    /**
-     *  Count Subscribe
-     */
-    this._assistanceService.assistances$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((assistances: Assistance[]) => {
-        /**
-         * Update the counts
-         */
-        this.count = assistances.length;
-        /**
-         * Mark for check
-         */
-        this._changeDetectorRef.markForCheck();
       });
   }
 
@@ -210,9 +185,9 @@ export class ModalAssistancesComponent implements OnInit {
   createAssistance(): void {
     this._angelConfirmationService
       .open({
-        title: 'Añadir mis asistencias',
+        title: 'Marcar entrada',
         message:
-          '¿Estás seguro de que deseas añadir una nueva mis asistencias? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas marcar tu entrada? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -223,13 +198,13 @@ export class ModalAssistancesComponent implements OnInit {
            * Create the mis asistencias
            */
           this._assistanceService
-            .createAssistance(id_user_)
+            .createAssistance(id_user_, this.id_course)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe({
               next: (_assistance: Assistance) => {
                 if (_assistance) {
                   this._notificationService.success(
-                    'Mis asistencias agregada correctamente'
+                    'Marcación de entrada registrada'
                   );
                 } else {
                   this._notificationService.error(
@@ -252,11 +227,119 @@ export class ModalAssistancesComponent implements OnInit {
       });
   }
   /**
+   * Update the assistance
+   */
+  updateAssistance(index: number): void {
+    this._angelConfirmationService
+      .open({
+        title: 'Marcar salida',
+        message:
+          '¿Estás seguro de que deseas marcar tu salida? ¡Esta acción no se puede deshacer!',
+      })
+      .afterClosed()
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((confirm: ActionAngelConfirmation) => {
+        if (confirm === 'confirmed') {
+          /**
+           * Get the assistance
+           */
+          const id_user_ = this.data.user.id_user;
+
+          const elementAssistanceFormArray = this.assistancesForm.get(
+            'lotAssistances'
+          ) as FormArray;
+
+          let _assistance = elementAssistanceFormArray.getRawValue()[index];
+
+          /**
+           * Delete whitespace (trim() the atributes type string)
+           */
+          _assistance = {
+            ..._assistance,
+            id_user_: parseInt(id_user_),
+            id_assistance: parseInt(_assistance.id_assistance),
+            user: {
+              id_user: parseInt(_assistance.user.id_user),
+            },
+            course: {
+              id_course: parseInt(_assistance.course.id_course),
+            },
+            start_marking_date: this.getNowDateWithTime(
+              _assistance.start_marking_date,
+              _assistance.date
+            ),
+            end_marking_date: null,
+          };
+
+          /**
+           * Update
+           */
+          this._assistanceService
+            .updateAssistance(_assistance)
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe({
+              next: (_assistance: Assistance) => {
+                if (_assistance) {
+                  this._notificationService.success(
+                    'Marcación de salida registrada'
+                  );
+                } else {
+                  this._notificationService.error(
+                    '¡Error interno!, consulte al administrador.'
+                  );
+                }
+              },
+              error: (error: { error: MessageAPI }) => {
+                this._notificationService.error(
+                  !error.error
+                    ? '¡Error interno!, consulte al administrador.'
+                    : !error.error.descripcion
+                    ? '¡Error interno!, consulte al administrador.'
+                    : error.error.descripcion
+                );
+              },
+            });
+        }
+      });
+  }
+  /**
    * closeModalAssistances
    */
   closeModalAssistances(): void {
     this._modalAssistancesService.closeModalAssistances();
   }
+  /**
+   * getNowDateWithTime
+   * @param time
+   * @param _date
+   * @returns
+   */
+  getNowDateWithTime = (time: string, _date: string) => {
+    const date = new Date(_date);
+    return `${date.getFullYear()}-${
+      date.getMonth() + 1 <= 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+    }-${date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate()}T${time}`;
+  };
+  /**
+   * @param date
+   */
+  parseTime(date: string) {
+    return this._localDatePipe.transform(date, 'shortTime');
+  }
+  /**
+   * Return dd/mm/yyyy
+   */
+  getDate = (stringDate: string) => {
+    const date = new Date(stringDate);
+    return {
+      dia: date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate(),
+      mes:
+        date.getMonth() + 1 <= 9
+          ? `0${date.getMonth() + 1}`
+          : date.getMonth() + 1,
+      periodo: date.getFullYear(),
+    };
+  };
   /**
    * Track by function for ngFor loops
    * @param index
@@ -264,5 +347,44 @@ export class ModalAssistancesComponent implements OnInit {
    */
   trackByFn(index: number, item: any): any {
     return item.id || index;
+  }
+  /**
+   * isafter
+   * @param secondDate
+   */
+  isafter(secondDate: any): boolean {
+    const firstDate = new Date();
+
+    const _secondDate = new Date(
+      `${this.getDate(secondDate).periodo}-${this.getDate(secondDate).mes}-${
+        this.getDate(secondDate).dia
+      }T23:59:59`
+    );
+
+    var isafter = moment(firstDate).isAfter(_secondDate);
+    if (isafter) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /**
+   * isMarkedToday
+   * @param _assistances
+   * @returns
+   */
+  isMarkedToday(_assistances: Assistance[]): boolean {
+    let isMarkedToday: boolean = false;
+
+    _assistances.map((item) => {
+      const firstDate = new Date(item.start_marking_date);
+      const isSame = moment(firstDate).isSame(new Date(), 'day');
+
+      if (isSame) {
+        isMarkedToday = true;
+      }
+    });
+
+    return isMarkedToday;
   }
 }

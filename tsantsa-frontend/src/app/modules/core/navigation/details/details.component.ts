@@ -48,7 +48,7 @@ export class NavigationDetailsComponent implements OnInit {
   /**
    * ajv
    */
-  nameEntity: string = 'Navegaciones';
+  nameEntity: string = 'Navegación';
   private data!: AppInitialData;
   /**
    * Type Enum

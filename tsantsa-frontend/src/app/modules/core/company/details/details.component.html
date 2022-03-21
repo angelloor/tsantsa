@@ -138,67 +138,67 @@
                         {{alert.message}}
                         <!-- name_company -->
                         <mat-error *ngIf="companyForm.get('name_company')?.hasError('required')">
-                            • Ingrese name_company
+                            • Ingrese el nombre de la institución
                         </mat-error>
                         <!-- acronym_company -->
                         <mat-error *ngIf="companyForm.get('acronym_company')?.hasError('required')">
-                            • Ingrese acronym_company
+                            • Ingrese el acrónimo de la institución
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('acronym_company')?.hasError('minlength')">
-                            • Valor minimo acronym_company 5 caracteres
+                            • Valor minimo del acrónimo 5 caracteres
                         </mat-error>
 
                         <!-- address_company -->
                         <mat-error *ngIf="companyForm.get('address_company')?.hasError('required')">
-                            • Ingrese address_company
+                            • Ingrese la dirección de la institución
                         </mat-error>
                         <!-- status_company -->
                         <mat-error *ngIf="companyForm.get('status_company')?.hasError('required')">
-                            • Seleccione status_company
+                            • Seleccione el estado de la institución
                         </mat-error>
 
                         <!-- expiration_token -->
                         <mat-error *ngIf="companyForm.get('expiration_token')?.hasError('required')">
-                            • Ingrese expiration_token
+                            • Ingrese el tiempo de expiración del token
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('expiration_token')?.hasError('max')">
-                            • Valor maximo 9999999999
+                            • Valor máximo de expiración del token 9999999999 segundos
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('expiration_token')?.hasError('min')">
-                            • Valor minimo expiration_token
+                            • Valor mínimo de expiración del token 60 segundos
                         </mat-error>
 
                         <!-- expiration_verification_code -->
                         <mat-error *ngIf="companyForm.get('expiration_verification_code')?.hasError('required')">
-                            • Ingrese expiration_verification_code
+                            • Ingrese el tiempo de expiración del codigo de verificación del token
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('expiration_verification_code')?.hasError('max')">
-                            • Valor maximo 9999999999
+                            • Valor máximo de expiración del codigo 9999999999 segundos
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('expiration_verification_code')?.hasError('min')">
-                            • Valor minimo expiration_verification_code
+                            • Valor mínimo de expiración del codigo 60 segundos
                         </mat-error>
 
                         <!-- inactivity_time -->
                         <mat-error *ngIf="companyForm.get('inactivity_time')?.hasError('required')">
-                            • Ingrese inactivity_time
+                            • Ingrese el tiempo máximo de inactividad
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('inactivity_time')?.hasError('max')">
-                            • Valor maximo 9999999999
+                            • Valor máximo de inactividad 9999999999 segundos
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('inactivity_time')?.hasError('min')">
-                            • Valor minimo inactivity_time
+                            • Valor mínimo de inactividad 60 segundos
                         </mat-error>
 
                         <!-- session_limit -->
                         <mat-error *ngIf="companyForm.get('session_limit')?.hasError('required')">
-                            • Ingrese session_limit
+                            • Ingrese el limite de sesiones por usuario
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('session_limit')?.hasError('max')">
-                            • Valor maximo 99
+                            • Valor máximo de sesiones 99
                         </mat-error>
                         <mat-error *ngIf="companyForm.get('session_limit')?.hasError('min')">
-                            • Valor minimo session_limit
+                            • Valor mínimo de sesiones 1
                         </mat-error>
 
                     </angel-alert>
@@ -206,39 +206,39 @@
                     <!-- name_company -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameCompany</mat-label>
+                            <mat-label>Nombre de la institución</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:office-building'">
                             </mat-icon>
                             <input matInput maxlength="100" [formControlName]="'name_company'"
-                                [placeholder]="'nameCompany'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el nombre de la institución'" [spellcheck]="true">
                         </mat-form-field>
                     </div>
                     <!-- acronym_company -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>acronym_company</mat-label>
+                            <mat-label>Acrónimo de la institución</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:ticket'">
                             </mat-icon>
                             <input matInput maxlength="50" [formControlName]="'acronym_company'"
-                                [placeholder]="'acronym_company'" [spellcheck]="false">
+                                [placeholder]="'Ingrese el acrónimo de la institución'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
                     <!-- address_company -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>address_company</mat-label>
+                            <mat-label>Dirección de la institución</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:location-marker'">
                             </mat-icon>
                             <input matInput maxlength="250" [formControlName]="'address_company'"
-                                [placeholder]="'address_company'" [spellcheck]="false">
+                                [placeholder]="'Ingrese la dirección de la institución'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
                     <!-- status_company -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>statusCompany</mat-label>
+                            <mat-label>Estado de la institución</mat-label>
                             <mat-select [formControlName]="'status_company'">
                                 <mat-option [value]=" true">Activo</mat-option>
                                 <mat-option [value]="false">Inactivo</mat-option>
@@ -248,45 +248,46 @@
                     <!-- expiration_token -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>expiration_token</mat-label>
+                            <mat-label>Expiración del token</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
                             </mat-icon>
                             <span matSuffix>Segundos</span>
                             <input class="delete_arrow" matInput [formControlName]="'expiration_token'" type="number"
-                                max="9999999999" [placeholder]="'expiration_token'" [spellcheck]="false">
+                                max="9999999999" [placeholder]="'Ingrese la expiración del token'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
                     <!-- expiration_verification_code -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>expiration_verification_code</mat-label>
+                            <mat-label>Expiración del código de verificación</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
                             </mat-icon>
                             <span matSuffix>Segundos</span>
                             <input matInput [formControlName]="'expiration_verification_code'" type="number"
-                                max="9999999999" [placeholder]="'expiration_verification_code'" [spellcheck]="false">
+                                max="9999999999" [placeholder]="'Ingrese la expiración del código de verificación'"
+                                [spellcheck]="false">
                         </mat-form-field>
                     </div>
                     <!-- inactivity_time -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>inactivity_time</mat-label>
+                            <mat-label>Tiempo de inactividad</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
                             </mat-icon>
                             <span matSuffix>Segundos</span>
                             <input matInput [formControlName]="'inactivity_time'" type="number" max="9999999999"
-                                [placeholder]="'inactivity_time'" [spellcheck]="false">
+                                [placeholder]="'Ingrese el tiempo de inactividad'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
                     <!-- session_limit -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>session_limit</mat-label>
+                            <mat-label>Limite de sesiones</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:login'">
                             </mat-icon>
                             <span matSuffix>Segundos</span>
                             <input matInput [formControlName]="'session_limit'" type="number" max="99"
-                                [placeholder]="'session_limit'" [spellcheck]="false">
+                                [placeholder]="'Ingrese el limite de sesiones'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
                 </form>

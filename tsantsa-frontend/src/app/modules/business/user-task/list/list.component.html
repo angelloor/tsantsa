@@ -24,9 +24,9 @@
                                 {{count}}
                             </ng-container>
                             {{count | i18nPlural: {
-                            '=0' : 'No hay Mis tareas',
-                            '=1' : 'Mis tareas',
-                            'other': 'Mis tareas'
+                            '=0' : 'No hay tareas',
+                            '=1' : 'Tarea',
+                            'other': 'Tareas'
                             } }}
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Buscar por name_task'">
+                                    [placeholder]="'Buscar por nombre de la tarea'">
                             </mat-form-field>
                         </div>
                     </div>

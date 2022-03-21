@@ -1,3 +1,10 @@
+import path from 'path';
+import { generateRandomNumber } from '../../../utils/global';
+import { _mensajes } from '../../../utils/mensaje/mensaje';
+import { User } from '../../core/user/user.class';
+import { _user } from '../../core/user/user.data';
+import { Report } from '../../report/report.class';
+import { reportTaskByCourse } from '../../report/report.declarate';
 import { Course } from '../course/course.class';
 import { _course } from '../course/course.data';
 import {
@@ -5,7 +12,10 @@ import {
 	dml_task_delete,
 	dml_task_send,
 	dml_task_update,
+	view_all_task,
 	view_task,
+	view_task_by_course_read,
+	view_task_by_user_read,
 	view_task_specific_read,
 } from './task.store';
 
@@ -14,6 +24,7 @@ export class Task {
 	public id_user_?: number;
 	public id_task: number;
 	public course: Course;
+	public user: User;
 	public name_task?: string;
 	public description_task?: string;
 	public status_task?: boolean;
@@ -25,6 +36,7 @@ export class Task {
 		id_user_: number = 0,
 		id_task: number = 0,
 		course: Course = _course,
+		user: User = _user,
 		name_task: string = '',
 		description_task: string = '',
 		status_task: boolean = false,
@@ -35,6 +47,7 @@ export class Task {
 		this.id_user_ = id_user_;
 		this.id_task = id_task;
 		this.course = course;
+		this.user = user;
 		this.name_task = name_task;
 		this.description_task = description_task;
 		this.status_task = status_task;
@@ -62,6 +75,13 @@ export class Task {
 	}
 	get _course() {
 		return this.course;
+	}
+
+	set _user(user: User) {
+		this.user = user;
+	}
+	get _user() {
+		return this.user;
 	}
 
 	set _name_task(name_task: string) {
@@ -141,6 +161,23 @@ export class Task {
 		});
 	}
 
+	allRead() {
+		return new Promise<Task[]>(async (resolve, reject) => {
+			await view_all_task()
+				.then((tasks: Task[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _tasks = this.mutateResponse(tasks);
+
+					resolve(_tasks);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
 	specificRead() {
 		return new Promise<Task>(async (resolve, reject) => {
 			await view_task_specific_read(this)
@@ -151,6 +188,23 @@ export class Task {
 					const _tasks = this.mutateResponse(tasks);
 
 					resolve(_tasks[0]);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
+	byUserRead() {
+		return new Promise<Task[]>(async (resolve, reject) => {
+			await view_task_by_user_read(this)
+				.then((tasks: Task[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _tasks = this.mutateResponse(tasks);
+
+					resolve(_tasks);
 				})
 				.catch((error: any) => {
 					reject(error);
@@ -205,6 +259,52 @@ export class Task {
 	}
 
 	/**
+	 * Reports
+	 */
+	reportTaskByCourse() {
+		return new Promise<any>(async (resolve, reject) => {
+			await view_task_by_course_read(this)
+				.then(async (tasks: Task[]) => {
+					if (tasks.length > 0) {
+						/**
+						 * Mutate response
+						 */
+						const _tasks = this.mutateResponse(tasks);
+
+						const name_report = `report${generateRandomNumber(9)}`;
+
+						const pathFinal = `${path.resolve(
+							'./'
+						)}/file_store/report/${name_report}.pdf`;
+						/**
+						 * Generar html
+						 */
+						const html = await reportTaskByCourse(_tasks);
+						/**
+						 * Instance the class
+						 */
+						const _report = new Report();
+
+						const landscape: boolean = false;
+
+						await _report
+							.generateReport(name_report, html, landscape)
+							.then(() => {
+								resolve({ pathFinal, name_report });
+							})
+							.catch((error: any) => {
+								reject(error);
+							});
+					} else {
+						resolve(_mensajes[10]);
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+	/**
 	 * Eliminar ids de entidades externas y formatear la informacion en el esquema correspondiente
 	 * @param tasks
 	 * @returns
@@ -245,6 +345,9 @@ export class Task {
 					status_course: item.status_course,
 					creation_date_course: item.creation_date_course,
 				},
+				user: {
+					id_user: item.id_user,
+				},
 				/**
 				 * Generate structure of second level the entity (is important add the ids of entity)
 				 * similar the return of read
@@ -254,6 +357,7 @@ export class Task {
 			 * delete ids of principal object level
 			 */
 			delete _task.id_course;
+			delete _task.id_user;
 			delete _task.name_course;
 			delete _task.description_course;
 			delete _task.status_course;

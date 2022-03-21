@@ -24,11 +24,11 @@ AS $BODY$
 						RETURN QUERY select vc.id_company, vc.id_setting, vc.name_company, vc.acronym_company, vc.address_company, vc.status_company, vc.deleted_company, vs.expiration_token, vs.expiration_verification_code, vs.inactivity_time, vs.session_limit from core.view_company vc
 							inner join core.view_setting vs on vc.id_setting = vs.id_setting where vc.id_company = _ID_COMPANY;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al ingresar company';
+						_EXCEPTION = 'Ocurrió un error al ingresar una nueva institución';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar setting';
+					_EXCEPTION = 'Ocurrió un error al ingresar la configuración';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -82,11 +82,11 @@ AS $BODY$
 						RETURN QUERY select vc.id_company, vc.id_setting, vc.name_company, vc.acronym_company, vc.address_company, vc.status_company, vc.deleted_company, vs.expiration_token, vs.expiration_verification_code, vs.inactivity_time, vs.session_limit from core.view_company vc
 							inner join core.view_setting vs on vc.id_setting = vs.id_setting where vc.id_company = _id_company;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al actualizar company';
+						_EXCEPTION = 'Ocurrió un error al actualizar la institución';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar setting';
+					_EXCEPTION = 'Ocurrió un error al actualizar la configuración';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -131,15 +131,15 @@ AS $BODY$
 						IF (_DELETE_SETTING) THEN
 							return true;
 						ELSE
-							_EXCEPTION = 'Ocurrió un error al eliminar setting';
+							_EXCEPTION = 'Ocurrió un error al eliminar la configuración';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al eliminar company';
+						_EXCEPTION = 'Ocurrió un error al eliminar la institución';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 			 	ELSE
-					_EXCEPTION = 'No se encontró el id_setting';
+					_EXCEPTION = 'No se encontró la configuración';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -186,7 +186,7 @@ AS $BODY$
 						RETURN QUERY select vv.id_validation, vv.id_company, vv.type_validation, vv.status_validation, vv.pattern_validation, vv.message_validation, vv.deleted_validation, vc.name_company, vc.status_company from core.view_validation vv
 							inner join core.view_company vc on vv.id_company = vc.id_company where vv.id_validation = _ID_VALIDATION;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al ingresar validation';
+						_EXCEPTION = 'Ocurrió un error al ingresar la validación';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
@@ -240,7 +240,7 @@ AS $BODY$
 						RETURN QUERY select vv.id_validation, vv.id_company, vv.type_validation, vv.status_validation, vv.pattern_validation, vv.message_validation, vv.deleted_validation, vc.name_company, vc.status_company from core.view_validation vv
 							inner join core.view_company vc on vv.id_company = vc.id_company where vv.id_validation = _ID_VALIDATION;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al actualizar validation';
+						_EXCEPTION = 'Ocurrió un error al actualizar la validación';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
@@ -376,7 +376,7 @@ AS $BODY$
 				IF (_ID_NAVIGATION >= 1) THEN
 					RETURN QUERY select * from core.view_navigation vn where vn.id_navigation = _ID_NAVIGATION;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar navigation ';
+					_EXCEPTION = 'Ocurrió un error al ingresar la navegación';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -461,7 +461,7 @@ AS $BODY$
 								RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 							END IF;
 						ELSE
-							_EXCEPTION = 'Ya existe un registro con el name_navigation '||_name_navigation||'';
+							_EXCEPTION = 'Ya existe un registro con el nombre de navegación '||_name_navigation||'';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE 
@@ -515,7 +515,7 @@ AS $BODY$
 				IF (_UPDATE_NAVIGATION) THEN
 					RETURN QUERY select * from core.view_navigation vn where vn.id_navigation = _id_navigation;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar navigation';
+					_EXCEPTION = 'Ocurrió un error al actualizar la navegación';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -597,7 +597,7 @@ AS $BODY$
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE
-						_EXCEPTION = 'Ya existe un registro con el name_profile '||_name_profile||'';
+						_EXCEPTION = 'Ya existe un registro con el nombre de perfil '||_name_profile||'';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
@@ -645,7 +645,7 @@ AS $BODY$
 				IF (_ID_PROFILE >= 1) THEN
 					RETURN QUERY select * from core.view_profile vp where vp.id_profile = _ID_PROFILE;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar profile';
+					_EXCEPTION = 'Ocurrió un error al ingresar el perfil';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -729,7 +729,7 @@ AS $BODY$
 								RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 							END IF;
 						ELSE
-							_EXCEPTION = 'Ya existe un registro con el name_profile '||_name_profile||'';
+							_EXCEPTION = 'Ya existe un registro con el nombre de perfil '||_name_profile||'';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE 
@@ -782,7 +782,7 @@ AS $BODY$
 			 	IF (_UPDATE_PROFILE) THEN
 					RETURN QUERY select * from core.view_profile vp where vp.id_profile = _id_profile;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar profile';
+					_EXCEPTION = 'Ocurrió un error al actualizar el perfil';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -824,7 +824,7 @@ AS $BODY$
 				IF (_DELETE_PROFILE) THEN
 					RETURN true;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al eliminar profile';
+					_EXCEPTION = 'Ocurrió un error al eliminar el perfil';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -875,7 +875,7 @@ AS $BODY$
 							inner join core.view_profile vp on vpn.id_profile = vp.id_profile
 							inner join core.view_navigation vn on vpn.id_navigation = vn.id_navigation where vpn.id_profile_navigation = _ID_PROFILE_NAVIGATION;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al ingresar profile_navigation';
+						_EXCEPTION = 'Ocurrió un error al ingresar la navegación al perfil';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
@@ -1023,7 +1023,7 @@ AS $BODY$
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE
-						_EXCEPTION = 'Ya existe un registro con el name_user '||_name_user||'';
+						_EXCEPTION = 'Ya existe un usuario con el correo '||_name_user||'';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
@@ -1092,23 +1092,23 @@ AS $BODY$
 										inner join core.view_job vj on vp.id_job = vj.id_job
 										inner join core.view_profile vpr on vu.id_profile = vpr.id_profile where vu.id_user = _ID_USER;
 								ELSE
-									_EXCEPTION = 'Ocurrió un error al ingresar _user';
+									_EXCEPTION = 'Ocurrió un error al ingresar el usuario';
 									RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 								END IF;
 							ELSE
-								_EXCEPTION = 'No se encontró un profile';
+								_EXCEPTION = 'No se encontró un el perfil';
 								RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 							END IF;
 						ELSE
-							_EXCEPTION = 'Ocurrió un error al ingresar person';
+							_EXCEPTION = 'Ocurrió un error al ingresar a la persona';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al ingresar job';
+						_EXCEPTION = 'Ocurrió un error al ingresar la información laboral';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar academic';
+					_EXCEPTION = 'Ocurrió un error al ingresar la información académica';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -1211,7 +1211,7 @@ AS $BODY$
 								RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 							END IF;
 						ELSE
-							_EXCEPTION = 'Ya existe un registro con el name_user '||_name_user||'';
+							_EXCEPTION = 'Ya existe un usuario con el coreo '||_name_user||'';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE 
@@ -1298,19 +1298,19 @@ AS $BODY$
 									inner join core.view_job vj on vp.id_job = vj.id_job
 									inner join core.view_profile vpr on vu.id_profile = vpr.id_profile where vu.id_user = _ID_USER;
 							ELSE
-								_EXCEPTION = 'Ocurrió un error al actualizar _user';
+								_EXCEPTION = 'Ocurrió un error al actualizar el usuario';
 								RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 							END IF;
 						ELSE
-							_EXCEPTION = 'Ocurrió un error al actualizar person';
+							_EXCEPTION = 'Ocurrió un error al actualizar la información de la persona';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al actualizar job';
+						_EXCEPTION = 'Ocurrió un error al actualizar la información laboral';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar academic';
+					_EXCEPTION = 'Ocurrió un error al actualizar la información académica';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -1366,19 +1366,19 @@ AS $BODY$
 							IF (_DELETE_ACADEMIC) THEN
 								return true;
 							ELSE
-								_EXCEPTION = 'Ocurrió un error al eliminar academic';
+								_EXCEPTION = 'Ocurrió un error al eliminar la información académica';
 								RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 							END IF;
 						ELSE
-							_EXCEPTION = 'Ocurrió un error al eliminar job';
+							_EXCEPTION = 'Ocurrió un error al eliminar la información laboral';
 							RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 						END IF;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al eliminar person';
+						_EXCEPTION = 'Ocurrió un error al eliminar la persona';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al eliminar user';
+					_EXCEPTION = 'Ocurrió un error al eliminar el usuario';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -1674,7 +1674,7 @@ AS $BODY$
 					END IF;
 					RETURN true;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al liberar las sessiones de la empresa '||_id_company||'';
+					_EXCEPTION = 'Ocurrió un error al liberar las sessiones de la institución '||_id_company||'';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 

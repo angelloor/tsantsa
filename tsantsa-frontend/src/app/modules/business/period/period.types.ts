@@ -1,6 +1,7 @@
 import { Company } from 'app/modules/core/company/company.types';
 
 export interface Period {
+  dependency: string;
   id_period: string;
   company: Company;
   name_period: string;

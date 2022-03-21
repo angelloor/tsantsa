@@ -11,6 +11,7 @@ export const validation = (attached: Attached, url: string, token: string) => {
 			/**
 			 * Capa de Autentificación con el token
 			 */
+
 			let validationStatus: boolean = false;
 
 			if (token) {
@@ -49,7 +50,7 @@ export const validation = (attached: Attached, url: string, token: string) => {
 									});
 								}
 
-								const pathInitialFile: string = `./${attached.file_name}`;
+								const pathInitialFile: string = `./${attached.file_name}${attached.extension}`;
 
 								if (fs.existsSync(pathInitialFile)) {
 									const pathFolder = `./file_store/user_task/${attached.user_task.id_user_task}`;

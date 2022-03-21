@@ -1,21 +1,21 @@
 import { angelAnimations } from '@angel/animations/public-api';
 import {
-    AngelNavigationItem,
-    AngelNavigationService
+  AngelNavigationItem,
+  AngelNavigationService,
 } from '@angel/components/navigation';
 import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    HostBinding,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    Output,
-    SimpleChanges,
-    ViewChild,
-    ViewEncapsulation
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -163,7 +163,7 @@ export class SearchComponent implements OnChanges, OnInit, OnDestroy {
             // Add to the results
             results.push({
               id: 'pages',
-              label: 'Pages',
+              label: 'Páginas',
               results: pagesResults,
             });
           }

@@ -1,3 +1,4 @@
+import { angelAnimations } from '@angel/animations';
 import {
   ActionAngelConfirmation,
   AngelConfirmationService,
@@ -11,19 +12,24 @@ import { ModalSelectUserService } from 'app/modules/core/shared/modal-select-use
 import { UserService } from 'app/modules/core/user/user.service';
 import { User } from 'app/modules/core/user/user.types';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
 import { cloneDeep } from 'lodash';
 import { Subject, takeUntil } from 'rxjs';
 import { EnrollmentService } from '../../enrollment/enrollment.service';
 import { Enrollment } from '../../enrollment/enrollment.types';
-import { CourseService } from '../course.service';
 import { ModalEnrollmentService } from './modal-enrollment.service';
 
 @Component({
   selector: 'app-modal-enrollment',
   templateUrl: './modal-enrollment.component.html',
+  animations: angelAnimations,
+  providers: [LocalDatePipe],
 })
 export class ModalEnrollmentComponent implements OnInit {
   id_course: string = '';
+
+  courseHavedTasks: boolean = false;
+
   courseFormModal!: FormGroup;
   isSelectedAll: boolean = false;
   private data!: AppInitialData;
@@ -42,7 +48,6 @@ export class ModalEnrollmentComponent implements OnInit {
     private _userService: UserService,
     private _notificationService: NotificationService,
     private _angelConfirmationService: AngelConfirmationService,
-    private _courseService: CourseService,
     private _modalSelectUserService: ModalSelectUserService
   ) {}
 
@@ -78,6 +83,12 @@ export class ModalEnrollmentComponent implements OnInit {
           .pipe(takeUntil(this._unsubscribeAll))
           .subscribe((_enrollments: Enrollment[]) => {
             this.enrollments = _enrollments;
+
+            if (this.enrollments.length >= 1) {
+              if (parseInt(this.enrollments[0].course.tasks!) >= 1) {
+                this.courseHavedTasks = true;
+              }
+            }
 
             if (this.enrollments.length == this.users.length) {
               this.isSelectedAll = true;
@@ -193,35 +204,49 @@ export class ModalEnrollmentComponent implements OnInit {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((id_user: string) => {
         if (id_user) {
-          const id_user_ = this.data.user.id_user;
-          /**
-           * Create the enrollment
-           */
-          this._enrollmentService
-            .createEnrollment(id_user_, this.id_course, id_user)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe({
-              next: (_enrollment: Enrollment) => {
-                if (_enrollment) {
-                  this._notificationService.success(
-                    'enrollment agregada correctamente'
-                  );
-                } else {
+          const userExists = this.enrollments.find(
+            (enrollment) => enrollment.user.id_user == id_user
+          );
+
+          if (!userExists) {
+            const id_user_ = this.data.user.id_user;
+            /**
+             * Create the enrollment
+             */
+            this._enrollmentService
+              .createEnrollment(id_user_, this.id_course, id_user)
+              .pipe(takeUntil(this._unsubscribeAll))
+              .subscribe({
+                next: (_enrollment: Enrollment) => {
+                  if (_enrollment) {
+                    this._notificationService.success(
+                      'Matrícula agregada correctamente'
+                    );
+                  } else {
+                    this._notificationService.error(
+                      '¡Error interno!, consulte al administrador.'
+                    );
+                  }
+                },
+                error: (error: { error: MessageAPI }) => {
                   this._notificationService.error(
-                    '¡Error interno!, consulte al administrador.'
+                    !error.error
+                      ? '¡Error interno!, consulte al administrador.'
+                      : !error.error.descripcion
+                      ? '¡Error interno!, consulte al administrador.'
+                      : error.error.descripcion
                   );
-                }
-              },
-              error: (error: { error: MessageAPI }) => {
-                this._notificationService.error(
-                  !error.error
-                    ? '¡Error interno!, consulte al administrador.'
-                    : !error.error.descripcion
-                    ? '¡Error interno!, consulte al administrador.'
-                    : error.error.descripcion
-                );
-              },
-            });
+                },
+              });
+          } else {
+            this._notificationService.warn(
+              `El usuario ${
+                userExists.user.person.name_person +
+                ' ' +
+                userExists.user.person.last_name_person
+              } ya se encuentra matrículado`
+            );
+          }
         }
       });
   }
@@ -259,7 +284,7 @@ export class ModalEnrollmentComponent implements OnInit {
         next: (_enrollment: Enrollment) => {
           if (_enrollment) {
             this._notificationService.success(
-              'enrollment actualizada correctamente'
+              'Matrícula actualizada correctamente'
             );
           } else {
             this._notificationService.error(
@@ -285,9 +310,9 @@ export class ModalEnrollmentComponent implements OnInit {
   removeEnrollmentField(index: number): void {
     this._angelConfirmationService
       .open({
-        title: 'Eliminar enrollment',
+        title: 'Eliminar matrícula',
         message:
-          '¿Estás seguro de que deseas eliminar esta enrollment? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas eliminar esta matrícula? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -313,7 +338,7 @@ export class ModalEnrollmentComponent implements OnInit {
                    * Return if the enrollment wasn't deleted...
                    */
                   this._notificationService.success(
-                    'enrollment eliminada correctamente'
+                    'Matrícula eliminada correctamente'
                   );
                 } else {
                   this._notificationService.error(
@@ -334,7 +359,6 @@ export class ModalEnrollmentComponent implements OnInit {
         }
       });
   }
-
   /**
    * Track by function for ngFor loops
    * @param index

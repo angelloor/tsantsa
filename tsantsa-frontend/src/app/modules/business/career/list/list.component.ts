@@ -311,9 +311,9 @@ export class CareerListComponent implements OnInit {
   createCareer(): void {
     this._angelConfirmationService
       .open({
-        title: 'Añadir carrera',
+        title: 'Añadir curso',
         message:
-          '¿Estás seguro de que deseas añadir una nueva carrera? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas añadir un nuevo curso? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -330,7 +330,7 @@ export class CareerListComponent implements OnInit {
               next: (_career: Career) => {
                 if (_career) {
                   this._notificationService.success(
-                    'Carrera agregada correctamente'
+                    'Curso agregado correctamente'
                   );
                   /**
                    * Go to new carrera

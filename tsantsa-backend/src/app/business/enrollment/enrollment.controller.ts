@@ -191,7 +191,6 @@ export const validation = (
 								_enrollment.date_enrollment = parseDateToString(
 									new Date(enrollment.date_enrollment!)
 								);
-								_enrollment.date_enrollment = enrollment.date_enrollment;
 								_enrollment.status_enrollment = enrollment.status_enrollment;
 								_enrollment.completed_course = enrollment.completed_course;
 								await _enrollment
@@ -209,6 +208,17 @@ export const validation = (
 								await _enrollment
 									.delete()
 									.then((response: boolean) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 25) == '/reportEnrollmentByCourse') {
+								/** set required attributes for action */
+								_enrollment.course = enrollment.course;
+								await _enrollment
+									.reportEnrollmentByCourse()
+									.then((response: any) => {
 										resolve(response);
 									})
 									.catch((error: any) => {

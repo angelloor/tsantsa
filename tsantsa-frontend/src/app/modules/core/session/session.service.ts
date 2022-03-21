@@ -1,4 +1,7 @@
+import { registerLocaleData } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import local_Es_Ecuador from '@angular/common/locales/es-EC';
+import locale_Es_Mexico from '@angular/common/locales/es-MX';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import {
@@ -18,6 +21,39 @@ import { Session } from './session.types';
   providedIn: 'root',
 })
 export class SessionService {
+  /**
+   * Locale
+   */
+  private _locale: string = '';
+
+  set locale(value: string) {
+    this._locale = value;
+  }
+  get locale(): string {
+    return this._locale || 'es-EC';
+  }
+
+  registerCulture(culture: string) {
+    if (!culture) {
+      return;
+    }
+    this.locale = culture;
+
+    // Register locale data since only the es-EC locale data comes with Angular
+    switch (culture) {
+      case 'es-EC': {
+        registerLocaleData(local_Es_Ecuador);
+        break;
+      }
+      case 'es-MX': {
+        registerLocaleData(locale_Es_Mexico);
+        break;
+      }
+    }
+  }
+  /**
+   * Locale
+   */
   private _url: string;
   private _headers: HttpHeaders = new HttpHeaders({
     'Content-Type': 'application/json',

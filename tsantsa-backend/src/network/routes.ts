@@ -4,6 +4,7 @@ import { routerCareer } from '../app/business/career/career.network';
 import { routerComment } from '../app/business/comment/comment.network';
 import { routerCourse } from '../app/business/course/course.network';
 import { routerEnrollment } from '../app/business/enrollment/enrollment.network';
+import { routerHome } from '../app/business/home/home.network';
 import { routerPeriod } from '../app/business/period/period.network';
 import { routerResource } from '../app/business/resource/resource.network';
 import { routerTask } from '../app/business/task/task.network';
@@ -17,6 +18,7 @@ import { routerSession } from '../app/core/session/session.network';
 import { routerSystemEvent } from '../app/core/system_event/system_event.network';
 import { routerUser } from '../app/core/user/user.network';
 import { routerValidation } from '../app/core/validation/validation.network';
+import { routerReport } from '../app/report/report.network';
 import { routerDev } from '../dev/dev.network';
 
 export const appRoutes = (app: any) => {
@@ -49,7 +51,12 @@ export const appRoutes = (app: any) => {
 	app.use('/app/business/attached', routerAttached);
 	app.use('/app/business/comment', routerComment);
 	app.use('/app/business/assistance', routerAssistance);
+	app.use('/app/business/home', routerHome);
 
+	/**
+	 * Report Route
+	 */
+	app.use('/app/report', routerReport);
 	/**
 	 * Dev Routes
 	 */

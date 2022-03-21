@@ -1,5 +1,10 @@
+import path from 'path';
+import { generateRandomNumber } from '../../../utils/global';
+import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { Company } from '../../core/company/company.class';
 import { _company } from '../../core/company/company.data';
+import { Report } from '../../report/report.class';
+import { reportCourseByPeriod } from '../../report/report.declarate';
 import { Career } from '../career/career.class';
 import { _career } from '../career/career.data';
 import { Period } from '../period/period.class';
@@ -9,6 +14,7 @@ import {
 	dml_course_delete,
 	dml_course_update,
 	view_course,
+	view_course_by_period_read,
 	view_course_specific_read,
 } from './course.store';
 import { Schedule } from './schedule/schedule.class';
@@ -149,9 +155,9 @@ export class Course {
 		});
 	}
 
-	read() {
+	read(id_company: string) {
 		return new Promise<Course[]>(async (resolve, reject) => {
-			await view_course(this)
+			await view_course(this, id_company)
 				.then((courses: Course[]) => {
 					/**
 					 * Mutate response
@@ -166,9 +172,9 @@ export class Course {
 		});
 	}
 
-	specificRead() {
+	specificRead(id_company: string) {
 		return new Promise<Course>(async (resolve, reject) => {
-			await view_course_specific_read(this)
+			await view_course_specific_read(this, id_company)
 				.then((courses: Course[]) => {
 					/**
 					 * Mutate response
@@ -211,7 +217,52 @@ export class Course {
 				});
 		});
 	}
+	/**
+	 * Reports
+	 */
+	reportCourseByPeriod(id_company: string) {
+		return new Promise<any>(async (resolve, reject) => {
+			await view_course_by_period_read(this, id_company)
+				.then(async (courses: Course[]) => {
+					if (courses.length > 0) {
+						/**
+						 * Mutate response
+						 */
+						const _courses = this.mutateResponse(courses);
 
+						const name_report = `report${generateRandomNumber(9)}`;
+
+						const pathFinal = `${path.resolve(
+							'./'
+						)}/file_store/report/${name_report}.pdf`;
+						/**
+						 * Generar html
+						 */
+						const html = await reportCourseByPeriod(_courses);
+						/**
+						 * Instance the class
+						 */
+						const _report = new Report();
+
+						const landscape: boolean = false;
+
+						await _report
+							.generateReport(name_report, html, landscape)
+							.then(() => {
+								resolve({ pathFinal, name_report });
+							})
+							.catch((error: any) => {
+								reject(error);
+							});
+					} else {
+						resolve(_mensajes[10]);
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
 	/**
 	 * Eliminar ids de entidades externas y formatear la informacion en el esquema correspondiente
 	 * @param courses

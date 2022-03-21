@@ -5,11 +5,12 @@ import { UserTask } from './user_task.class';
 /**
  * Inners and columns for the resolution of ids
  */
-const COLUMNS_RETURN: string = `bvut.id_user_task, bvut.id_user, bvut.id_task, bvut.response_user_task, bvut.shipping_date_user_task, bvut.qualification_user_task, bvut.is_open, bvut.is_dispatched, bvut.is_qualified, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person, cvt.id_course, cvt.name_task, cvt.description_task, cvt.status_task, cvt.creation_date_task, cvt.limit_date, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course`;
+const COLUMNS_RETURN: string = `bvut.id_user_task, bvut.id_user as bvut_id_user, bvut.id_task, bvut.response_user_task, bvut.shipping_date_user_task, bvut.qualification_user_task, bvut.is_open, bvut.is_dispatched, bvut.is_qualified, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person, cvt.id_course, cvt.name_task, cvt.id_user as vt_id_user, cvt.description_task, cvt.status_task, cvt.creation_date_task, cvt.limit_date, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.maximum_rating`;
 const INNERS_JOIN: string = ` inner join core.view_user cvu on bvut.id_user = cvu.id_user
 inner join core.view_person cvp on cvu.id_person = cvp.id_person
 inner join business.view_task cvt  on bvut.id_task = cvt.id_task
-inner join business.view_course bvc on cvt.id_course = bvc.id_course`;
+inner join business.view_course bvc on cvt.id_course = bvc.id_course
+inner join business.view_period bvp on bvc.id_period = bvp.id_period`;
 
 export const dml_user_task_create = (user_task: UserTask) => {
 	return new Promise<UserTask[]>(async (resolve, reject) => {
@@ -84,6 +85,28 @@ export const view_user_task_specific_read = (user_task: UserTask) => {
 export const view_user_task_by_user_read = (user_task: UserTask) => {
 	return new Promise<UserTask[]>(async (resolve, reject) => {
 		const query = `select ${COLUMNS_RETURN} from business.view_user_task bvut ${INNERS_JOIN} where bvut.id_user = ${user_task.user}`;
+
+		// console.log(query);
+
+		try {
+			const response = await clientTSANTSAPostgreSQL.query(query);
+			resolve(response.rows);
+		} catch (error: any) {
+			if (error.detail == '_database') {
+				reject({
+					..._mensajes[3],
+					descripcion: error.toString().slice(7),
+				});
+			} else {
+				reject(error.toString());
+			}
+		}
+	});
+};
+
+export const view_user_task_by_sender_user_read = (user_task: UserTask) => {
+	return new Promise<UserTask[]>(async (resolve, reject) => {
+		const query = `select ${COLUMNS_RETURN} from business.view_user_task bvut ${INNERS_JOIN} where cvt.id_user = ${user_task.user}`;
 
 		// console.log(query);
 

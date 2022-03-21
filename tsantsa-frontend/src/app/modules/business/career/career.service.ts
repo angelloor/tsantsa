@@ -224,4 +224,20 @@ export class CareerService {
       )
     );
   }
+  /**
+   * reportCareer
+   */
+  reportCareer(): Observable<any> {
+    return this._httpClient
+      .post(
+        this._url + `/reportCareer`,
+        {},
+        {
+          responseType: 'blob',
+          observe: 'response',
+          headers: new HttpHeaders().append('Content-Type', 'application/json'),
+        }
+      )
+      .pipe(map((response: any) => response));
+  }
 }

@@ -3,6 +3,8 @@ import { verifyToken } from '../../../utils/jwt';
 import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { Period } from './period.class';
 
+let ID_COMPANY: string = '';
+
 export const validation = (period: Period, url: string, token: string) => {
 	return new Promise<Period | Period[] | boolean | any>(
 		async (resolve, reject) => {
@@ -13,7 +15,8 @@ export const validation = (period: Period, url: string, token: string) => {
 
 			if (token) {
 				await verifyToken(token)
-					.then(async () => {
+					.then(async (decoded: any) => {
+						ID_COMPANY = decoded.company.id_company;
 						/**
 						 * Capa de validaciones
 						 */
@@ -106,7 +109,7 @@ export const validation = (period: Period, url: string, token: string) => {
 								'approval_note_period',
 								period.approval_note_period,
 								'number',
-								2
+								3
 							).catch((err) => {
 								validationStatus = true;
 								reject(err);
@@ -139,7 +142,7 @@ export const validation = (period: Period, url: string, token: string) => {
 								/** set required attributes for action */
 								_period.name_period = period.name_period;
 								await _period
-									.read()
+									.read(ID_COMPANY)
 									.then((_periods: Period[]) => {
 										resolve(_periods);
 									})
@@ -150,7 +153,7 @@ export const validation = (period: Period, url: string, token: string) => {
 								/** set required attributes for action */
 								_period.id_period = period.id_period;
 								await _period
-									.specificRead()
+									.specificRead(ID_COMPANY)
 									.then((_period: Period) => {
 										resolve(_period);
 									})
@@ -192,6 +195,27 @@ export const validation = (period: Period, url: string, token: string) => {
 								await _period
 									.delete()
 									.then((response: boolean) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 7) == '/delete') {
+								/** set required attributes for action */
+								_period.id_user_ = period.id_user_;
+								_period.id_period = period.id_period;
+								await _period
+									.delete()
+									.then((response: boolean) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 13) == '/reportPeriod') {
+								await _period
+									.reportPeriod(ID_COMPANY)
+									.then((response: any) => {
 										resolve(response);
 									})
 									.catch((error: any) => {

@@ -16,15 +16,8 @@ import { AppInitialData } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
-import { fromEvent, merge, Observable, Subject, timer } from 'rxjs';
-import {
-  filter,
-  finalize,
-  switchMap,
-  takeUntil,
-  takeWhile,
-  tap,
-} from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { EnrollmentService } from '../enrollment.service';
 import { Enrollment } from '../enrollment.types';
 
@@ -40,15 +33,7 @@ export class EnrollmentListComponent implements OnInit {
   openMatDrawer: boolean = false;
 
   private data!: AppInitialData;
-  /**
-   * Shortcut
-   */
-  private keyControl: boolean = false;
-  private keyShift: boolean = false;
-  private timeToWaitKey: number = 2; //ms
-  /**
-   * Shortcut
-   */
+
   drawerMode!: 'side' | 'over';
   searchInputControl: FormControl = new FormControl();
   selectedEnrollment!: Enrollment;
@@ -191,56 +176,6 @@ export class EnrollmentListComponent implements OnInit {
           this._changeDetectorRef.markForCheck();
         }
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Control')
-      ),
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Shift')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut create
-         */
-        if (keyUpOrKeyDown.key == 'Control') {
-          this.keyControl = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyControl = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-        if (keyUpOrKeyDown.key == 'Shift') {
-          this.keyShift = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyShift = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * On destroy

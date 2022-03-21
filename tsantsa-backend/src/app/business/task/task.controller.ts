@@ -105,6 +105,18 @@ export const validation = (task: Task, url: string, token: string) => {
 					}
 
 					/**
+					 * Validation user
+					 */
+
+					if (url == '/update') {
+						attributeValidate('id_user', task.user.id_user, 'number', 10).catch(
+							(err) => {
+								validationStatus = true;
+								reject(err);
+							}
+						);
+					}
+					/**
 					 * Continuar solo si no ocurrio errores en la validación
 					 */
 					if (!validationStatus) {
@@ -129,9 +141,20 @@ export const validation = (task: Task, url: string, token: string) => {
 								});
 						} else if (url.substring(0, 5) == '/read') {
 							/** set required attributes for action */
+							_task.user = task.user;
 							_task.name_task = task.name_task;
 							await _task
 								.read()
+								.then((_tasks: Task[]) => {
+									resolve(_tasks);
+								})
+								.catch((error: any) => {
+									reject(error);
+								});
+						} else if (url.substring(0, 8) == '/allRead') {
+							/** set required attributes for action */
+							await _task
+								.allRead()
 								.then((_tasks: Task[]) => {
 									resolve(_tasks);
 								})
@@ -149,11 +172,23 @@ export const validation = (task: Task, url: string, token: string) => {
 								.catch((error: any) => {
 									reject(error);
 								});
+						} else if (url.substring(0, 11) == '/byUserRead') {
+							/** set required attributes for action */
+							_task.user = task.user;
+							await _task
+								.byUserRead()
+								.then((_task: Task[]) => {
+									resolve(_task);
+								})
+								.catch((error: any) => {
+									reject(error);
+								});
 						} else if (url == '/update') {
 							/** set required attributes for action */
 							_task.id_user_ = task.id_user_;
 							_task.id_task = task.id_task;
 							_task.course = task.course;
+							_task.user = task.user;
 							_task.name_task = task.name_task;
 							_task.description_task = task.description_task;
 							_task.status_task = task.status_task;
@@ -177,6 +212,7 @@ export const validation = (task: Task, url: string, token: string) => {
 							_task.id_user_ = task.id_user_;
 							_task.id_task = task.id_task;
 							_task.course = task.course;
+							_task.user = task.user;
 							_task.name_task = task.name_task;
 							_task.description_task = task.description_task;
 							_task.status_task = task.status_task;
@@ -202,6 +238,17 @@ export const validation = (task: Task, url: string, token: string) => {
 							await _task
 								.delete()
 								.then((response: boolean) => {
+									resolve(response);
+								})
+								.catch((error: any) => {
+									reject(error);
+								});
+						} else if (url.substring(0, 19) == '/reportTaskByCourse') {
+							/** set required attributes for action */
+							_task.course = task.course;
+							await _task
+								.reportTaskByCourse()
+								.then((response: any) => {
 									resolve(response);
 								})
 								.catch((error: any) => {

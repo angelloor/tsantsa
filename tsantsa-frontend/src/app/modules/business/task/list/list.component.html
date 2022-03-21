@@ -18,15 +18,15 @@
 
                     <!-- Title -->
                     <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Tarea</div>
+                        <div class="text-4xl font-extrabold tracking-tight leading-none">Tareas</div>
                         <div class="ml-0.5 font-medium text-secondary">
                             <ng-container *ngIf="count > 0">
                                 {{count}}
                             </ng-container>
                             {{count | i18nPlural: {
-                            '=0' : 'No hay Tarea',
+                            '=0' : 'No hay tareas',
                             '=1' : 'Tarea',
-                            'other': 'Tarea'
+                            'other': 'Tareas'
                             } }}
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Buscar por name_task'">
+                                    [placeholder]="'Buscar por nombre de tarea'">
                             </mat-form-field>
                         </div>
                         <!-- Add button -->

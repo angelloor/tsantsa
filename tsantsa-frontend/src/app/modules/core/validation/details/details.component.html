@@ -108,19 +108,19 @@
                         {{alert.message}}
                         <!-- type_validation -->
                         <mat-error *ngIf="validationForm.get('type_validation')?.hasError('required')">
-                            • Ingrese type_validation
+                            • Seleccione el tipo de validación
                         </mat-error>
                         <!-- status_validation -->
                         <mat-error *ngIf="validationForm.get('status_validation')?.hasError('required')">
-                            • Seleccione status_validation
+                            • Seleccione el estado de la validación
                         </mat-error>
                         <!-- pattern_validation -->
                         <mat-error *ngIf="validationForm.get('pattern_validation')?.hasError('required')">
-                            • Ingrese pattern_validation
+                            • Ingrese la expresión regular de la validación
                         </mat-error>
                         <!-- message_validation -->
                         <mat-error *ngIf="validationForm.get('message_validation')?.hasError('required')">
-                            • Ingrese message_validation
+                            • Ingrese el mensaje de la validación
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
@@ -140,7 +140,7 @@
                     <!-- status_validation -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>status_validation</mat-label>
+                            <mat-label>Estado de la validación</mat-label>
                             <mat-select [formControlName]="'status_validation'" [value]="false">
                                 <mat-option [value]="true">Activo</mat-option>
                                 <mat-option [value]="false">Inactivo</mat-option>
@@ -150,20 +150,20 @@
                     <!-- pattern_validation -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>patternValidation</mat-label>
+                            <mat-label>Expresión regular</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:pattern'">
                             </mat-icon>
                             <input matInput maxlength="500" [formControlName]="'pattern_validation'"
-                                [placeholder]="'patternValidation'" [spellcheck]="false">
+                                [placeholder]="'Ingrese la expresión regular'" [spellcheck]="false">
                         </mat-form-field>
                     </div> <!-- message_validation -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>messageValidation</mat-label>
+                            <mat-label>Mensaje de la validación</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:message'">
                             </mat-icon>
                             <input matInput maxlength="250" [formControlName]="'message_validation'"
-                                [placeholder]="'messageValidation'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el mensaje de la validación'" [spellcheck]="true">
                         </mat-form-field>
                     </div>
                 </form>

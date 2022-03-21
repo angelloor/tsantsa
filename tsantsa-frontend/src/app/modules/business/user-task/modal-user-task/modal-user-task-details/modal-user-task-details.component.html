@@ -2,15 +2,43 @@
 
     <!-- Header -->
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
-        <div class="text-lg">Tarea</div>
+        <div class="text-lg">{{userTask.task.name_task}}</div>
         <button mat-icon-button [tabIndex]="-1" (click)="closeModalUserTask()">
             <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
         </button>
     </div>
-    <div class="flex items-center justify-center py-8 px-8 space-x-3 ng-star-inserted br-10 text-2xl">
-        Fecha: {{userTask.task.limit_date | date:'medium'}}
+    <div class="flex items-center justify-center  pt-8 space-x-3 ng-star-inserted br-10 text-2xl">
+        {{parseDate(userTask.task.limit_date, 'longDate') }}
+    </div>
+    <div class="flex items-center justify-center pb-8 space-x-3 ng-star-inserted br-10 text-sm">
+        {{parseDate(userTask.task.limit_date, 'shortTime') }}
     </div>
     <form [formGroup]="userTaskForm" class="flex flex-col flex-auto px-6 pb-6 sm:px-8 sm:pb-8 overflow-y-auto">
+        <!-- Alert -->
+        <angel-alert class="mb-8" *ngIf="userTask.is_open && !userTask.is_dispatched  && !userTask.is_qualified "
+            [appearance]="'outline'" [showIcon]="false" [type]="'info'" [@shake]="alert.type === 'error'">
+            La tarea se encuentra abierta
+        </angel-alert>
+        <!-- Alert -->
+        <angel-alert class="mb-8" *ngIf="userTask.is_dispatched && !userTask.is_qualified" [appearance]="'outline'"
+            [showIcon]="false" [type]="'warning'" [@shake]="alert.type === 'error'">
+            La tarea se encuentra enviada
+        </angel-alert>
+        <!-- Alert -->
+        <angel-alert class="mb-8" *ngIf="userTask.is_qualified" [appearance]="'outline'" [showIcon]="false"
+            [type]="'success'" [@shake]="alert.type === 'error'">
+            La tarea se encuentra calificada
+        </angel-alert>
+        <!-- description_task -->
+        <div class="relative flex">
+            <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_outline:sort-descending'">
+                </mat-icon>
+                <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="500"
+                    [value]="userTaskForm.getRawValue().task.description_task" cdkAutosizeMinRows="5"
+                    cdkAutosizeMaxRows="30" [placeholder]="'description_task'" [spellcheck]="false" readonly></textarea>
+            </mat-form-field>
+        </div>
         <!-- Alert -->
         <angel-alert class="mt-8" *ngIf="userTaskForm.invalid || showAlert" [appearance]="'outline'" [showIcon]="false"
             [type]="alert.type" [@shake]="alert.type === 'error'">
@@ -18,63 +46,40 @@
             {{alert.message}}
             <!-- response_user_task -->
             <mat-error *ngIf="userTaskForm.get('response_user_task')?.hasError('required')">
-                • Ingrese response_user_task
+                • Ingrese la respuesta de la tarea
             </mat-error>
         </angel-alert>
         <!-- Alert -->
         <!-- response_user_task -->
         <div class="relative flex mt-8">
             <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
-                <mat-label>response_user_task</mat-label>
+                <mat-label>Respuesta de la tarea</mat-label>
                 <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_outline:comment'">
                 </mat-icon>
                 <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="500"
                     cdkAutosizeMinRows="5" cdkAutosizeMaxRows="30" [formControlName]="'response_user_task'"
-                    [placeholder]="'response_user_task'" [spellcheck]="true"></textarea>
+                    [placeholder]="'Ingrese la respuesta de la tarea'" [spellcheck]="true"></textarea>
             </mat-form-field>
         </div> <!-- shipping_date_user_task -->
         <div class="mt-8" *ngIf="userTaskForm.getRawValue().shipping_date_user_task">
             <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>shippingDateUserTask</mat-label>
+                <mat-label>Fecha de envió</mat-label>
                 <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
                 </mat-icon>
-                <input matInput [formControlName]="'shipping_date_user_task'" [placeholder]="'shipping_date_user_task'"
+                <input matInput [formControlName]="'shipping_date_user_task'" [placeholder]="'Fecha de envió'"
                     [spellcheck]="false" readonly>
             </mat-form-field>
         </div> <!-- qualification_user_task -->
-        <div class="mt-8" *ngIf="userTaskForm.getRawValue().qualification_user_task">
+        <div class="mt-8"
+            *ngIf="(userTaskForm.getRawValue().is_dispatched && type_user == 'teacher') || userTaskForm.getRawValue().is_qualified">
             <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>qualificationUserTask</mat-label>
+                <mat-label>Calificación</mat-label>
                 <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
                 </mat-icon>
-                <input matInput maxlength="3" [formControlName]="'qualification_user_task'"
-                    [placeholder]="'qualification_user_task'" [spellcheck]="false" readonly>
-            </mat-form-field>
-        </div> <!-- is_open -->
-        <div class="mt-8" *ngIf="userTaskForm.getRawValue().is_open">
-            <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>isOpen</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
-                </mat-icon>
-                <input matInput [formControlName]="'is_open'" [placeholder]="'is_open'" [spellcheck]="false" readonly>
-            </mat-form-field>
-        </div> <!-- is_dispatched -->
-        <div class="mt-8" *ngIf="userTaskForm.getRawValue().is_dispatched">
-            <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>isOpen</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
-                </mat-icon>
-                <input matInput [formControlName]="'is_dispatched'" [placeholder]="'is_dispatched'" [spellcheck]="false"
-                    readonly>
-            </mat-form-field>
-        </div> <!-- is_qualified -->
-        <div class="mt-8" *ngIf="userTaskForm.getRawValue().is_qualified">
-            <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>isQualified</mat-label>
-                <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:fire'">
-                </mat-icon>
-                <input matInput [formControlName]="'is_qualified'" [placeholder]="'is_qualified'" [spellcheck]="false"
-                    readonly>
+                <span matSuffix>/ {{maximum_rating}}</span>
+                <input matInput [maxlength]="lenght_maximum_rating" [formControlName]="'qualification_user_task'"
+                    [disabled]="userTaskForm.getRawValue().is_qualified" [placeholder]="'Calificación'"
+                    [spellcheck]="false">
             </mat-form-field>
         </div>
         <!-- Attached -->
@@ -97,7 +102,7 @@
                     </mat-icon>
                 </button>
             </mat-form-field>
-            <div class="text-base" *ngIf="formArrayAttacheds.controls.length > 0">Anexos subidos</div>
+            <div class="text-base" *ngIf="formArrayAttacheds.controls.length > 0">Archivos subidos</div>
             <ng-container
                 *ngFor="let elementAttached of formArrayAttacheds.controls; let i = index; let first = first; let last = last; trackBy: trackByFn">
                 <div class="relative flex">
@@ -113,7 +118,8 @@
                             (click)="removableInput.setDisabledState(true); downloadFile(i)">
                             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:download'"></mat-icon>
                         </button>
-                        <button mat-icon-button matSuffix *ngIf="!removableInput.empty" [disabled]="false"
+                        <button mat-icon-button matSuffix *ngIf="!removableInput.empty"
+                            [disabled]="_isafter|| userTask.is_dispatched"
                             (click)="removableInput.clear($event); removableInput.setDisabledState(false); deleteFile(i);">
                             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'">
                             </mat-icon>
@@ -124,11 +130,11 @@
         </div>
         <!-- Attached -->
         <!-- Comments -->
-        <div class="group inline-flex items-center mt-4 mb-4 -ml-4 py-2 px-4 rounded cursor-pointer"
-            (click)="addComment()">
+        <button class="group inline-flex items-center mt-4 mb-4 -ml-4 py-2 px-4 rounded cursor-pointer"
+            [disabled]="_isafter" (click)="addComment()">
             <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
             <span class="ml-2 font-medium text-secondary group-hover:underline">Añadir comentario</span>
-        </div>
+        </button>
         <div class="space-y-4" *ngIf="comments.length > 0">
             <ng-container
                 *ngFor="let elementComment of formArrayComments.controls; let i = index; let first = first; let last = last; trackBy: trackByFn">
@@ -149,24 +155,25 @@
                                 [placeholder]="'Ingrese el comentario'" [spellcheck]="false"></textarea>
                         </mat-form-field>
                         <div class="mt-2 text-sm">{{formArrayComments.getRawValue()[i].date_comment |
-                            date:'medium'}}
+                            localDate:'medium'}}
                         </div>
                     </div>
                     <ng-container>
                         <div *ngIf="formArrayComments.getRawValue()[i].isOwner"
                             class="flex items-center flex-col w-10 pl-2 self-center pb-6">
                             <button *ngIf="!formArrayComments.getRawValue()[i].editMode" class="w-8 h-8 min-h-8"
-                                mat-icon-button (click)="editComment(i, true)" matTooltip="Editar">
+                                [disabled]="_isafter" mat-icon-button (click)="editComment(i, true)"
+                                matTooltip="Editar">
                                 <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:edit'">
                                 </mat-icon>
                             </button>
                             <button *ngIf="formArrayComments.getRawValue()[i].editMode" class="w-8 h-8 min-h-8"
-                                mat-icon-button (click)="saveComment(i)" matTooltip="Guardar">
+                                [disabled]="_isafter" mat-icon-button (click)="saveComment(i)" matTooltip="Guardar">
                                 <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:save'">
                                 </mat-icon>
                             </button>
                             <button *ngIf="formArrayComments.getRawValue()[i].editMode" class="w-8 h-8 min-h-8"
-                                mat-icon-button (click)="deleteComment(i)" matTooltip="Eliminar">
+                                [disabled]="_isafter " mat-icon-button (click)="deleteComment(i)" matTooltip="Eliminar">
                                 <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:delete_outline'">
                                 </mat-icon>
                             </button>
@@ -175,18 +182,26 @@
                 </div>
             </ng-container>
         </div>
+        <!-- Enrollment -->
+        <div class="mt-4">
+            <button class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
+                (click)="openModalResources()">
+                <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:blur_linear'"></mat-icon>
+                <span class="ml-2 font-medium text-secondary group-hover:underline">Ver recursos</span>
+            </button>
+        </div>
         <!-- Comments -->
         <div class="flex items-center justify-center sm:justify-end py-2 space-x-3 ng-star-inserted br-10 pt-6">
-            <!-- Delete -->
-            <button mat-flat-button
-                class="mat-focus-indicator mat-flat-button mat-button-base mat-warn ng-star-inserted"
-                (click)="updateUserTask()">
-                Eliminar
+            <!-- Send -->
+            <button class="order-first sm:order-last" mat-stroked-button [color]="'primary'"
+                [disabled]="userTaskForm.invalid || _isafter ||userTask.is_dispatched" (click)="updateUserTask()">
+                Enviar
             </button>
             <!-- Send -->
             <button class="order-first sm:order-last" mat-stroked-button [color]="'primary'"
-                [disabled]="userTaskForm.invalid " (click)="updateUserTask()">
-                Enviar
+                *ngIf="type_user == 'teacher'" [disabled]="userTaskForm.invalid || userTask.is_qualified"
+                (click)="changeQualificationUserTask()">
+                Calificar
             </button>
         </div>
     </form>

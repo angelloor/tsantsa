@@ -19,7 +19,7 @@ export const sendMail = (mensaje: object) => {
 			const transporter = nodemailer.createTransport({
 				host: process.env.MAILER_HOST,
 				port: parseInt(`${process.env.MAILER_PORT}`),
-				secure: false,
+				secure: true,
 				auth: {
 					user: process.env.MAILER_USER,
 					pass: process.env.MAILER_PASSWORD,

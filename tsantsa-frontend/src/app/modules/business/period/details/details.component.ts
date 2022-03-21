@@ -14,6 +14,7 @@ import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import moment from 'moment';
 import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
 import { PeriodListComponent } from '../list/list.component';
 import { PeriodService } from '../period.service';
@@ -28,8 +29,10 @@ export class PeriodDetailsComponent implements OnInit {
   nameEntity: string = 'Periodo';
   private data!: AppInitialData;
 
+  startDate: any = '';
+  endDate: any = '';
+
   editMode: boolean = false;
-  userId: string = '';
   /**
    * Alert
    */
@@ -146,11 +149,16 @@ export class PeriodDetailsComponent implements OnInit {
          * Get the period
          */
         this.period = period;
-
         /**
          * Patch values to the form
          */
         this.patchForm();
+        this.startDate = this.period.start_date_period;
+        this.endDate = this.period.end_date_period;
+        /**
+         * disabledDependency
+         */
+        this.disabledDependency(this.period.dependency);
         /**
          * Toggle the edit mode off
          */
@@ -196,6 +204,14 @@ export class PeriodDetailsComponent implements OnInit {
   patchForm(): void {
     this.periodForm.patchValue(this.period);
     this.maximum_rating = this.period.maximum_rating;
+  }
+  /**
+   * disabledDependency
+   */
+  disabledDependency(dependency: string): void {
+    if (parseInt(dependency) >= 1) {
+      this.periodForm.disable();
+    }
   }
   /**
    * On destroy
@@ -252,10 +268,21 @@ export class PeriodDetailsComponent implements OnInit {
     const id_user_ = this.data.user.id_user;
     let period = this.periodForm.getRawValue();
     /**
+     *  change the default name
+     */
+    if (period.name_period.trim() == 'Nuevo periodo') {
+      this._notificationService.warn(
+        'Tienes que cambiar el nombre del periodo'
+      );
+      return;
+    }
+    /**
      * Delete whitespace (trim() the atributes type string)
      */
     period = {
       ...period,
+      name_period: period.name_period.trim(),
+      description_period: period.description_period.trim(),
       id_user_: parseInt(id_user_),
       id_period: parseInt(period.id_period),
       company: {
@@ -399,6 +426,7 @@ export class PeriodDetailsComponent implements OnInit {
     this.periodForm.getRawValue().maximum_rating;
     this.maximum_rating = this.periodForm.getRawValue().maximum_rating;
   }
+
   /**
    * changeKeyPress
    */
@@ -406,5 +434,49 @@ export class PeriodDetailsComponent implements OnInit {
     setTimeout(() => {
       this.maximum_rating = form.getRawValue().maximum_rating;
     }, 0);
+  }
+  /**
+   * changeStartDatePeriod
+   * isBefore, isSame, and isAfter of moment
+   * @param form
+   */
+  changeStartDatePeriod(form: any) {
+    let startDatePeriod = form.getRawValue().start_date_period;
+
+    var isBefore = moment(startDatePeriod).isBefore(this.endDate);
+
+    if (isBefore) {
+      this.startDate = startDatePeriod;
+    } else {
+      this.periodForm.patchValue({
+        ...form.getRawValue(),
+        start_date_period: this.startDate,
+      });
+      this._notificationService.warn(
+        'La fecha inicial tiene que ser menor que la final'
+      );
+    }
+  }
+  /**
+   * changeEndDatePeriod
+   * isBefore, isSame, and isAfter of moment
+   * @param form
+   */
+  changeEndDatePeriod(form: any) {
+    let endDatePeriod = form.getRawValue().end_date_period;
+
+    var isAfter = moment(endDatePeriod).isAfter(this.startDate);
+
+    if (isAfter) {
+      this.endDate = endDatePeriod;
+    } else {
+      this.periodForm.patchValue({
+        ...form.getRawValue(),
+        end_date_period: this.endDate,
+      });
+      this._notificationService.warn(
+        'La fecha final tiene que ser mayor que la inicial'
+      );
+    }
   }
 }

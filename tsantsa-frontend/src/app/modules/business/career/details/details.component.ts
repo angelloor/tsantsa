@@ -25,11 +25,10 @@ import { CareerListComponent } from '../list/list.component';
   animations: angelAnimations,
 })
 export class CareerDetailsComponent implements OnInit {
-  nameEntity: string = 'Carrera';
+  nameEntity: string = 'Curso';
   private data!: AppInitialData;
 
   editMode: boolean = false;
-  userId: string = '';
   /**
    * Alert
    */
@@ -146,6 +145,10 @@ export class CareerDetailsComponent implements OnInit {
          */
         this.patchForm();
         /**
+         * disabledDependency
+         */
+        this.disabledDependency(this.career.dependency);
+        /**
          * Toggle the edit mode off
          */
         this.toggleEditMode(false);
@@ -189,6 +192,14 @@ export class CareerDetailsComponent implements OnInit {
    */
   patchForm(): void {
     this.careerForm.patchValue(this.career);
+  }
+  /**
+   * disabledDependency
+   */
+  disabledDependency(dependency: string): void {
+    if (parseInt(dependency) >= 1) {
+      this.careerForm.disable();
+    }
   }
   /**
    * On destroy
@@ -245,10 +256,19 @@ export class CareerDetailsComponent implements OnInit {
     const id_user_ = this.data.user.id_user;
     let career = this.careerForm.getRawValue();
     /**
+     *  change the default name
+     */
+    if (career.name_career.trim() == 'Nuevo curso') {
+      this._notificationService.warn('Tienes que cambiar el nombre del curso');
+      return;
+    }
+    /**
      * Delete whitespace (trim() the atributes type string)
      */
     career = {
       ...career,
+      name_career: career.name_career.trim(),
+      description_career: career.description_career.trim(),
       id_user_: parseInt(id_user_),
       id_career: parseInt(career.id_career),
       company: {
@@ -265,7 +285,7 @@ export class CareerDetailsComponent implements OnInit {
         next: (_career: Career) => {
           if (_career) {
             this._notificationService.success(
-              'Carrera actualizada correctamente'
+              'Curso actualizado correctamente'
             );
             /**
              * Toggle the edit mode off
@@ -294,9 +314,9 @@ export class CareerDetailsComponent implements OnInit {
   deleteCareer(): void {
     this._angelConfirmationService
       .open({
-        title: 'Eliminar carrera',
+        title: 'Eliminar curso',
         message:
-          '¿Estás seguro de que deseas eliminar esta carrera? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas eliminar este curso? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -333,7 +353,7 @@ export class CareerDetailsComponent implements OnInit {
                    * Return if the career wasn't deleted...
                    */
                   this._notificationService.success(
-                    'Carrera eliminada correctamente'
+                    'Curso eliminado correctamente'
                   );
                   /**
                    * Get the current activated route

@@ -133,6 +133,25 @@ export class UserTaskService {
       );
   }
   /**
+   * bySenderUserRead
+   * @param id_user_sender
+   */
+  bySenderUserRead(id_user_sender: string): Observable<UserTask[]> {
+    return this._httpClient
+      .get<UserTask[]>(this._url + `/bySenderUserRead/${id_user_sender}`)
+      .pipe(
+        tap((userTasks: UserTask[]) => {
+          if (!userTasks) {
+            this._userTasks.next([]);
+            return [];
+          } else {
+            this._userTasks.next(userTasks);
+            return userTasks;
+          }
+        })
+      );
+  }
+  /**
    * Read UserTask by id of local Observable
    */
   readUserTaskByIdLocal(id: string): Observable<UserTask> {
@@ -165,7 +184,6 @@ export class UserTaskService {
   }
   /**
    * Update userTask
-   * @param id_user_ that will be updated
    * @param userTask
    */
   updateUserTask(userTask: UserTask): Observable<any> {
@@ -245,5 +263,23 @@ export class UserTaskService {
           )
       )
     );
+  }
+  /**
+   * reportUserTaskByUser
+   */
+  reportUserTaskByUser(id_user: string): Observable<any> {
+    return this._httpClient
+      .post(
+        this._url + `/reportUserTaskByUser`,
+        {
+          user: id_user,
+        },
+        {
+          responseType: 'blob',
+          observe: 'response',
+          headers: new HttpHeaders().append('Content-Type', 'application/json'),
+        }
+      )
+      .pipe(map((response: any) => response));
   }
 }

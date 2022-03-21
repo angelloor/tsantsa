@@ -33,6 +33,7 @@
     "moment": "^2.29.1",
     "ng-apexcharts": "^1.7.0",
     "ngx-colors": "^3.0.2",
+    "ngx-extended-pdf-viewer": "^12.0.0-alpha.6",
     "ngx-markdown": "^13.1.0",
     "ngx-material-file-input": "^3.0.0",
     "ngx-material-timepicker": "^5.5.3",

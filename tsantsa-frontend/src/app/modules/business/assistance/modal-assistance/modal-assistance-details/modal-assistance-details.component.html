@@ -2,18 +2,44 @@
 
     <!-- Header -->
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
-        <div class="text-lg">Marcacion</div>
+        <div class="text-lg">Marcación</div>
         <button mat-icon-button [tabIndex]="-1" (click)="closeModalAssistance()">
             <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
         </button>
     </div>
-    <div class="flex items-center justify-center py-8 px-8 space-x-3 ng-star-inserted br-10 text-2xl">
-        Inicio: {{assistance.start_marking_date | date:'medium'}}
-    </div>
-    <div class="flex items-center justify-center py-8 px-8 space-x-3 ng-star-inserted br-10 text-2xl">
-        Fin: {{assistance.end_marking_date | date:'medium'}}
-    </div>
     <form [formGroup]="assistanceForm" class="flex flex-col flex-auto px-6 pb-6 sm:px-8 sm:pb-8 overflow-y-auto">
-
+        <div class="relative flex  mt-4" *ngIf="assistance">
+            <div class="flex flex-auto">
+                <div class="flex flex-col w-2/4 pr-3">
+                    <!-- start_marking_date -->
+                    <div>
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <input matInput type="time" [formControlName]="'start_marking_date'" readonly>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="flex flex-col w-2/4 pl-3">
+                    <!-- end_marking_date -->
+                    <div>
+                        <mat-form-field class="angel-mat-no-subscript w-full">
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:clock'">
+                            </mat-icon>
+                            <input matInput type="time" [formControlName]="'end_marking_date'" readonly>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <ng-container>
+                <button class="self-center" mat-icon-button
+                    [matTooltip]="assistance.is_late ? 'Marcación con atraso' :'Marcación en buen tiempo'">
+                    <div *ngIf="!assistance.is_late" class="ml-6 mt-1 w-3 h-3 bg-green-700 rounded-full">
+                    </div>
+                    <div *ngIf="assistance.is_late" class="ml-6 mt-1 w-3 h-3 bg-red-600 rounded-full">
+                    </div>
+                </button>
+            </ng-container>
+        </div>
     </form>
 </div>

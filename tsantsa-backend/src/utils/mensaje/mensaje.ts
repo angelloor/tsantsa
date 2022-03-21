@@ -66,4 +66,11 @@ export const _mensajes: Mensajes = {
 		descripcion:
 			'El formato de la contraseña no cumple con su formato establecido (_formatoEstablecido)',
 	},
+	10: {
+		id: false,
+		codigo: '06-010',
+		estado: 400,
+		componente: 'report',
+		descripcion: 'No se encontraron datos para generar el reporte',
+	},
 };

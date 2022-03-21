@@ -1,5 +1,10 @@
+import path from 'path';
+import { generateRandomNumber } from '../../../utils/global';
+import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { User } from '../../core/user/user.class';
 import { _user } from '../../core/user/user.data';
+import { Report } from '../../report/report.class';
+import { reportAssistanceByUserAndCourse } from '../../report/report.declarate';
 import { Course } from '../course/course.class';
 import { _course } from '../course/course.data';
 import {
@@ -221,7 +226,52 @@ export class Assistance {
 				});
 		});
 	}
+	/**
+	 * Reports
+	 */
+	reportAssistanceByUserAndCourse() {
+		return new Promise<any>(async (resolve, reject) => {
+			await view_assistance_by_user_and_course_read(this)
+				.then(async (assistances: Assistance[]) => {
+					if (assistances.length > 0) {
+						/**
+						 * Mutate response
+						 */
+						const _assistances = this.mutateResponse(assistances);
 
+						const name_report = `report${generateRandomNumber(9)}`;
+
+						const pathFinal = `${path.resolve(
+							'./'
+						)}/file_store/report/${name_report}.pdf`;
+						/**
+						 * Generar html
+						 */
+						const html = await reportAssistanceByUserAndCourse(_assistances);
+						/**
+						 * Instance the class
+						 */
+						const _report = new Report();
+
+						const landscape: boolean = false;
+
+						await _report
+							.generateReport(name_report, html, landscape)
+							.then(() => {
+								resolve({ pathFinal, name_report });
+							})
+							.catch((error: any) => {
+								reject(error);
+							});
+					} else {
+						resolve(_mensajes[10]);
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
 	/**
 	 * Eliminar ids de entidades externas y formatear la informacion en el esquema correspondiente
 	 * @param assistances
@@ -243,6 +293,9 @@ export class Assistance {
 					},
 					schedule: {
 						id_schedule: item.id_schedule,
+						start_date_schedule: item.start_date_schedule,
+						end_date_schedule: item.end_date_schedule,
+						tolerance_schedule: item.tolerance_schedule,
 					},
 					name_course: item.name_course,
 					description_course: item.description_course,
@@ -285,11 +338,15 @@ export class Assistance {
 			delete _assistance.id_course;
 			delete _assistance.id_period;
 			delete _assistance.id_career;
-			delete _assistance.id_schedule;
 			delete _assistance.name_course;
 			delete _assistance.description_course;
 			delete _assistance.status_course;
 			delete _assistance.creation_date_course;
+
+			delete _assistance.id_schedule;
+			delete _assistance.start_date_schedule;
+			delete _assistance.end_date_schedule;
+			delete _assistance.tolerance_schedule;
 
 			delete _assistance.id_user;
 			delete _assistance.id_person;

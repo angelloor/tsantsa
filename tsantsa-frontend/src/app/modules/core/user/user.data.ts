@@ -9,7 +9,7 @@ export const user: User = {
   company: company,
   person: person,
   profile: profile,
-  type_user: '',
+  type_user: 'student',
   name_user: '',
   password_user: '',
   avatar_user: '',

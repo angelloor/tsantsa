@@ -4,6 +4,7 @@ import { Period } from '../period/period.types';
 import { Schedule } from './schedule/schedule.types';
 
 export interface Course {
+  dependency: string;
   id_course: string;
   company: Company;
   period: Period;
@@ -13,5 +14,6 @@ export interface Course {
   description_course: string;
   status_course: boolean;
   creation_date_course: string;
+  tasks?: string;
   deleted_course: boolean;
 }

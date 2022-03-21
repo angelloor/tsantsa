@@ -1,5 +1,10 @@
+import path from 'path';
+import { generateRandomNumber } from '../../../utils/global';
+import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { User } from '../../core/user/user.class';
 import { _user } from '../../core/user/user.data';
+import { Report } from '../../report/report.class';
+import { reportUserTaskByUser } from '../../report/report.declarate';
 import { Task } from '../task/task.class';
 import { _task } from '../task/task.data';
 import {
@@ -7,6 +12,7 @@ import {
 	dml_user_task_delete,
 	dml_user_task_update,
 	view_user_task,
+	view_user_task_by_sender_user_read,
 	view_user_task_by_user_read,
 	view_user_task_specific_read,
 } from './user_task.store';
@@ -187,6 +193,23 @@ export class UserTask {
 		});
 	}
 
+	bySenderUserRead() {
+		return new Promise<UserTask[]>(async (resolve, reject) => {
+			await view_user_task_by_sender_user_read(this)
+				.then((userTasks: UserTask[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _userTasks = this.mutateResponse(userTasks);
+
+					resolve(_userTasks);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
 	update() {
 		return new Promise<UserTask>(async (resolve, reject) => {
 			await dml_user_task_update(this)
@@ -215,7 +238,52 @@ export class UserTask {
 				});
 		});
 	}
+	/**
+	 * Reports
+	 */
+	reportUserTaskByUser() {
+		return new Promise<any>(async (resolve, reject) => {
+			await view_user_task_by_user_read(this)
+				.then(async (userTasks: UserTask[]) => {
+					if (userTasks.length > 0) {
+						/**
+						 * Mutate response
+						 */
+						const _userTasks = this.mutateResponse(userTasks);
 
+						const name_report = `report${generateRandomNumber(9)}`;
+
+						const pathFinal = `${path.resolve(
+							'./'
+						)}/file_store/report/${name_report}.pdf`;
+						/**
+						 * Generar html
+						 */
+						const html = await reportUserTaskByUser(_userTasks);
+						/**
+						 * Instance the class
+						 */
+						const _report = new Report();
+
+						const landscape: boolean = false;
+
+						await _report
+							.generateReport(name_report, html, landscape)
+							.then(() => {
+								resolve({ pathFinal, name_report });
+							})
+							.catch((error: any) => {
+								reject(error);
+							});
+					} else {
+						resolve(_mensajes[10]);
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
 	/**
 	 * Eliminar ids de entidades externas y formatear la informacion en el esquema correspondiente
 	 * @param userTasks
@@ -228,7 +296,7 @@ export class UserTask {
 			let _userTask: UserTask | any = {
 				...item,
 				user: {
-					id_user: item.id_user,
+					id_user: item.bvut_id_user,
 					person: {
 						id_person: item.id_person,
 						academic: {
@@ -254,10 +322,14 @@ export class UserTask {
 				},
 				task: {
 					id_task: item.id_task,
+					user: {
+						id_user: item.cvt_id_user,
+					},
 					course: {
 						id_course: item.id_course,
 						period: {
 							id_period: item.id_period,
+							maximum_rating: item.maximum_rating,
 						},
 						career: {
 							id_career: item.id_career,
@@ -284,7 +356,8 @@ export class UserTask {
 			/**
 			 * delete ids of principal object level
 			 */
-			delete _userTask.id_user;
+			delete _userTask.bvut_id_user;
+			delete _userTask.cvt_id_user;
 			delete _userTask.id_profile;
 			delete _userTask.type_user;
 			delete _userTask.name_user;
@@ -310,6 +383,7 @@ export class UserTask {
 
 			delete _userTask.id_course;
 			delete _userTask.id_period;
+			delete _userTask.maximum_rating;
 			delete _userTask.id_career;
 			delete _userTask.id_schedule;
 			delete _userTask.name_course;

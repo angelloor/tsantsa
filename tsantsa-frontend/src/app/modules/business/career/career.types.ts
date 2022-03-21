@@ -1,6 +1,7 @@
 import { Company } from 'app/modules/core/company/company.types';
 
 export interface Career {
+  dependency: string;
   id_career: string;
   company: Company;
   name_career: string;

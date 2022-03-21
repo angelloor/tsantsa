@@ -31,6 +31,13 @@ export const appRoutes: Route[] = [
         (m) => m.BusinessModule
       ),
   },
+  // Report routes
+  {
+    path: 'report',
+    component: LayoutComponent,
+    loadChildren: () =>
+      import('./modules/report/report.module').then((m) => m.ReportModule),
+  },
   // Public routes
   {
     path: 'public',

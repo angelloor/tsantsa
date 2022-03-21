@@ -264,6 +264,7 @@ export class Auth {
 							'¿Olvidaste tu contraseña?',
 							forgotPasswordMail(code, expiration)
 						);
+
 						await sendMail(mailGenerado)
 							.then((response) => {
 								console.log(response);

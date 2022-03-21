@@ -12,13 +12,16 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
+import { ReportService } from 'app/modules/report/report.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import { GlobalUtils } from 'app/utils/GlobalUtils';
 import { fromEvent, merge, Observable, Subject, timer } from 'rxjs';
 import {
   filter,
@@ -39,6 +42,8 @@ export class CourseListComponent implements OnInit {
   @ViewChild('matDrawer', { static: true }) matDrawer!: MatDrawer;
   count: number = 0;
   courses$!: Observable<Course[]>;
+
+  pdfSource = '';
 
   openMatDrawer: boolean = false;
 
@@ -75,7 +80,10 @@ export class CourseListComponent implements OnInit {
     private _notificationService: NotificationService,
     private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _globalUtils: GlobalUtils,
+    private _matDialog: MatDialog,
+    private _reportService: ReportService
   ) {}
 
   ngOnInit(): void {
@@ -311,9 +319,9 @@ export class CourseListComponent implements OnInit {
   createCourse(): void {
     this._angelConfirmationService
       .open({
-        title: 'Añadir curso',
+        title: 'Añadir asignatura',
         message:
-          '¿Estás seguro de que deseas añadir una nueva curso? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas añadir una nueva asignatura? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -330,7 +338,7 @@ export class CourseListComponent implements OnInit {
               next: (_course: Course) => {
                 if (_course) {
                   this._notificationService.success(
-                    'Curso agregada correctamente'
+                    'Asignatura agregada correctamente'
                   );
                   /**
                    * Go to new curso
@@ -356,7 +364,6 @@ export class CourseListComponent implements OnInit {
         this._layoutService.setOpenModal(false);
       });
   }
-
   /**
    * Track by function for ngFor loops
    * @param index

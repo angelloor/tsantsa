@@ -251,15 +251,15 @@
                         {{alert.message}}
                         <!-- type_user -->
                         <mat-error *ngIf="userForm.get('type_user')?.hasError('required')">
-                            • Ingrese type_user
+                            • Seleccione el tipo de usuario
                         </mat-error>
                         <!-- name_user -->
                         <mat-error *ngIf="userForm.get('name_user')?.hasError('required')">
-                            • Ingrese name_user
+                            • Ingrese el correo del usuario
                         </mat-error>
                         <!-- password_user -->
                         <mat-error *ngIf="userForm.get('password_user')?.hasError('required')">
-                            • Ingrese password_user
+                            • Ingrese la contraseña del usuario
                         </mat-error>
                         <ng-container *ngIf="validationPassword.type_validation == 'validationPassword'">
                             <mat-error *ngIf="userForm.get('password_user')?.hasError('pattern')">
@@ -268,19 +268,19 @@
                         </ng-container>
                         <!-- status_user -->
                         <mat-error *ngIf="userForm.get('status_user')?.hasError('required')">
-                            • Ingrese status_user
+                            • Seleccione el estado del usuario
                         </mat-error>
                         <!-- id_company -->
                         <mat-error *ngIf="userForm.get('id_company')?.hasError('required')">
-                            • Seleccione id_company
+                            • Seleccione la institución a la cual formara parte este usuario
                         </mat-error>
                         <!-- id_profile -->
                         <mat-error *ngIf="userForm.get('id_profile')?.hasError('required')">
-                            • Seleccione id_profile
+                            • Seleccione el perfil de usuario
                         </mat-error>
                         <!-- dni_person -->
                         <mat-error *ngIf="userForm.get('dni_person')?.hasError('required')">
-                            • Ingrese dni_person
+                            • Ingrese el numero de cedula
                         </mat-error>
                         <ng-container *ngIf="validationDNI.type_validation == 'validationDNI'">
                             <mat-error *ngIf="userForm.get('dni_person')?.hasError('pattern')">
@@ -289,19 +289,19 @@
                         </ng-container>
                         <!-- name_person -->
                         <mat-error *ngIf="userForm.get('name_person')?.hasError('required')">
-                            • Ingrese name_person
+                            • Ingrese los nombres de la persona
                         </mat-error>
                         <!-- last_name_person -->
                         <mat-error *ngIf="userForm.get('last_name_person')?.hasError('required')">
-                            • Ingrese last_name_person
+                            • Ingrese los apellidos de la persona
                         </mat-error>
                         <!-- address_person -->
                         <mat-error *ngIf="userForm.get('address_person')?.hasError('required')">
-                            • Ingrese address_person
+                            • Ingrese la dirección de la persona
                         </mat-error>
                         <!-- phone_person -->
                         <mat-error *ngIf="userForm.get('phone_person')?.hasError('required')">
-                            • Ingrese phone_person
+                            • Ingrese el teléfono de la persona
                         </mat-error>
                         <ng-container *ngIf="validationPhoneNumber.type_validation == 'validationPhoneNumber'">
                             <mat-error *ngIf="userForm.get('phone_person')?.hasError('pattern')">
@@ -310,27 +310,27 @@
                         </ng-container>
                         <!-- title_academic -->
                         <mat-error *ngIf="userForm.get('title_academic')?.hasError('required')">
-                            • Ingrese title_academic
+                            • Ingrese el titulo académico de la persona
                         </mat-error>
                         <!-- abbreviation_academic -->
                         <mat-error *ngIf="userForm.get('abbreviation_academic')?.hasError('required')">
-                            • Ingrese abbreviation_academic
+                            • Ingrese la abreviación del titulo académico
                         </mat-error>
                         <!-- nivel_academic -->
                         <mat-error *ngIf="userForm.get('nivel_academic')?.hasError('required')">
-                            • Ingrese nivel_academic
+                            • Ingrese el nvel académico
                         </mat-error>
                         <!-- name_job -->
                         <mat-error *ngIf="userForm.get('name_job')?.hasError('required')">
-                            • Ingrese name_job
+                            • Ingrese nombre del trabajo
                         </mat-error>
                         <!-- address_job -->
                         <mat-error *ngIf="userForm.get('address_job')?.hasError('required')">
-                            • Ingrese address_job
+                            • Ingrese la dirección del trabajo
                         </mat-error>
                         <!-- phone_job -->
                         <mat-error *ngIf="userForm.get('phone_job')?.hasError('required')">
-                            • Ingrese phone_job
+                            • Ingrese el numero de teléfono del trabajo
                         </mat-error>
                         <ng-container *ngIf="validationPhoneNumber.type_validation == 'validationPhoneNumber'">
                             <mat-error *ngIf="userForm.get('phone_job')?.hasError('pattern')">
@@ -339,7 +339,7 @@
                         </ng-container>
                         <!-- position_job -->
                         <mat-error *ngIf="userForm.get('position_job')?.hasError('required')">
-                            • Ingrese position_job
+                            • Ingrese el cargo del trabajo
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
@@ -358,26 +358,26 @@
                     <!-- name_user -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameUser</mat-label>
+                            <mat-label>Correo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:mail'">
                             </mat-icon>
-                            <input matInput maxlength="50" [formControlName]="'name_user'" [placeholder]="'nameUser'"
-                                [spellcheck]="false">
+                            <input matInput maxlength="50" [formControlName]="'name_user'"
+                                [placeholder]="'Ingrese el correo'" [spellcheck]="false">
                         </mat-form-field>
                     </div> <!-- password_user -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>passwordUser</mat-label>
+                            <mat-label>Contraseña</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:password'">
                             </mat-icon>
                             <input matInput maxlength="250" [formControlName]="'password_user'"
-                                [placeholder]="'passwordUser'" [spellcheck]="false">
+                                [placeholder]="'Ingrese la contraseña'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
                     <!-- status_user -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>status_user</mat-label>
+                            <mat-label>Estado del usuario</mat-label>
                             <mat-select [formControlName]="'status_user'">
                                 <mat-option [value]="true">Activo</mat-option>
                                 <mat-option [value]="false">Inactivo</mat-option>
@@ -388,7 +388,7 @@
                     <!-- id_company -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>Company</mat-label>
+                            <mat-label>Institución</mat-label>
                             <mat-select [formControlName]="'id_company'" [value]="selectedCompany.id_company">
                                 <ng-container *ngFor="let category of categoriesCompany">
                                     <mat-option [value]="category.id_company">
@@ -400,7 +400,7 @@
                     <div *ngIf="type_profile === 'administator' &&categoriesProfile.length > 0">
                         <div class="mt-8">
                             <mat-form-field class="angel-mat-no-subscript w-full">
-                                <mat-label>Profile</mat-label>
+                                <mat-label>Perfil</mat-label>
                                 <mat-select [formControlName]="'id_profile'"
                                     [value]="selectedProfile ? selectedProfile.id_profile : false">
                                     <ng-container *ngFor="let category of categoriesProfile">
@@ -414,7 +414,7 @@
                     <!-- dni_person -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>dniPerson</mat-label>
+                            <mat-label>Cedula</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:hashtag'">
                             </mat-icon>
@@ -424,113 +424,113 @@
                     </div> <!-- name_person -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>namePerson</mat-label>
+                            <mat-label>Nombres</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:identification'">
                             </mat-icon>
                             <input matInput maxlength="150" [formControlName]="'name_person'"
-                                [placeholder]="'namePerson'" [spellcheck]="true">
+                                [placeholder]="'Ingrese los nombres'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- last_name_person -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>lastNamePerson</mat-label>
+                            <mat-label>Apellidos</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:identification'">
                             </mat-icon>
                             <input matInput maxlength="150" [formControlName]="'last_name_person'"
-                                [placeholder]="'lastNamePerson'" [spellcheck]="true">
+                                [placeholder]="'Ingrese los apellidos'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- address_person -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>addressPerson</mat-label>
+                            <mat-label>Dirección</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:location-marker'">
                             </mat-icon>
                             <input matInput maxlength="150" [formControlName]="'address_person'"
-                                [placeholder]="'addressPerson'" [spellcheck]="false">
+                                [placeholder]="'Ingrese la dirección'" [spellcheck]="false">
                         </mat-form-field>
                     </div> <!-- phone_person -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>phonePerson</mat-label>
+                            <mat-label>Teléfono</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:phone'">
                             </mat-icon>
                             <input matInput maxlength="13" [formControlName]="'phone_person'"
-                                [placeholder]="'phonePerson'" [spellcheck]="false">
+                                [placeholder]="'Ingrese el teléfono'" [spellcheck]="false">
                         </mat-form-field>
                     </div>
 
                     <!-- title_academic -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>titleAcademic</mat-label>
+                            <mat-label>Titulo académico</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:academic-cap'">
                             </mat-icon>
                             <input matInput maxlength="250" [formControlName]="'title_academic'"
-                                [placeholder]="'titleAcademic'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el titulo académico'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- abbreviation_academic -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>abbreviationAcademic</mat-label>
+                            <mat-label>Abreviación del titulo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:short_text'">
                             </mat-icon>
                             <input matInput maxlength="50" [formControlName]="'abbreviation_academic'"
-                                [placeholder]="'abbreviationAcademic'" [spellcheck]="true">
+                                [placeholder]="'Ingrese la abreviación  del titulo'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- nivel_academic -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nivelAcademic</mat-label>
+                            <mat-label>Nivel académico</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:menu-alt-2'">
                             </mat-icon>
                             <input matInput maxlength="100" [formControlName]="'nivel_academic'"
-                                [placeholder]="'nivelAcademic'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el nivel académico'" [spellcheck]="true">
                         </mat-form-field>
                     </div>
 
                     <!-- name_job -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameJob</mat-label>
+                            <mat-label>Nombre del trabajo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:office-building'">
                             </mat-icon>
-                            <input matInput maxlength="200" [formControlName]="'name_job'" [placeholder]="'nameJob'"
-                                [spellcheck]="true">
+                            <input matInput maxlength="200" [formControlName]="'name_job'"
+                                [placeholder]="'Ingrese el nombre del trabajo'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- address_job -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>addressJob</mat-label>
+                            <mat-label>Dirección del trabajo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:location-marker'">
                             </mat-icon>
                             <input matInput maxlength="200" [formControlName]="'address_job'"
-                                [placeholder]="'addressJob'" [spellcheck]="false">
+                                [placeholder]="'Ingrese la dirección del trabajo'" [spellcheck]="false">
                         </mat-form-field>
                     </div> <!-- phone_job -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>phoneJob</mat-label>
+                            <mat-label>Teléfono del trabajo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:phone'">
                             </mat-icon>
-                            <input matInput maxlength="13" [formControlName]="'phone_job'" [placeholder]="'phoneJob'"
-                                [spellcheck]="false">
+                            <input matInput maxlength="13" [formControlName]="'phone_job'"
+                                [placeholder]="'Ingrese el teléfono del trabajo'" [spellcheck]="false">
                         </mat-form-field>
                     </div> <!-- position_job -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>positionJob</mat-label>
+                            <mat-label>Cargo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:collection'">
                             </mat-icon>
                             <input matInput maxlength="150" [formControlName]="'position_job'"
-                                [placeholder]="'positionJob'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el cargo que desempeña en su trabajo'" [spellcheck]="true">
                         </mat-form-field>
                     </div>
                 </form>

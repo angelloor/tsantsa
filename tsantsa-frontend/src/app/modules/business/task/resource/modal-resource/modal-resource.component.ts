@@ -25,8 +25,6 @@ export class ModalResourceComponent implements OnInit {
   private data!: AppInitialData;
   id_resource: string = '';
 
-  editMode: boolean = false;
-  userId: string = '';
   /**
    * Alert
    */
@@ -193,6 +191,9 @@ export class ModalResourceComponent implements OnInit {
      */
     resource = {
       ...resource,
+      name_resource: resource.name_resource.trim(),
+      description_resource: resource.description_resource.trim(),
+      link_resource: resource.link_resource.trim(),
       id_user_: parseInt(id_user_),
       id_resource: parseInt(resource.id_resource),
       task: {
@@ -209,7 +210,7 @@ export class ModalResourceComponent implements OnInit {
         next: (_resource: Resource) => {
           if (_resource) {
             this._notificationService.success(
-              'Recurso actualizada correctamente'
+              'Recurso actualizado correctamente'
             );
             this.closeModalResource();
           } else {

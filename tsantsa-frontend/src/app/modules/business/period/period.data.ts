@@ -3,6 +3,7 @@ import { Period } from './period.types';
 
 export const periods: Period[] = [];
 export const period: Period = {
+  dependency: '0',
   id_period: '',
   company: company,
   name_period: '',

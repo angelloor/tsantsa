@@ -1,14 +1,14 @@
 <div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
 
-    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent">
 
         <!-- Drawer -->
-        <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'"
-            [disableClose]="true" #matDrawer>
+        <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [opened]="false" [position]="'end'" [disableClose]="true"
+            #matDrawer>
             <router-outlet></router-outlet>
         </mat-drawer>
 
-        <mat-drawer-content class="flex flex-col">
+        <ng-container class="flex flex-col">
 
             <!-- Main -->
             <div class="flex-auto">
@@ -24,9 +24,9 @@
                                 {{count}}
                             </ng-container>
                             {{count | i18nPlural: {
-                            '=0' : 'No hay Mis asistencias',
-                            '=1' : 'Mis asistencias',
-                            'other': 'Mis asistencias'
+                            '=0' : 'No hay asistencias',
+                            '=1' : 'Asistencia',
+                            'other': 'Asistencias'
                             } }}
                         </div>
                     </div>
@@ -38,14 +38,9 @@
                             <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Buscar por name_course'">
+                                    [placeholder]="'Buscar por nombre de la asignatura'">
                             </mat-form-field>
                         </div>
-                        <!-- Add button -->
-                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createAssistance()">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Añadir</span>
-                        </button>
                     </div>
                 </div>
                 <!-- list -->
@@ -70,9 +65,10 @@
                                         <div class="font-medium leading-5 truncate">{{assistance.course.name_course}}
                                         </div>
                                         <div class="leading-5 truncate text-secondary">
-                                            {{assistance.start_marking_date + ' - ' + (assistance.end_marking_date ==
+                                            {{parseDate(assistance.start_marking_date, 'medium') + ' - ' +
+                                            (assistance.end_marking_date ==
                                             null ?
-                                            'Por marcar': assistance.end_marking_date)}}
+                                            'Por marcar': parseDate(assistance.end_marking_date, 'medium'))}}
                                         </div>
                                     </div>
                                 </div>
@@ -90,7 +86,7 @@
 
             </div>
 
-        </mat-drawer-content>
+        </ng-container>
 
     </mat-drawer-container>
 

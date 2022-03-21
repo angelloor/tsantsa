@@ -3,6 +3,8 @@ import { verifyToken } from '../../../utils/jwt';
 import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { Career } from './career.class';
 
+let ID_COMPANY: string = '';
+
 export const validation = (career: Career, url: string, token: string) => {
 	return new Promise<Career | Career[] | boolean | any>(
 		async (resolve, reject) => {
@@ -13,7 +15,8 @@ export const validation = (career: Career, url: string, token: string) => {
 
 			if (token) {
 				await verifyToken(token)
-					.then(async () => {
+					.then(async (decoded: any) => {
+						ID_COMPANY = decoded.company.id_company;
 						/**
 						 * Capa de validaciones
 						 */
@@ -114,7 +117,7 @@ export const validation = (career: Career, url: string, token: string) => {
 								/** set required attributes for action */
 								_career.name_career = career.name_career;
 								await _career
-									.read()
+									.read(ID_COMPANY)
 									.then((_careers: Career[]) => {
 										resolve(_careers);
 									})
@@ -125,7 +128,7 @@ export const validation = (career: Career, url: string, token: string) => {
 								/** set required attributes for action */
 								_career.id_career = career.id_career;
 								await _career
-									.specificRead()
+									.specificRead(ID_COMPANY)
 									.then((_career: Career) => {
 										resolve(_career);
 									})
@@ -161,6 +164,15 @@ export const validation = (career: Career, url: string, token: string) => {
 								await _career
 									.delete()
 									.then((response: boolean) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 13) == '/reportCareer') {
+								await _career
+									.reportCareer(ID_COMPANY)
+									.then((response: any) => {
 										resolve(response);
 									})
 									.catch((error: any) => {

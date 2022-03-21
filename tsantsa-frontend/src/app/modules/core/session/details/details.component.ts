@@ -30,7 +30,7 @@ export class SessionDetailsComponent implements OnInit {
   categoriesUser: User[] = [];
   selectedUser: User = user;
 
-  nameEntity: string = 'Sesiones';
+  nameEntity: string = 'Sesión';
   private data!: AppInitialData;
 
   /**

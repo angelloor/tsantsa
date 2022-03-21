@@ -1,10 +1,14 @@
+import { user } from 'app/modules/core/user/user.data';
 import { course } from '../course/course.data';
 import { Task } from './task.types';
 
 export const tasks: Task[] = [];
 export const task: Task = {
+  dependency: '0',
+  enrollment: '0',
   id_task: '',
   course: course,
+  user: user,
   name_task: '',
   description_task: '',
   status_task: false,

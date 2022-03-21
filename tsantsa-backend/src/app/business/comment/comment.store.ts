@@ -82,7 +82,7 @@ export const view_comment_specific_read = (comment: Comment) => {
 
 export const view_comment_by_user_task_read = (comment: Comment) => {
 	return new Promise<Comment[]>(async (resolve, reject) => {
-		const query = `select ${COLUMNS_RETURN} from business.view_comment bvc ${INNERS_JOIN} where bvc.id_user_task = ${comment.user_task}`;
+		const query = `select ${COLUMNS_RETURN} from business.view_comment bvc ${INNERS_JOIN} where bvc.id_user_task = ${comment.user_task} order by bvc.id_comment desc`;
 
 		// console.log(query);
 

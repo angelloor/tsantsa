@@ -1,0 +1,45 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Recursos</div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalResources()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- Resources -->
+    <form class="flex flex-col flex-auto px-6 pb-6 pt-2 sm:px-8 sm:pb-8 overflow-y-auto">
+        <div class="space-y-4">
+            <!-- Alert -->
+            <angel-alert class="mt-6" *ngIf="resources.length == 0" [appearance]="'outline'" [showIcon]="false"
+                [type]="'info'" [@shake]="alert.type === 'error'">
+                La tarea no tiene recursos
+            </angel-alert>
+            <ng-container *ngIf="resources.length > 0">
+                <ng-container
+                    *ngFor="let elementAssistance of formArrayResources.controls; let i = index; let first = first; let last = last; trackBy: trackByFn">
+                    <div class="relative flex  mt-4">
+                        <div class="flex flex-auto">
+                            <mat-form-field class="angel-mat-no-subscript w-full">
+                                <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                    [svgIcon]="'mat_outline:insert_link'">
+                                </mat-icon>
+                                <input matInput [formControl]="getFromControl(formArrayResources, i, 'name_resource')"
+                                    [matTooltip]="formArrayResources.getRawValue()[i].description_resource" readonly>
+                            </mat-form-field>
+                        </div>
+                        <ng-container>
+                            <button *ngIf="true" class="w-8 h-8 min-h-8 self-center pl-6" mat-icon-button
+                                [matTooltip]="'Abrir enlace ' + formArrayResources.getRawValue()[i].link_resource"
+                                (click)="openResource(formArrayResources.getRawValue()[i].link_resource)">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:external-link'">
+                                </mat-icon>
+                            </button>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </form>
+    <!-- Resources -->
+</div>

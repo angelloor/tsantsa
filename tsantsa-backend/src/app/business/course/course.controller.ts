@@ -3,6 +3,8 @@ import { verifyToken } from '../../../utils/jwt';
 import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { Course } from './course.class';
 
+let ID_COMPANY: string = '';
+
 export const validation = (course: Course, url: string, token: string) => {
 	return new Promise<Course | Course[] | boolean | any>(
 		async (resolve, reject) => {
@@ -13,7 +15,8 @@ export const validation = (course: Course, url: string, token: string) => {
 
 			if (token) {
 				await verifyToken(token)
-					.then(async () => {
+					.then(async (decoded: any) => {
+						ID_COMPANY = decoded.company.id_company;
 						/**
 						 * Capa de validaciones
 						 */
@@ -210,7 +213,7 @@ export const validation = (course: Course, url: string, token: string) => {
 								/** set required attributes for action */
 								_course.name_course = course.name_course;
 								await _course
-									.read()
+									.read(ID_COMPANY)
 									.then((_courses: Course[]) => {
 										resolve(_courses);
 									})
@@ -221,7 +224,7 @@ export const validation = (course: Course, url: string, token: string) => {
 								/** set required attributes for action */
 								_course.id_course = course.id_course;
 								await _course
-									.specificRead()
+									.specificRead(ID_COMPANY)
 									.then((_course: Course) => {
 										resolve(_course);
 									})
@@ -260,6 +263,17 @@ export const validation = (course: Course, url: string, token: string) => {
 								await _course
 									.delete()
 									.then((response: boolean) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 21) == '/reportCourseByPeriod') {
+								/** set required attributes for action */
+								_course.period = course.period;
+								await _course
+									.reportCourseByPeriod(ID_COMPANY)
+									.then((response: any) => {
 										resolve(response);
 									})
 									.catch((error: any) => {

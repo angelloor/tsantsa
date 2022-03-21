@@ -6,6 +6,7 @@ import { schedule } from './schedule/schedule.data';
 
 export const courses: Course[] = [];
 export const course: Course = {
+  dependency: '0',
   id_course: '',
   company: company,
   period: period,

@@ -113,7 +113,7 @@ export class TaskListComponent implements OnInit {
      *  Count Subscribe and readAll
      */
     this._taskService
-      .readAllTask()
+      .byUserRead(this.data.user.id_user)
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((tasks: Task[]) => {
         /**
@@ -150,7 +150,10 @@ export class TaskListComponent implements OnInit {
           /**
            * Search
            */
-          return this._taskService.readTaskByQuery(query.toLowerCase());
+          return this._taskService.readTaskByQuery(
+            this.data.user.id_user,
+            query.toLowerCase()
+          );
         })
       )
       .subscribe();

@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -18,6 +19,7 @@ const corsOptionsDelegate = (req: any, callback: any) => {
 	let corsOptions = {
 		origin: false,
 		optionsSuccessStatus: 200,
+		exposedHeaders: ['name_report', 'message'],
 	};
 
 	if (whitelist.indexOf(req.header('Origin')) !== -1) {
@@ -31,6 +33,7 @@ const corsOptionsDelegate = (req: any, callback: any) => {
 app.use(useragent.express());
 app.use(express.json());
 app.use(cors(corsOptionsDelegate));
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use('/', express.static('./public'));
 /**

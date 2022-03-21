@@ -25,7 +25,7 @@
                             </ng-container>
                             {{count | i18nPlural: {
                             '=0' : 'No hay Sesiones',
-                            '=1' : 'Sesiones',
+                            '=1' : 'Sesión',
                             'other': 'Sesiones'
                             } }}
                         </div>
@@ -38,7 +38,7 @@
                             <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
                                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
                                 <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Buscar por host_session | name_user'">
+                                    [placeholder]="'Buscar por IP | correo del usuario'">
                             </mat-form-field>
 
                         </div>

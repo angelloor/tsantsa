@@ -14,6 +14,8 @@ import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
+import moment from 'moment';
 import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
 import { career } from '../../career/career.data';
 import { CareerService } from '../../career/career.service';
@@ -30,19 +32,22 @@ import { ModalEnrollmentService } from '../modal-enrollment/modal-enrollment.ser
   selector: 'course-details',
   templateUrl: './details.component.html',
   animations: angelAnimations,
+  providers: [LocalDatePipe],
 })
 export class CourseDetailsComponent implements OnInit {
+  startDate: any = '';
+  endDate: any = '';
+
   categoriesPeriod: Period[] = [];
   selectedPeriod: Period = period;
 
   categoriesCareer: Career[] = [];
   selectedCareer: Career = career;
 
-  nameEntity: string = 'Curso';
+  nameEntity: string = 'Asignatura';
   private data!: AppInitialData;
 
   editMode: boolean = false;
-  userId: string = '';
   /**
    * Alert
    */
@@ -84,7 +89,8 @@ export class CourseDetailsComponent implements OnInit {
     private _layoutService: LayoutService,
     private _periodService: PeriodService,
     private _careerService: CareerService,
-    private _modalEnrollmentService: ModalEnrollmentService
+    private _modalEnrollmentService: ModalEnrollmentService,
+    private _localDatePipe: LocalDatePipe
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -164,6 +170,9 @@ export class CourseDetailsComponent implements OnInit {
          */
         this.course = course;
 
+        this.startDate = this.course.schedule.start_date_schedule;
+        this.endDate = this.course.schedule.end_date_schedule;
+
         // Period
         this._periodService
           .readAllPeriod()
@@ -194,6 +203,10 @@ export class CourseDetailsComponent implements OnInit {
          * Patch values to the form
          */
         this.patchForm();
+        /**
+         * disabledDependency
+         */
+        this.disabledDependency(this.course.dependency);
         /**
          * Toggle the edit mode off
          */
@@ -243,10 +256,20 @@ export class CourseDetailsComponent implements OnInit {
       id_career: this.course.career.id_career,
       id_schedule: this.course.schedule.id_schedule,
       creation_date_schedule: this.course.schedule.creation_date_schedule,
-      start_date_schedule: this.course.schedule.start_date_schedule,
-      end_date_schedule: this.course.schedule.end_date_schedule,
+      start_date_schedule: this.parseTime(
+        this.course.schedule.start_date_schedule
+      ),
+      end_date_schedule: this.parseTime(this.course.schedule.end_date_schedule),
       tolerance_schedule: this.course.schedule.tolerance_schedule,
     });
+  }
+  /**
+   * disabledDependency
+   */
+  disabledDependency(dependency: string): void {
+    if (parseInt(dependency) >= 1) {
+      this.courseForm.disable();
+    }
   }
   /**
    * On destroy
@@ -303,10 +326,21 @@ export class CourseDetailsComponent implements OnInit {
     const id_user_ = this.data.user.id_user;
     let course = this.courseForm.getRawValue();
     /**
+     *  change the default name
+     */
+    if (course.name_course.trim() == 'Nueva asignatura') {
+      this._notificationService.warn(
+        'Tienes que cambiar el nombre de la asignatura'
+      );
+      return;
+    }
+    /**
      * Delete whitespace (trim() the atributes type string)
      */
     course = {
       ...course,
+      name_course: course.name_course.trim(),
+      description_course: course.description_course.trim(),
       id_user_: parseInt(id_user_),
       id_course: parseInt(course.id_course),
       company: {
@@ -347,7 +381,7 @@ export class CourseDetailsComponent implements OnInit {
         next: (_course: Course) => {
           if (_course) {
             this._notificationService.success(
-              'Curso actualizada correctamente'
+              'Asignatura actualizada correctamente'
             );
             /**
              * Toggle the edit mode off
@@ -376,9 +410,9 @@ export class CourseDetailsComponent implements OnInit {
   deleteCourse(): void {
     this._angelConfirmationService
       .open({
-        title: 'Eliminar curso',
+        title: 'Eliminar asignatura',
         message:
-          '¿Estás seguro de que deseas eliminar esta curso? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas eliminar esta asignatura? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -415,7 +449,7 @@ export class CourseDetailsComponent implements OnInit {
                    * Return if the course wasn't deleted...
                    */
                   this._notificationService.success(
-                    'Curso eliminada correctamente'
+                    'Asignatura eliminada correctamente'
                   );
                   /**
                    * Get the current activated route
@@ -470,5 +504,74 @@ export class CourseDetailsComponent implements OnInit {
    */
   openModalEnrollment() {
     this._modalEnrollmentService.openModalEnrollment(this.course.id_course);
+  }
+  /**
+   * @param time
+   */
+  parseTime(time: string) {
+    return this._localDatePipe.transform(
+      this.getNowDateWithTime(time),
+      'shortTime'
+    );
+  }
+  /**
+   * getNowDateWithTime
+   * @param time
+   * @returns
+   */
+  getNowDateWithTime = (time: string) => {
+    const date = new Date();
+    return `${date.getFullYear()}-${
+      date.getMonth() + 1 <= 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+    }-${date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate()}T${time}`;
+  };
+  /**
+   * changeStartDateSchedule
+   * isBefore, isSame, and isAfter of moment
+   * @param form
+   */
+  changeStartDateSchedule(form: any) {
+    let startDateSchedule = form.getRawValue().start_date_schedule;
+
+    var isBefore = moment(this.getNowDateWithTime(startDateSchedule)).isBefore(
+      this.getNowDateWithTime(this.endDate)
+    );
+
+    if (isBefore) {
+      this.startDate = startDateSchedule;
+    } else {
+      this.courseForm.patchValue({
+        ...form.getRawValue(),
+        start_date_schedule: this.startDate,
+      });
+      this._notificationService.warn(
+        'La hora inicial tiene que ser menor que la final'
+      );
+    }
+  }
+
+  /**
+   * changeEndDateSchedule
+   * isBefore, isSame, and isAfter of moment
+   * @param form
+   */
+  changeEndDateSchedule(form: any) {
+    let endDateSchedule = form.getRawValue().end_date_schedule;
+
+    var isAfter = moment(this.getNowDateWithTime(endDateSchedule)).isAfter(
+      this.getNowDateWithTime(this.startDate)
+    );
+
+    if (isAfter) {
+      this.endDate = endDateSchedule;
+    } else {
+      this.courseForm.patchValue({
+        ...form.getRawValue(),
+        end_date_schedule: this.endDate,
+      });
+      this._notificationService.warn(
+        'La hora final tiene que ser mayor que la inicial'
+      );
+    }
   }
 }

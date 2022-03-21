@@ -79,10 +79,10 @@ export class TaskService {
     );
   }
   /**
-   * Read All Task
+   * readAllTask
    */
   readAllTask(): Observable<Task[]> {
-    return this._httpClient.get<Task[]>(this._url + '/read/query-all').pipe(
+    return this._httpClient.get<Task[]>(this._url + '/allRead').pipe(
       tap((tasks: Task[]) => {
         this._tasks.next(tasks);
       })
@@ -92,9 +92,11 @@ export class TaskService {
    * Read Task by query
    * @param query
    */
-  readTaskByQuery(query: string): Observable<Task[]> {
+  readTaskByQuery(id_user: string, query: string): Observable<Task[]> {
     return this._httpClient
-      .get<Task[]>(this._url + `/read/${query != '' ? query : 'query-all'}`)
+      .get<Task[]>(
+        this._url + `/read/${id_user}/${query != '' ? query : 'query-all'}`
+      )
       .pipe(
         tap((tasks: Task[]) => {
           this._tasks.next(tasks);
@@ -111,6 +113,25 @@ export class TaskService {
       .pipe(
         tap((tasks: Task) => {
           return tasks;
+        })
+      );
+  }
+  /**
+   * byUserRead
+   * @param id_user
+   */
+  byUserRead(id_user: string): Observable<Task[]> {
+    return this._httpClient
+      .get<Task[]>(this._url + `/byUserRead/${id_user}`)
+      .pipe(
+        tap((tasks: Task[]) => {
+          if (!tasks) {
+            this._tasks.next([]);
+            return [];
+          } else {
+            this._tasks.next(tasks);
+            return tasks;
+          }
         })
       );
   }
@@ -270,5 +291,25 @@ export class TaskService {
           )
       )
     );
+  }
+  /**
+   * reportTaskByCourse
+   */
+  reportTaskByCourse(id_course: string): Observable<any> {
+    return this._httpClient
+      .post(
+        this._url + `/reportTaskByCourse`,
+        {
+          course: {
+            id_course,
+          },
+        },
+        {
+          responseType: 'blob',
+          observe: 'response',
+          headers: new HttpHeaders().append('Content-Type', 'application/json'),
+        }
+      )
+      .pipe(map((response: any) => response));
   }
 }

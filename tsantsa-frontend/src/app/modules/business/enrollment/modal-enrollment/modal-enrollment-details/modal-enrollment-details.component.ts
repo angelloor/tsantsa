@@ -1,9 +1,6 @@
 import { angelAnimations } from '@angel/animations';
 import { AngelAlertType } from '@angel/components/alert';
-import {
-  ActionAngelConfirmation,
-  AngelConfirmationService,
-} from '@angel/services/confirmation';
+import { AngelConfirmationService } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
@@ -11,9 +8,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
+import { AppInitialData } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
 import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
 import { EnrollmentService } from '../../enrollment.service';
 import { Enrollment } from '../../enrollment.types';
@@ -23,13 +21,12 @@ import { ModalAssistancesService } from '../../modal-assistances/modal-assistanc
   selector: 'app-modal-enrollment-details',
   templateUrl: './modal-enrollment-details.component.html',
   animations: angelAnimations,
+  providers: [LocalDatePipe],
 })
 export class ModalEnrollmentDetailsComponent implements OnInit {
   nameEntity: string = 'Mis cursos';
   private data!: AppInitialData;
 
-  editMode: boolean = false;
-  userId: string = '';
   /**
    * Alert
    */
@@ -69,6 +66,7 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
     private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _matDialog: MatDialog,
+    private _localDatePipe: LocalDatePipe,
     private _modalAssistancesService: ModalAssistancesService
   ) {}
 
@@ -170,7 +168,9 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
    * Pacth the form with the information of the database
    */
   patchForm(): void {
-    this.enrollmentForm.patchValue(this.enrollment);
+    this.enrollmentForm.patchValue({
+      ...this.enrollment,
+    });
   }
   /**
    * On destroy
@@ -193,157 +193,47 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
   /** @ Public methods
 	  /** ----------------------------------------------------------------------------------------------------- */
   /**
-   * Update the enrollment
+   * closeModalEnrollment
    */
-  updateEnrollment(): void {
-    /**
-     * Get the enrollment
-     */
-    const id_user_ = this.data.user.id_user;
-    let enrollment = this.enrollmentForm.getRawValue();
-    /**
-     * Delete whitespace (trim() the atributes type string)
-     */
-    enrollment = {
-      ...enrollment,
-      id_user_: parseInt(id_user_),
-      id_enrollment: parseInt(enrollment.id_enrollment),
-      id_course: {
-        id_course: parseInt(enrollment.course.id_course),
-      },
-      id_user: {
-        id_user: parseInt(enrollment.user.id_user),
-      },
-    };
-    /**
-     * Update
-     */
-    this._enrollmentService
-      .updateEnrollment(enrollment)
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe({
-        next: (_enrollment: Enrollment) => {
-          if (_enrollment) {
-            this._notificationService.success(
-              'Mis cursos actualizada correctamente'
-            );
-          } else {
-            this._notificationService.error(
-              '¡Error interno!, consulte al administrador.'
-            );
-          }
-        },
-        error: (error: { error: MessageAPI }) => {
-          this._notificationService.error(
-            !error.error
-              ? '¡Error interno!, consulte al administrador.'
-              : !error.error.descripcion
-              ? '¡Error interno!, consulte al administrador.'
-              : error.error.descripcion
-          );
-        },
-      });
-  }
-  /**
-   * Delete the enrollment
-   */
-  deleteEnrollment(): void {
-    this._angelConfirmationService
-      .open({
-        title: 'Eliminar mis cursos',
-        message:
-          '¿Estás seguro de que deseas eliminar esta mis cursos? ¡Esta acción no se puede deshacer!',
-      })
-      .afterClosed()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((confirm: ActionAngelConfirmation) => {
-        if (confirm === 'confirmed') {
-          /**
-           * Get the current enrollment's id
-           */
-          const id_user_ = this.data.user.id_user;
-          const id_enrollment = this.enrollment.id_enrollment;
-          /**
-           * Get the next/previous enrollment's id
-           */
-          const currentIndex = this.enrollments.findIndex(
-            (item) => item.id_enrollment === id_enrollment
-          );
-
-          const nextIndex =
-            currentIndex +
-            (currentIndex === this.enrollments.length - 1 ? -1 : 1);
-          const nextId =
-            this.enrollments.length === 1 &&
-            this.enrollments[0].id_enrollment === id_enrollment
-              ? null
-              : this.enrollments[nextIndex].id_enrollment;
-          /**
-           * Delete the enrollment
-           */
-          this._enrollmentService
-            .deleteEnrollment(id_user_, id_enrollment)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe({
-              next: (response: boolean) => {
-                if (response) {
-                  /**
-                   * Return if the enrollment wasn't deleted...
-                   */
-                  this._notificationService.success(
-                    'Mis cursos eliminada correctamente'
-                  );
-                  /**
-                   * Get the current activated route
-                   */
-                  let route = this._activatedRoute;
-                  while (route.firstChild) {
-                    route = route.firstChild;
-                  }
-                  /**
-                   * Navigate to the next enrollment if available
-                   */
-                  if (nextId) {
-                    this._router.navigate(['../', nextId], {
-                      relativeTo: route,
-                    });
-                  } else {
-                    /**
-                     * Otherwise, navigate to the parent
-                     */
-                    this._router.navigate(['../'], { relativeTo: route });
-                  }
-                } else {
-                  this._notificationService.error(
-                    '¡Error interno!, consulte al administrador.'
-                  );
-                }
-              },
-              error: (error: { error: MessageAPI }) => {
-                this._notificationService.error(
-                  !error.error
-                    ? '¡Error interno!, consulte al administrador.'
-                    : !error.error.descripcion
-                    ? '¡Error interno!, consulte al administrador.'
-                    : error.error.descripcion
-                );
-              },
-            });
-          /**
-           * Mark for check
-           */
-          this._changeDetectorRef.markForCheck();
-        }
-        this._layoutService.setOpenModal(false);
-      });
-  }
-
   closeModalEnrollment(): void {
     this._matDialog.closeAll();
   }
+  /**
+   * openModalAssistance
+   */
   openModalAssistance(): void {
     this._modalAssistancesService.openModalAssistances(
       this.enrollment.course.id_course
     );
+  }
+  /**
+   * getNowDateWithTime
+   * @param time
+   * @param date
+   * @returns
+   */
+  getNowDateWithTime = (time: string) => {
+    const date = new Date();
+    return `${date.getFullYear()}-${
+      date.getMonth() + 1 <= 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+    }-${date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate()}T${time}`;
+  };
+  /**
+   * @param time
+   */
+  parseTime(time: string) {
+    return this._localDatePipe.transform(
+      this.getNowDateWithTime(time),
+      'shortTime'
+    );
+  }
+  /**
+   * parseDate
+   * @param date
+   * @returns
+   */
+
+  parseDate(date: string) {
+    return this._localDatePipe.transform(date, 'longDate');
   }
 }

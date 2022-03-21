@@ -1,3 +1,60 @@
+------------------------------ UTILS ------------------------------
+
+-- FUNCTION: core.utils_get_date_maximum_hour()
+-- DROP FUNCTION IF EXISTS core.utils_get_date_maximum_hour();
+
+CREATE OR REPLACE FUNCTION core.utils_get_date_maximum_hour(
+	)
+    RETURNS timestamp without time zone
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+			 DECLARE
+			 	_DAY DOUBLE PRECISION;
+				_DAY_FINAL CHARACTER VARYING;
+			 	_MONTH DOUBLE PRECISION;
+				_MONTH_FINAL CHARACTER VARYING;
+			 	_YEAR DOUBLE PRECISION;
+			 	_YEAR_FINAL CHARACTER VARYING;
+				_DATE CHARACTER VARYING;
+				_EXCEPTION TEXT DEFAULT 'Internal Error';
+			 BEGIN
+				_DAY = (select extract(day from now()::timestamp));
+				_MONTH = (select extract(month from now()::timestamp));
+				_YEAR = (select extract(year from now()::timestamp));
+				
+				IF (_DAY <= 9) THEN
+					_DAY_FINAL = '0'||_DAY||'';
+				ELSE
+					_DAY_FINAL = ''||_DAY||'';
+				END IF;
+				
+				IF (_MONTH <= 9) THEN
+					_MONTH_FINAL = '0'||_MONTH||'';
+				ELSE
+					_MONTH_FINAL = ''||_MONTH||'';
+				END IF;
+				
+				_YEAR_FINAL = ''||_YEAR||'';
+				
+				_DATE = ''||_YEAR_FINAL||'-'||_MONTH_FINAL||'-'||_DAY_FINAL||' 23:59:59';
+				
+				return _DATE::timestamp without time zone;
+				exception when others then 
+					-- RAISE NOTICE '%', SQLERRM;
+					IF (_EXCEPTION = 'Internal Error') THEN
+						RAISE EXCEPTION '%',SQLERRM USING DETAIL = '_database';
+					ELSE
+						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+					END IF;
+			 END;
+			 
+$BODY$;
+
+ALTER FUNCTION core.utils_get_date_maximum_hour()
+    OWNER TO postgres;
+
 ------------------------------ AUTH ------------------------------
 -- FUNCTION: core.auth_sign_in(character varying, character varying, character varying, json)
 -- DROP FUNCTION IF EXISTS core.auth_sign_in(character varying, character varying, character varying, json);
@@ -466,222 +523,26 @@ DECLARE
 	_RESPONSE2 NUMERIC DEFAULT 0;
 	_RESPONSE3 NUMERIC DEFAULT 0;
 	_RESPONSE4 NUMERIC DEFAULT 0;
+
+	_RESPONSE5 NUMERIC DEFAULT 0;
+	_RESPONSE6 NUMERIC DEFAULT 0;
+	_RESPONSE7 NUMERIC DEFAULT 0;
+	_RESPONSE8 NUMERIC DEFAULT 0;
+
+	_RESPONSE9 NUMERIC DEFAULT 0;
+	_RESPONSE10 NUMERIC DEFAULT 0;
+	_RESPONSE11 NUMERIC DEFAULT 0;
+	_RESPONSE12 NUMERIC DEFAULT 0;
+
+
 	_X RECORD;
 BEGIN
-		-- Por defecto
+		-- Administrador (Por defecto)
 		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
 		_ID_INITIAL = _CURRENT_ID_NAVIGATION;
 		FOR _X IN INSERT INTO core.navigation(
 			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Por defecto)', 'Navegación por defecto para el administrador', 'defaultNavigation', true, '[
-  {
-    "id": "business",
-    "title": "Académico",
-    "subtitle": "Administración académica del sistema",
-    "type": "group",
-    "icon": "heroicons_outline:cube-transparent",
-    "children": [
-      {
-        "id": "business.home",
-        "title": "Inicio",
-        "type": "basic",
-        "icon": "heroicons_outline:home",
-        "link": "/business/home"
-      },
-      {
-        "id": "business.period",
-        "title": "Periodo",
-        "type": "basic",
-        "icon": "mat_outline:timeline",
-        "link": "/business/period"
-      },
-      {
-        "id": "business.career",
-        "title": "Carrera",
-        "type": "basic",
-        "icon": "mat_outline:account_tree",
-        "link": "/business/career"
-      },
-      {
-        "id": "business.course",
-        "title": "Curso",
-        "type": "basic",
-        "icon": "heroicons_outline:academic-cap",
-        "link": "/business/course"
-      },
-      {
-        "id": "business.task",
-        "title": "Tarea",
-        "type": "basic",
-        "icon": "heroicons_outline:book-open",
-        "link": "/business/task"
-      },
-      {
-        "id": "business.my-courses",
-        "title": "Mis cursos",
-        "type": "basic",
-        "icon": "mat_outline:ballot",
-        "link": "/business/my-courses"
-      },
-      {
-        "id": "business.user-task",
-        "title": "Mis tareas",
-        "type": "basic",
-        "icon": "mat_outline:auto_stories",
-        "link": "/business/user-task"
-      },
-      {
-        "id": "business.assistance",
-        "title": "Mis asistencias",
-        "type": "basic",
-        "icon": "mat_solid:blur_linear",
-        "link": "/business/assistance"
-      }
-    ]
-  },
-  {
-    "id": "core",
-    "title": "Core",
-    "subtitle": "Administración core del sistema",
-    "type": "group",
-    "icon": "heroicons_outline:chip",
-    "children": [
-      {
-        "id": "core.company",
-        "title": "Institución",
-        "type": "basic",
-        "icon": "heroicons_outline:office-building",
-        "link": "/core/company"
-      },
-      {
-        "id": "core.validation",
-        "title": "Validaciones",
-        "type": "basic",
-        "icon": "mat_outline:security",
-        "link": "/core/validation"
-      },
-      {
-        "id": "core.navigation",
-        "title": "Navegación",
-        "type": "basic",
-        "icon": "heroicons_outline:template",
-        "link": "/core/navigation"
-      },
-      {
-        "id": "core.profile",
-        "title": "Perfil",
-        "type": "basic",
-        "icon": "heroicons_outline:user-group",
-        "link": "/core/profile"
-      },
-      {
-        "id": "core.user",
-        "title": "Usuario",
-        "type": "basic",
-        "icon": "heroicons_outline:user",
-        "link": "/core/user"
-      },
-      {
-        "id": "core.session",
-        "title": "Sesiones",
-        "type": "basic",
-        "icon": "heroicons_outline:login",
-        "link": "/core/session"
-      },
-      {
-        "id": "core.system-event",
-        "title": "Eventos del sistema",
-        "type": "basic",
-        "icon": "mat_outline:event",
-        "link": "/core/system-event"
-      }
-    ]
-  }
-]', false) returning id_navigation LOOP
-			_RESPONSE1 = _X.id_navigation;
-		END LOOP;
-		
-		
-		-- Compacta
-		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
-		FOR _X IN INSERT INTO core.navigation(
-			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
-			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Compacta)', 'Navegación compacta para el administrador', 'compactNavigation',  true, '[
-  {
-    "id": "core",
-    "title": "Core",
-    "type": "aside",
-    "icon": "heroicons_outline:chip",
-    "children": []
-  },
-  {
-    "id": "business",
-    "title": "Académico",
-    "type": "aside",
-    "icon": "mat_outline:business",
-    "children": []
-  }
-]', false) returning id_navigation LOOP
-			_RESPONSE2 = _X.id_navigation;
-		END LOOP;
-		
-		
-		-- Futurista
-		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
-		FOR _X IN INSERT INTO core.navigation(
-			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
-			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Futurista)', 'Navegación futurista para el administrador', 'futuristicNavigation',  true, '[
-	{
-		"id": "business",
-		"title": "Académico",
-		"subtitle": "Administración académica del sistema",
-		"type": "group",
-		"icon": "heroicons_outline:cube-transparent",
-		"children": [
-			{
-				"id": "business.home",
-				"title": "Inicio",
-				"type": "basic",
-				"icon": "heroicons_outline:home",
-				"link": "/business/home"
-			},
-			{
-				"id": "business.period",
-				"title": "Periodo",
-				"type": "basic",
-				"icon": "heroicons_outline:fire",
-				"link": "/business/period"
-			},
-			{
-				"id": "business.career",
-				"title": "Carrera",
-				"type": "basic",
-				"icon": "heroicons_outline:fire",
-				"link": "/business/career"
-			},
-			{
-				"id": "business.task",
-				"title": "Tarea",
-				"type": "basic",
-				"icon": "heroicons_outline:fire",
-				"link": "/business/task"
-			},
-			{
-				"id": "business.user_task",
-				"title": "Mis tareas",
-				"type": "basic",
-				"icon": "heroicons_outline:fire",
-				"link": "/business/user_task"
-			},
-			{
-				"id": "business.assistance",
-				"title": "Mis asistencias",
-				"type": "basic",
-				"icon": "heroicons_outline:fire",
-				"link": "/business/assistance"
-			}
-		]
-	},
 	{
 		"id": "core",
 		"title": "Core",
@@ -739,17 +600,68 @@ BEGIN
 				"link": "/core/system-event"
 			}
 		]
+	},
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.period",
+				"title": "Periodos",
+				"type": "basic",
+				"icon": "mat_outline:timeline",
+				"link": "/business/period"
+			},
+			{
+				"id": "business.career",
+				"title": "Cursos",
+				"type": "basic",
+				"icon": "mat_outline:account_tree",
+				"link": "/business/career"
+			},
+			{
+				"id": "business.course",
+				"title": "Asignaturas",
+				"type": "basic",
+				"icon": "heroicons_outline:academic-cap",
+				"link": "/business/course"
+			},
+			{
+				"id": "business.task",
+				"title": "Tareas",
+				"type": "basic",
+				"icon": "heroicons_outline:book-open",
+				"link": "/business/task"
+			}
+		]
+	},
+	{
+		"id": "report",
+		"title": "Reportes",
+		"subtitle": "Reportes del sistema",
+		"type": "basic",
+		"link": "/report"
 	}
 ]', false) returning id_navigation LOOP
-			_RESPONSE3 = _X.id_navigation;
+			_RESPONSE1 = _X.id_navigation;
 		END LOOP;
 		
 		
-		-- Horizontal
+		-- Administrador (Compacta)
 		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
 		FOR _X IN INSERT INTO core.navigation(
 			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
-			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Horizontal)', 'Navegación horizontal para el administrador', 'horizontalNavigation', false, '[
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Compacta)', 'Navegación compacta para el administrador', 'compactNavigation',  true, '[
   {
     "id": "core",
     "title": "Core",
@@ -763,12 +675,527 @@ BEGIN
     "type": "aside",
     "icon": "mat_outline:business",
     "children": []
+  },
+  {
+    "id": "report",
+    "title": "Reportes",
+    "type": "basic",
+    "icon": "heroicons_outline:document-report",
+    "link": "/report"
+  }
+]', false) returning id_navigation LOOP
+			_RESPONSE2 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Administrador (Futurista)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Futurista)', 'Navegación futurista para el administrador', 'futuristicNavigation',  true, '[
+	{
+		"id": "core",
+		"title": "Core",
+		"subtitle": "Administración core del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:chip",
+		"children": [
+			{
+				"id": "core.company",
+				"title": "Institución",
+				"type": "basic",
+				"icon": "heroicons_outline:office-building",
+				"link": "/core/company"
+			},
+			{
+				"id": "core.validation",
+				"title": "Validaciones",
+				"type": "basic",
+				"icon": "mat_outline:security",
+				"link": "/core/validation"
+			},
+			{
+				"id": "core.navigation",
+				"title": "Navegación",
+				"type": "basic",
+				"icon": "heroicons_outline:template",
+				"link": "/core/navigation"
+			},
+			{
+				"id": "core.profile",
+				"title": "Perfil",
+				"type": "basic",
+				"icon": "heroicons_outline:user-group",
+				"link": "/core/profile"
+			},
+			{
+				"id": "core.user",
+				"title": "Usuario",
+				"type": "basic",
+				"icon": "heroicons_outline:user",
+				"link": "/core/user"
+			},
+			{
+				"id": "core.session",
+				"title": "Sesiones",
+				"type": "basic",
+				"icon": "heroicons_outline:login",
+				"link": "/core/session"
+			},
+			{
+				"id": "core.system-event",
+				"title": "Eventos del sistema",
+				"type": "basic",
+				"icon": "mat_outline:event",
+				"link": "/core/system-event"
+			}
+		]
+	},
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.period",
+				"title": "Periodos",
+				"type": "basic",
+				"icon": "mat_outline:timeline",
+				"link": "/business/period"
+			},
+			{
+				"id": "business.career",
+				"title": "Cursos",
+				"type": "basic",
+				"icon": "mat_outline:account_tree",
+				"link": "/business/career"
+			},
+			{
+				"id": "business.course",
+				"title": "Asignaturas",
+				"type": "basic",
+				"icon": "heroicons_outline:academic-cap",
+				"link": "/business/course"
+			},
+			{
+				"id": "business.task",
+				"title": "Tareas",
+				"type": "basic",
+				"icon": "heroicons_outline:book-open",
+				"link": "/business/task"
+			}
+		]
+	},
+	{
+		"id": "report",
+		"title": "Reportes",
+		"subtitle": "Reportes del sistema",
+		"type": "basic",
+		"link": "/report"
+	}
+]', false) returning id_navigation LOOP
+			_RESPONSE3 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Administrador (Horizontal)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Horizontal)', 'Navegación horizontal para el administrador', 'horizontalNavigation', true, '[
+  {
+    "id": "core",
+    "title": "Core",
+    "type": "aside",
+    "icon": "heroicons_outline:chip",
+    "children": []
+  },
+  {
+    "id": "business",
+    "title": "Académico",
+    "type": "aside",
+    "icon": "mat_outline:business",
+    "children": []
+  },
+  {
+    "id": "report",
+    "title": "Reportes",
+    "type": "basic",
+    "icon": "heroicons_outline:document-report",
+    "link": "/report"
   }
 ]', false) returning id_navigation LOOP
 			_RESPONSE4 = _X.id_navigation;
 		END LOOP;
 		
-		IF (_RESPONSE1 >= 1 AND _RESPONSE2 >= 1 AND _RESPONSE3 >=1 AND _RESPONSE4 >= 1) THEN
+		-- Maestro (Por defecto)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		_ID_INITIAL = _CURRENT_ID_NAVIGATION;
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Por defecto)', 'Navegación por defecto para el maestro', 'defaultNavigation', true, '[
+	{
+		"id": "core",
+		"title": "Core",
+		"subtitle": "Administración core del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:chip",
+		"children": [
+			{
+				"id": "core.user",
+				"title": "Usuario",
+				"type": "basic",
+				"icon": "heroicons_outline:user",
+				"link": "/core/user"
+			}
+		]
+	},
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.period",
+				"title": "Periodos",
+				"type": "basic",
+				"icon": "mat_outline:timeline",
+				"link": "/business/period"
+			},
+			{
+				"id": "business.career",
+				"title": "Cursos",
+				"type": "basic",
+				"icon": "mat_outline:account_tree",
+				"link": "/business/career"
+			},
+			{
+				"id": "business.course",
+				"title": "Asignaturas",
+				"type": "basic",
+				"icon": "heroicons_outline:academic-cap",
+				"link": "/business/course"
+			},
+			{
+				"id": "business.task",
+				"title": "Tareas",
+				"type": "basic",
+				"icon": "heroicons_outline:book-open",
+				"link": "/business/task"
+			},
+			{
+				"id": "business.user-task",
+				"title": "Mis tareas",
+				"type": "basic",
+				"icon": "mat_outline:auto_stories",
+				"link": "/business/user-task"
+			}
+		]
+	},
+	{
+		"id": "report",
+		"title": "Reportes",
+		"subtitle": "Reportes del sistema",
+		"type": "basic",
+		"link": "/report"
+	}
+]', false) returning id_navigation LOOP
+			_RESPONSE5 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Maestro (Compacta)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Compacta)', 'Navegación compacta para el maestro', 'compactNavigation',  true, '[
+  {
+    "id": "core",
+    "title": "Core",
+    "type": "aside",
+    "icon": "heroicons_outline:chip",
+    "children": []
+  },
+  {
+    "id": "business",
+    "title": "Académico",
+    "type": "aside",
+    "icon": "mat_outline:business",
+    "children": []
+  },
+  {
+    "id": "report",
+    "title": "Reportes",
+    "type": "basic",
+    "icon": "heroicons_outline:document-report",
+    "link": "/report"
+  }
+]', false) returning id_navigation LOOP
+			_RESPONSE6 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Maestro (Futurista)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Futurista)', 'Navegación futurista para el maestro', 'futuristicNavigation',  true, '[
+	{
+		"id": "core",
+		"title": "Core",
+		"subtitle": "Administración core del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:chip",
+		"children": [
+			{
+				"id": "core.user",
+				"title": "Usuario",
+				"type": "basic",
+				"icon": "heroicons_outline:user",
+				"link": "/core/user"
+			}
+		]
+	},
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.period",
+				"title": "Periodos",
+				"type": "basic",
+				"icon": "mat_outline:timeline",
+				"link": "/business/period"
+			},
+			{
+				"id": "business.career",
+				"title": "Cursos",
+				"type": "basic",
+				"icon": "mat_outline:account_tree",
+				"link": "/business/career"
+			},
+			{
+				"id": "business.course",
+				"title": "Asignaturas",
+				"type": "basic",
+				"icon": "heroicons_outline:academic-cap",
+				"link": "/business/course"
+			},
+			{
+				"id": "business.task",
+				"title": "Tareas",
+				"type": "basic",
+				"icon": "heroicons_outline:book-open",
+				"link": "/business/task"
+			},
+			{
+				"id": "business.user-task",
+				"title": "Mis tareas",
+				"type": "basic",
+				"icon": "mat_outline:auto_stories",
+				"link": "/business/user-task"
+			}
+		]
+	},
+	{
+		"id": "report",
+		"title": "Reportes",
+		"subtitle": "Reportes del sistema",
+		"type": "basic",
+		"link": "/report"
+	}
+]', false) returning id_navigation LOOP
+			_RESPONSE7 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Maestro (Horizontal)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Horizontal)', 'Navegación horizontal para el maestro', 'horizontalNavigation', true, '[
+  {
+    "id": "core",
+    "title": "Core",
+    "type": "aside",
+    "icon": "heroicons_outline:chip",
+    "children": []
+  },
+  {
+    "id": "business",
+    "title": "Académico",
+    "type": "aside",
+    "icon": "mat_outline:business",
+    "children": []
+  },
+  {
+    "id": "report",
+    "title": "Reportes",
+    "type": "basic",
+    "icon": "heroicons_outline:document-report",
+    "link": "/report"
+  }
+]', false) returning id_navigation LOOP
+			_RESPONSE8 = _X.id_navigation;
+		END LOOP;
+
+		-- Estudiante (Por defecto)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		_ID_INITIAL = _CURRENT_ID_NAVIGATION;
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Estudiante (Por defecto)', 'Navegación por defecto para el estudiante', 'defaultNavigation', true, '[
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.my-courses",
+				"title": "Mis asignaturas",
+				"type": "basic",
+				"icon": "mat_outline:ballot",
+				"link": "/business/my-courses"
+			},
+			{
+				"id": "business.user-task",
+				"title": "Mis tareas",
+				"type": "basic",
+				"icon": "mat_outline:auto_stories",
+				"link": "/business/user-task"
+			},
+			{
+				"id": "business.assistance",
+				"title": "Mis asistencias",
+				"type": "basic",
+				"icon": "mat_solid:blur_linear",
+				"link": "/business/assistance"
+			}
+		]
+	}
+]', false) returning id_navigation LOOP
+			_RESPONSE9 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Estudiante (Compacta)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Estudiante (Compacta)', 'Navegación compacta para el estudiante', 'compactNavigation',  true, '[
+  {
+    "id": "business",
+    "title": "Académico",
+    "type": "aside",
+    "icon": "mat_outline:business",
+    "children": []
+  }
+]', false) returning id_navigation LOOP
+			_RESPONSE10 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Estudiante (Futurista)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Estudiante (Futurista)', 'Navegación futurista para el estudiante', 'futuristicNavigation',  true, '[
+	{
+		"id": "business",
+		"title": "Académico",
+		"subtitle": "Administración académica del sistema",
+		"type": "group",
+		"icon": "heroicons_outline:cube-transparent",
+		"children": [
+			{
+				"id": "business.home",
+				"title": "Inicio",
+				"type": "basic",
+				"icon": "heroicons_outline:home",
+				"link": "/business/home"
+			},
+			{
+				"id": "business.my-courses",
+				"title": "Mis asignaturas",
+				"type": "basic",
+				"icon": "mat_outline:ballot",
+				"link": "/business/my-courses"
+			},
+			{
+				"id": "business.user-task",
+				"title": "Mis tareas",
+				"type": "basic",
+				"icon": "mat_outline:auto_stories",
+				"link": "/business/user-task"
+			},
+			{
+				"id": "business.assistance",
+				"title": "Mis asistencias",
+				"type": "basic",
+				"icon": "mat_solid:blur_linear",
+				"link": "/business/assistance"
+			}
+		]
+	}
+]', false) returning id_navigation LOOP
+			_RESPONSE11 = _X.id_navigation;
+		END LOOP;
+		
+		
+		-- Estudiante (Horizontal)
+		_CURRENT_ID_NAVIGATION = (select nextval('core.serial_navigation')-1);	
+		FOR _X IN INSERT INTO core.navigation(
+			id_navigation, id_company, name_navigation, description_navigation, type_navigation, status_navigation, content_navigation, deleted_navigation)
+			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Estudiante (Horizontal)', 'Navegación horizontal para el estudiante', 'horizontalNavigation', true, '[
+  {
+    "id": "business",
+    "title": "Académico",
+    "type": "aside",
+    "icon": "mat_outline:business",
+    "children": []
+  }
+]', false) returning id_navigation LOOP
+			_RESPONSE12 = _X.id_navigation;
+		END LOOP;
+
+		IF (_RESPONSE1 >= 1 AND _RESPONSE2 >= 1 AND _RESPONSE3 >=1 AND _RESPONSE4 >= 1 AND _RESPONSE5 >= 1 AND _RESPONSE6 >= 1 AND _RESPONSE7 >=1 AND _RESPONSE8 >= 1 AND _RESPONSE9 >= 1 AND _RESPONSE10 >= 1 AND _RESPONSE11 >=1 AND _RESPONSE12 >= 1) THEN
 			RETURN true;
 		ELSE
 			RETURN false;
@@ -797,6 +1224,7 @@ CREATE OR REPLACE FUNCTION dev.dml_create_initial_data(
 AS $BODY$
 DECLARE
 	_ID_INITIAL NUMERIC;
+	_ID_INITIAL_PROFILE NUMERIC;
 	_CURRENT_ID_SETTING NUMERIC;
 	_ID_SETTING NUMERIC;
 	_CURRENT_ID_COMPANY NUMERIC;
@@ -809,7 +1237,11 @@ DECLARE
     _ID_PERSON NUMERIC;
 	_CREATE_NAVIGATION BOOLEAN;
     _CURRENT_ID_PROFILE NUMERIC;
+    _CURRENT_ID_PROFILE_TEACHER NUMERIC;
+    _CURRENT_ID_PROFILE_STUDENT NUMERIC;
     _ID_PROFILE NUMERIC;
+    _ID_PROFILE_TEACHER NUMERIC;
+    _ID_PROFILE_STUDENT NUMERIC;
 	_CURRENT_ID_PROFILE_NAVIGATION NUMERIC;
 	_ID_PROFILE_NAVIGATION NUMERIC;
     _CURRENT_ID_USER NUMERIC;
@@ -843,7 +1275,7 @@ BEGIN
 					
 					IF (_ID_JOB >= 1) THEN
 						_CURRENT_ID_PERSON = (select nextval('core.serial_person')-1);	
-						FOR _X IN INSERT INTO core.person(id_person, id_academic, id_job, dni_person, name_person, last_name_person, address_person, phone_person, deleted_person) VALUES (_CURRENT_ID_PERSON, _ID_ACADEMIC, _ID_JOB, '1600744443', 'EDGAR RENATO', 'VARGAS TANCHIMIA', 'TSURAKU', '+593995486239', false) RETURNING id_person LOOP
+						FOR _X IN INSERT INTO core.person(id_person, id_academic, id_job, dni_person, name_person, last_name_person, address_person, phone_person, deleted_person) VALUES (_CURRENT_ID_PERSON, _ID_ACADEMIC, _ID_JOB, '1600959348', 'EDGAR RENATO', 'VARGAS TANCHIMIA', 'TSURAKU', '+593995486239', false) RETURNING id_person LOOP
 							_ID_PERSON = _X.id_person;
 						END LOOP;
 						
@@ -851,9 +1283,23 @@ BEGIN
 							_CREATE_NAVIGATION = (select * from dev.dml_create_navigation());
 							
 							IF (_CREATE_NAVIGATION) THEN 
-								_CURRENT_ID_PROFILE = (select nextval('core.serial_profile')-1);	
-								FOR _X IN INSERT INTO core.profile(id_profile, id_company, type_profile, name_profile, description_profile, status_profile, deleted_profile) VALUES (_CURRENT_ID_PROFILE, _ID_COMPANY, 'administator', 'Administrador', 'Perfil para el administrador', true, false) RETURNING id_profile LOOP
+								_CURRENT_ID_PROFILE = (select nextval('core.serial_profile')-1);
+								_ID_INITIAL_PROFILE = _CURRENT_ID_PROFILE;
+
+								FOR _X IN INSERT INTO core.profile(id_profile, id_company, type_profile, name_profile, description_profile, status_profile, deleted_profile) VALUES (_CURRENT_ID_PROFILE, _ID_COMPANY, 'administator', 'Perfil Administrador', 'Perfil de usuario para el administrador', true, false) RETURNING id_profile LOOP
 									_ID_PROFILE = _X.id_profile;
+								END LOOP;
+
+								_CURRENT_ID_PROFILE_TEACHER = (select nextval('core.serial_profile')-1);	
+
+								FOR _X IN INSERT INTO core.profile(id_profile, id_company, type_profile, name_profile, description_profile, status_profile, deleted_profile) VALUES (_CURRENT_ID_PROFILE_TEACHER, _ID_COMPANY, 'commonProfile', 'Perfil Maestro', 'Perfil de usuario para el maestro', true, false) RETURNING id_profile LOOP
+									_ID_PROFILE_TEACHER = _X.id_profile;
+								END LOOP;
+
+								_CURRENT_ID_PROFILE_STUDENT = (select nextval('core.serial_profile')-1);	
+
+								FOR _X IN INSERT INTO core.profile(id_profile, id_company, type_profile, name_profile, description_profile, status_profile, deleted_profile) VALUES (_CURRENT_ID_PROFILE_STUDENT, _ID_COMPANY, 'commonProfile', 'Perfil Estudiante', 'Perfil de usuario para el estudiante', true, false) RETURNING id_profile LOOP
+									_ID_PROFILE_STUDENT = _X.id_profile;
 								END LOOP;
 								
 								IF (_ID_PROFILE >= 1) THEN
@@ -878,7 +1324,49 @@ BEGIN
 									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE, 4) RETURNING id_profile_navigation LOOP
 										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
 									END LOOP;
-									
+
+									-- TEACHER
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_TEACHER, 5) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_TEACHER, 6) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_TEACHER, 7) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_TEACHER, 8) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									-- STUDENT
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_STUDENT, 9) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_STUDENT, 10) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_STUDENT, 11) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
+									_CURRENT_ID_PROFILE_NAVIGATION = (select nextval('core.serial_profile_navigation')-1);
+									FOR _X IN INSERT INTO core.profile_navigation(id_profile_navigation, id_profile, id_navigation) VALUES (_CURRENT_ID_PROFILE_NAVIGATION, _ID_PROFILE_STUDENT, 12) RETURNING id_profile_navigation LOOP
+										_ID_PROFILE_NAVIGATION = _X.id_profile_navigation;
+									END LOOP;
+
 									_CURRENT_ID_USER = (select nextval('core.serial_user')-1);
 									FOR _X IN INSERT INTO core.user(id_user, id_company, id_person, id_profile, type_user, name_user, password_user, avatar_user, status_user, deleted_user) VALUES (_CURRENT_ID_USER, _ID_COMPANY, _ID_PERSON, _ID_PROFILE, 'teacher', 'tsantsa.edu@gmail.com', 'uOuuMWQb8Ll7Kj9QkunbTg==', 'default.svg', true, false) RETURNING id_user LOOP
 										_ID_USER = _X.id_user;
@@ -936,8 +1424,8 @@ BEGIN
 				IF (_CURRENT_ID_PERSON >= 1) THEN 
 					EXECUTE 'select setval(''core.serial_person'', '||_CURRENT_ID_PERSON||')';
 				END IF;
-				IF (_CURRENT_ID_PROFILE >= 1) THEN 
-					EXECUTE 'select setval(''core.serial_profile'', '||_CURRENT_ID_PROFILE||')';
+				IF (_ID_INITIAL_PROFILE >= 1) THEN 
+					EXECUTE 'select setval(''core.serial_profile'', '||_ID_INITIAL_PROFILE||')';
 				END IF;
 				IF (_ID_INITIAL >= 1) THEN 
 					EXECUTE 'select setval(''core.serial_profile_navigation'', '||_ID_INITIAL||')';

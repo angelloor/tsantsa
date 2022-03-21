@@ -26,6 +26,7 @@ import { ModalUserTaskDetailsComponent } from './modal-user-task/modal-user-task
 import { ModalUserTaskComponent } from './modal-user-task/modal-user-task.component';
 import { UserTaskComponent } from './user-task.component';
 import { userTaskRoutes } from './user-task.routing';
+import { ModalResourcesComponent } from './modal-resources/modal-resources.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { userTaskRoutes } from './user-task.routing';
     UserTaskComponent,
     ModalUserTaskComponent,
     ModalUserTaskDetailsComponent,
+    ModalResourcesComponent,
   ],
   imports: [
     RouterModule.forChild(userTaskRoutes),

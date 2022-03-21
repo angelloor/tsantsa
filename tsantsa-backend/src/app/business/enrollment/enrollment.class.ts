@@ -1,5 +1,10 @@
+import path from 'path';
+import { generateRandomNumber } from '../../../utils/global';
+import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { User } from '../../core/user/user.class';
 import { _user } from '../../core/user/user.data';
+import { Report } from '../../report/report.class';
+import { reportEnrollmentByCourse } from '../../report/report.declarate';
 import { Course } from '../course/course.class';
 import { _course } from '../course/course.data';
 import {
@@ -213,7 +218,52 @@ export class Enrollment {
 				});
 		});
 	}
+	/**
+	 * Reports
+	 */
+	reportEnrollmentByCourse() {
+		return new Promise<any>(async (resolve, reject) => {
+			await view_enrollment_by_course_read(this)
+				.then(async (enrollments: Enrollment[]) => {
+					if (enrollments.length > 0) {
+						/**
+						 * Mutate response
+						 */
+						const _enrollments = this.mutateResponse(enrollments);
 
+						const name_report = `report${generateRandomNumber(9)}`;
+
+						const pathFinal = `${path.resolve(
+							'./'
+						)}/file_store/report/${name_report}.pdf`;
+						/**
+						 * Generar html
+						 */
+						const html = await reportEnrollmentByCourse(_enrollments);
+						/**
+						 * Instance the class
+						 */
+						const _report = new Report();
+
+						const landscape: boolean = false;
+
+						await _report
+							.generateReport(name_report, html, landscape)
+							.then(() => {
+								resolve({ pathFinal, name_report });
+							})
+							.catch((error: any) => {
+								reject(error);
+							});
+					} else {
+						resolve(_mensajes[10]);
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
 	/**
 	 * Eliminar ids de entidades externas y formatear la informacion en el esquema correspondiente
 	 * @param enrollments
@@ -254,6 +304,7 @@ export class Enrollment {
 					description_course: item.description_course,
 					status_course: item.status_course,
 					creation_date_course: item.creation_date_course,
+					tasks: item.tasks,
 				},
 				user: {
 					id_user: item.id_user,
@@ -293,6 +344,7 @@ export class Enrollment {
 			delete _enrollment.description_course;
 			delete _enrollment.status_course;
 			delete _enrollment.creation_date_course;
+			delete _enrollment.tasks;
 
 			delete _enrollment.id_period;
 			delete _enrollment.name_period;

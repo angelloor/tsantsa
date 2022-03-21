@@ -125,15 +125,15 @@
                         {{alert.message}}
                         <!-- name_profile -->
                         <mat-error *ngIf="profileForm.get('name_profile')?.hasError('required')">
-                            • Ingrese name_profile
+                            • Ingrese el nombre del perfil
                         </mat-error>
                         <!-- description_profile -->
                         <mat-error *ngIf="profileForm.get('description_profile')?.hasError('required')">
-                            • Ingrese description_profile
+                            • Ingrese la descripción del perfil
                         </mat-error>
                         <!-- status_profile -->
                         <mat-error *ngIf="profileForm.get('status_profile')?.hasError('required')">
-                            • Ingrese status_profile
+                            • Ingrese el estado del perfil
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
@@ -153,27 +153,27 @@
                     <!-- name_profile -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameProfile</mat-label>
+                            <mat-label>Nombre del perfil</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:credit-card'">
                             </mat-icon>
                             <input matInput maxlength="100" [formControlName]="'name_profile'"
-                                [placeholder]="'nameProfile'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el nombre del perfil'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- description_profile -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>descriptionProfile</mat-label>
+                            <mat-label>Descripción del perfil</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                             </mat-icon>
                             <input matInput maxlength="250" [formControlName]="'description_profile'"
-                                [placeholder]="'descriptionProfile'" [spellcheck]="true">
+                                [placeholder]="'Ingrese la descripción del perfil'" [spellcheck]="true">
                         </mat-form-field>
                     </div>
                     <!-- status_profile -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>status_profile</mat-label>
+                            <mat-label>Estado del perfil</mat-label>
                             <mat-select [formControlName]="'status_profile'" [value]="false">
                                 <mat-option [value]="true">Activo</mat-option>
                                 <mat-option [value]="false">Inactivo</mat-option>

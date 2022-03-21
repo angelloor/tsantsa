@@ -25,7 +25,7 @@ AS $BODY$
 						inner join core.view_company cvc on bvp.id_company = cvc.id_company
 						where bvp.id_period = _ID_PERIOD;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar period';
+					_EXCEPTION = 'Ocurrió un error al ingresar el periodo';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -74,7 +74,7 @@ AS $BODY$
 						inner join core.view_company cvc on bvp.id_company = cvc.id_company
 						where bvp.id_period = _id_period;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar period';
+					_EXCEPTION = 'Ocurrió un error al actualizar el periodo';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -111,14 +111,14 @@ AS $BODY$
 				-- Get the id company _ID_COMPANY
 				_ID_COMPANY = (select vu.id_company from core.view_user vu where vu.id_user = id_user_); 
 			
-				_ID_CAREER = (select * from business.dml_career_create(id_user_, _ID_COMPANY, 'Nueva carrera', '', false, now()::timestamp, false));
+				_ID_CAREER = (select * from business.dml_career_create(id_user_, _ID_COMPANY, 'Nuevo curso', '', false, now()::timestamp, false));
 
 				IF (_ID_CAREER >= 1) THEN
 					RETURN QUERY select bvc.id_career, bvc.id_company, bvc.name_career, bvc.description_career, bvc.status_career, bvc.creation_date_career, bvc.deleted_career, cvc.name_company, cvc.acronym_company, cvc.address_company, cvc.status_company from business.view_career bvc
 						inner join core.view_company cvc on bvc.id_company = cvc.id_company
 						where bvc.id_career = _ID_CAREER;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar career';
+					_EXCEPTION = 'Ocurrió un error al ingresar el curso';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -165,7 +165,7 @@ AS $BODY$
 						inner join core.view_company cvc on bvc.id_company = cvc.id_company
 						where bvc.id_career = _id_career;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar career';
+					_EXCEPTION = 'Ocurrió un error al actualizar el curso';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -212,21 +212,21 @@ AS $BODY$
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				
-				_ID_CAREER = (select bvc.id_career from business.view_career bvc order by bvc.id_career desc limit 1);
+				_ID_CAREER = (select bvc.id_career from business.view_career bvc where bvc.status_career = true order by bvc.id_career desc limit 1);
 				
 				IF (_ID_CAREER IS NULL) THEN
-					_EXCEPTION = 'No se encontraron carreras registrados';
+					_EXCEPTION = 'No se encontraron cursos activos';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 
 				_ID_SCHEDULE = (select * from business.dml_schedule_create(id_user_, now()::time, now()::time, 60, now()::timestamp, false));
 				
 				IF (_ID_SCHEDULE IS NULL) THEN
-					_EXCEPTION = 'Ocurrió un error ingresando schedule';
+					_EXCEPTION = 'Ocurrió un error ingresando el horario de la asignatura';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 
-				_ID_COURSE = (select * from business.dml_course_create(id_user_, _ID_COMPANY, _ID_PERIOD, _ID_CAREER, _ID_SCHEDULE, 'Nuevo curso', '', false, now()::timestamp, false));
+				_ID_COURSE = (select * from business.dml_course_create(id_user_, _ID_COMPANY, _ID_PERIOD, _ID_CAREER, _ID_SCHEDULE, 'Nueva asignatura', '', false, now()::timestamp, false));
 
 				IF (_ID_COURSE >= 1) THEN
 					RETURN QUERY select bvc.id_course, bvc.id_company, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvc.deleted_course, cvc.name_company, cvc.acronym_company, cvc.address_company, cvc.status_company, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_course bvc
@@ -236,7 +236,7 @@ AS $BODY$
 						inner join business.view_schedule bvs  on bvc.id_schedule = bvs.id_schedule
 						where bvc.id_course = _ID_COURSE; 
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar course';
+					_EXCEPTION = 'Ocurrió un error al ingresar la asignatura';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -297,11 +297,11 @@ AS $BODY$
 							inner join business.view_schedule bvs  on bvc.id_schedule = bvs.id_schedule
 							where bvc.id_course = _id_course; 
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al actualizar course';
+						_EXCEPTION = 'Ocurrió un error al actualizar la asignatura';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar schedule';
+					_EXCEPTION = 'Ocurrió un error al actualizar el horario de la asignatura';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -345,11 +345,11 @@ AS $BODY$
 					IF (_DELETE_SCHEDULE) THEN
 						RETURN true;
 					ELSE
-						_EXCEPTION = 'Ocurrió un error al eliminar schedule';
+						_EXCEPTION = 'Ocurrió un error al eliminar el horario de la asignatura';
 						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 					END IF;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al eliminar course';
+					_EXCEPTION = 'Ocurrió un error al eliminar la asignatura';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -396,7 +396,7 @@ AS $BODY$
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bve.id_enrollment = _ID_ENROLLMENT;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar enrollment';
+					_EXCEPTION = 'Ocurrió un error al ingresar la matrícula';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -448,7 +448,7 @@ AS $BODY$
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bve.id_enrollment = _id_enrollment;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar enrollment';
+					_EXCEPTION = 'Ocurrió un error al actualizar la matrícula';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -471,7 +471,7 @@ ALTER FUNCTION business.dml_enrollment_update_modified(numeric, numeric, numeric
 CREATE OR REPLACE FUNCTION business.dml_task_create_modified(
 	id_user_ numeric,
 	_id_course numeric)
-    RETURNS TABLE(id_task numeric, id_course numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, deleted_task boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone) 
+    RETURNS TABLE(id_task numeric, id_course numeric, id_user numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, deleted_task boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -481,18 +481,18 @@ AS $BODY$
 			DECLARE
 				_ID_TASK NUMERIC;
 				_EXCEPTION TEXT DEFAULT 'Internal Error';
-			BEGIN
-				_ID_TASK = (select * from business.dml_task_create(id_user_, _id_course, 'Nueva tarea', '', false, now()::timestamp, now()::timestamp, false));
+			BEGIN				
+				_ID_TASK = (select * from business.dml_task_create(id_user_, _id_course, id_user_, 'Nueva tarea', '', false, now()::timestamp, (select * from core.utils_get_date_maximum_hour()), false));
 
 				IF (_ID_TASK >= 1) THEN
-					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
+					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.id_user, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
 						inner join business.view_course bvc on bvt.id_course = bvc.id_course
 						inner join business.view_period bvp on bvc.id_period = bvp.id_period
 						inner join business.view_career bvca on bvc.id_career = bvca.id_career
 						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						where bvt.id_task = _ID_TASK;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar task';
+					_EXCEPTION = 'Ocurrió un error al ingresar la tarea';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -516,13 +516,14 @@ CREATE OR REPLACE FUNCTION business.dml_task_update_modified(
 	id_user_ numeric,
 	_id_task numeric,
 	_id_course numeric,
+	_id_user numeric,
 	_name_task character varying,
 	_description_task character varying,
 	_status_task boolean,
 	_creation_date_task timestamp without time zone,
 	_limit_date timestamp without time zone,
 	_deleted_task boolean)
-    RETURNS TABLE(id_task numeric, id_course numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, deleted_task boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone) 
+    RETURNS TABLE(id_task numeric, id_course numeric, id_user numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, deleted_task boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -533,17 +534,17 @@ AS $BODY$
 			 	_UPDATE_TASK BOOLEAN;
 				_EXCEPTION TEXT DEFAULT 'Internal Error';
 			 BEGIN
-			 	_UPDATE_TASK = (select * from business.dml_task_update(id_user_, _id_task, _id_course, _name_task, _description_task, _status_task, _creation_date_task, _limit_date, _deleted_task));
+			 	_UPDATE_TASK = (select * from business.dml_task_update(id_user_, _id_task, _id_course, _id_user, _name_task, _description_task, _status_task, _creation_date_task, _limit_date, _deleted_task));
 
 			 	IF (_UPDATE_TASK) THEN
-					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
+					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.id_user, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
 						inner join business.view_course bvc on bvt.id_course = bvc.id_course
 						inner join business.view_period bvp on bvc.id_period = bvp.id_period
 						inner join business.view_career bvca on bvc.id_career = bvca.id_career
 						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						where bvt.id_task = _id_task; 
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar task';
+					_EXCEPTION = 'Ocurrió un error al actualizar la tarea';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -557,7 +558,7 @@ AS $BODY$
 			 
 $BODY$;
 
-ALTER FUNCTION business.dml_task_update_modified(numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
+ALTER FUNCTION business.dml_task_update_modified(numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
     OWNER TO postgres;
 
 -- FUNCTION: business.dml_task_send(numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
@@ -567,13 +568,14 @@ CREATE OR REPLACE FUNCTION business.dml_task_send(
 	id_user_ numeric,
 	_id_task numeric,
 	_id_course numeric,
+	_id_user numeric,
 	_name_task character varying,
 	_description_task character varying,
 	_status_task boolean,
 	_creation_date_task timestamp without time zone,
 	_limit_date timestamp without time zone,
 	_deleted_task boolean)
-    RETURNS TABLE(id_task numeric, id_course numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, deleted_task boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone) 
+    RETURNS TABLE(id_task numeric, id_course numeric, id_user numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, deleted_task boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, name_period character varying, description_period character varying, start_date_period timestamp without time zone, end_date_period timestamp without time zone, maximum_rating numeric, approval_note_period numeric, name_career character varying, description_career character varying, status_career boolean, creation_date_career timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, creation_date_schedule timestamp without time zone) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -599,17 +601,17 @@ AS $BODY$
 					END IF;
 				END LOOP;
 				
-				_SEND_TASK = (select * from business.dml_task_update(id_user_, _id_task, _id_course, _name_task, _description_task, _status_task, _creation_date_task, _limit_date, _deleted_task));
+				_SEND_TASK = (select * from business.dml_task_update(id_user_, _id_task, _id_course, _id_user, _name_task, _description_task, _status_task, _creation_date_task, _limit_date, _deleted_task));
 	
 				IF (_SEND_TASK) THEN
-					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
+					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.id_user, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
 						inner join business.view_course bvc on bvt.id_course = bvc.id_course
 						inner join business.view_period bvp on bvc.id_period = bvp.id_period
 						inner join business.view_career bvca on bvc.id_career = bvca.id_career
 						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						where bvt.id_task = _id_task; 
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al generar la task';
+					_EXCEPTION = 'Ocurrió un error al enviar la tarea';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -623,7 +625,7 @@ AS $BODY$
 			
 $BODY$;
 
-ALTER FUNCTION business.dml_task_send(numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
+ALTER FUNCTION business.dml_task_send(numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
     OWNER TO postgres;
 
 -- FUNCTION: business.dml_resource_create_modified(numeric, numeric)
@@ -650,7 +652,7 @@ AS $BODY$
 						inner join business.view_task bvt on bvr.id_task = bvt.id_task
 						where bvr.id_resource = _ID_RESOURCE;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar resource';
+					_EXCEPTION = 'Ocurrió un error al ingresar el recurso';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -696,7 +698,7 @@ AS $BODY$
 						inner join business.view_task bvt on bvr.id_task = bvt.id_task
 						where bvr.id_resource = _id_resource;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar resource';
+					_EXCEPTION = 'Ocurrió un error al actualizar el recurso';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -720,7 +722,7 @@ CREATE OR REPLACE FUNCTION business.dml_user_task_create_modified(
 	id_user_ numeric,
 	_id_user numeric,
 	_id_task numeric)
-    RETURNS TABLE(id_user_task numeric, id_user numeric, id_task numeric, response_user_task character varying, shipping_date_user_task timestamp without time zone, qualification_user_task numeric, is_open boolean, is_dispatched boolean, is_qualified boolean, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying, id_course numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone) 
+    RETURNS TABLE(id_user_task numeric, bvut_id_user numeric, id_task numeric, response_user_task character varying, shipping_date_user_task timestamp without time zone, qualification_user_task numeric, is_open boolean, is_dispatched boolean, is_qualified boolean, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying, id_course numeric, cvt_id_user numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, maximum_rating numeric) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -734,14 +736,15 @@ AS $BODY$
 				_ID_USER_TASK = (select * from business.dml_user_task_create(id_user_, _id_user, _id_task, '', null, null, false, false, false));
 
 				IF (_ID_USER_TASK >= 1) THEN
-					RETURN QUERY select bvut.id_user_task, bvut.id_user, bvut.id_task, bvut.response_user_task, bvut.shipping_date_user_task, bvut.qualification_user_task, bvut.is_open, bvut.is_dispatched, bvut.is_qualified, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person, cvt.id_course, cvt.name_task, cvt.description_task, cvt.status_task, cvt.creation_date_task, cvt.limit_date, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course from business.view_user_task bvut
+					RETURN QUERY select bvut.id_user_task, bvut.id_user as bvut_id_user, bvut.id_task, bvut.response_user_task, bvut.shipping_date_user_task, bvut.qualification_user_task, bvut.is_open, bvut.is_dispatched, bvut.is_qualified, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person, cvt.id_course, cvt.id_user as cvt_id_user, cvt.name_task, cvt.description_task, cvt.status_task, cvt.creation_date_task, cvt.limit_date, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.maximum_rating from business.view_user_task bvut
 						inner join core.view_user cvu on bvut.id_user = cvu.id_user
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						inner join business.view_task cvt  on bvut.id_task = cvt.id_task
 						inner join business.view_course bvc on cvt.id_course = bvc.id_course
-						where bvut.id_user_task = _ID_USER_TASK;
+						inner join business.view_period bvp on bvc.id_period = bvp.id_period
+						where bvut.id_user_task = _ID_USER_TASK;		
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar user_task';
+					_EXCEPTION = 'Ocurrió un error al ingresar la tarea del estudiante';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -758,8 +761,8 @@ $BODY$;
 ALTER FUNCTION business.dml_user_task_create_modified(numeric, numeric, numeric)
     OWNER TO postgres;
 
--- FUNCTION: business.dml_user_task_update_modified(numeric, numeric, numeric, numeric, character varying, timestamp without time zone, numeric, boolean, boolean)
--- DROP FUNCTION IF EXISTS business.dml_user_task_update_modified(numeric, numeric, numeric, numeric, character varying, timestamp without time zone, numeric, boolean, boolean);
+-- FUNCTION: business.dml_user_task_update_modified(numeric, numeric, numeric, numeric, character varying, timestamp without time zone, numeric, boolean, boolean, boolean)
+-- DROP FUNCTION IF EXISTS business.dml_user_task_update_modified(numeric, numeric, numeric, numeric, character varying, timestamp without time zone, numeric, boolean, boolean, boolean);
 
 CREATE OR REPLACE FUNCTION business.dml_user_task_update_modified(
 	id_user_ numeric,
@@ -772,7 +775,7 @@ CREATE OR REPLACE FUNCTION business.dml_user_task_update_modified(
 	_is_open boolean,
 	_is_dispatched boolean,
 	_is_qualified boolean)
-    RETURNS TABLE(id_user_task numeric, id_user numeric, id_task numeric, response_user_task character varying, shipping_date_user_task timestamp without time zone, qualification_user_task numeric, is_open boolean, is_qualified boolean, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying, id_course numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone) 
+    RETURNS TABLE(id_user_task numeric, bvut_id_user numeric, id_task numeric, response_user_task character varying, shipping_date_user_task timestamp without time zone, qualification_user_task numeric, is_open boolean, is_dispatched boolean, is_qualified boolean, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying, id_course numeric, cvt_id_user numeric, name_task character varying, description_task character varying, status_task boolean, creation_date_task timestamp without time zone, limit_date timestamp without time zone, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, maximum_rating numeric) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -786,14 +789,15 @@ AS $BODY$
 			 	_UPDATE_USER_TASK = (select * from business.dml_user_task_update(id_user_, _id_user_task, _id_user, _id_task, _response_user_task, _shipping_date_user_task, _qualification_user_task, _is_open, _is_dispatched, _is_qualified));
 
 			 	IF (_UPDATE_USER_TASK) THEN
-					RETURN QUERY select bvut.id_user_task, bvut.id_user, bvut.id_task, bvut.response_user_task, bvut.shipping_date_user_task, bvut.qualification_user_task, bvut.is_open, bvut.is_qualified, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person, cvt.id_course, cvt.name_task, cvt.description_task, cvt.status_task, cvt.creation_date_task, cvt.limit_date, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course from business.view_user_task bvut
+					RETURN QUERY select bvut.id_user_task, bvut.id_user as bvut_id_user, bvut.id_task, bvut.response_user_task, bvut.shipping_date_user_task, bvut.qualification_user_task, bvut.is_open, bvut.is_dispatched, bvut.is_qualified, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person, cvt.id_course, cvt.id_user as cvt_id_user, cvt.name_task, cvt.description_task, cvt.status_task, cvt.creation_date_task, cvt.limit_date, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.maximum_rating from business.view_user_task bvut
 						inner join core.view_user cvu on bvut.id_user = cvu.id_user
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						inner join business.view_task cvt  on bvut.id_task = cvt.id_task
 						inner join business.view_course bvc on cvt.id_course = bvc.id_course
-						where bvut.id_user_task = _id_user_task;
+						inner join business.view_period bvp on bvc.id_period = bvp.id_period
+						where bvut.id_user_task = _id_user_task;				
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar user_task';
+					_EXCEPTION = 'Ocurrió un error al actualizar la tarea';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -842,7 +846,7 @@ AS $BODY$
 						inner join business.view_course bvc on cvt.id_course = bvc.id_course
 						where bva.id_attached = _ID_ATTACHED;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar attached';
+					_EXCEPTION = 'Ocurrió un error al ingresar el anexo';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -885,7 +889,7 @@ AS $BODY$
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bvc.id_comment = _ID_COMMENT;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar comment';
+					_EXCEPTION = 'Ocurrió un error al ingresar el comentario';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -933,7 +937,7 @@ AS $BODY$
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bvc.id_comment = _id_comment;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar comment';
+					_EXCEPTION = 'Ocurrió un error al actualizar el comentario';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -956,7 +960,7 @@ ALTER FUNCTION business.dml_comment_update_modified(numeric, numeric, numeric, n
 CREATE OR REPLACE FUNCTION business.dml_assistance_create_modified(
 	id_user_ numeric,
 	_id_course numeric)
-    RETURNS TABLE(id_assistance numeric, id_user numeric, id_course numeric, start_marking_date timestamp without time zone, end_marking_date timestamp without time zone, is_late boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    RETURNS TABLE(id_assistance numeric, id_user numeric, id_course numeric, start_marking_date timestamp without time zone, end_marking_date timestamp without time zone, is_late boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -965,18 +969,22 @@ CREATE OR REPLACE FUNCTION business.dml_assistance_create_modified(
 AS $BODY$
 			DECLARE
 				_ID_ASSISTANCE NUMERIC;
+				_IS_LATE BOOLEAN;
 				_EXCEPTION TEXT DEFAULT 'Internal Error';
 			BEGIN
-				_ID_ASSISTANCE = (select * from business.dml_assistance_create(id_user_, id_user_, _id_course, now()::timestamp, null, false));
+				_IS_LATE = (select now()::time  > (select bvs.start_date_schedule from business.view_course bvc inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule where bvc.id_course = _id_course)::time);
+				
+				_ID_ASSISTANCE = (select * from business.dml_assistance_create(id_user_, id_user_, _id_course, now()::timestamp, null, _IS_LATE));
 
 				IF (_ID_ASSISTANCE >= 1) THEN
-					RETURN QUERY select bva.id_assistance, bva.id_user, bva.id_course, bva.start_marking_date, bva.end_marking_date, bva.is_late, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_assistance bva
+					RETURN QUERY select bva.id_assistance, bva.id_user, bva.id_course, bva.start_marking_date, bva.end_marking_date, bva.is_late, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_assistance bva
 						inner join business.view_course bvc on bva.id_course = bvc.id_course
+						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						inner join core.view_user cvu on bva.id_user = cvu.id_user
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bva.id_assistance = _ID_ASSISTANCE;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al ingresar assistance';
+					_EXCEPTION = 'Ocurrió un error al registrar la asistencia';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 
@@ -1004,7 +1012,7 @@ CREATE OR REPLACE FUNCTION business.dml_assistance_update_modified(
 	_start_marking_date timestamp without time zone,
 	_end_marking_date timestamp without time zone,
 	_is_late boolean)
-    RETURNS TABLE(id_assistance numeric, id_user numeric, id_course numeric, start_marking_date timestamp without time zone, end_marking_date timestamp without time zone, is_late boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    RETURNS TABLE(id_assistance numeric, id_user numeric, id_course numeric, start_marking_date timestamp without time zone, end_marking_date timestamp without time zone, is_late boolean, id_period numeric, id_career numeric, id_schedule numeric, name_course character varying, description_course character varying, status_course boolean, creation_date_course timestamp without time zone, start_date_schedule time without time zone, end_date_schedule time without time zone, tolerance_schedule numeric, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -1018,13 +1026,14 @@ AS $BODY$
 			 	_UPDATE_ASSISTANCE = (select * from business.dml_assistance_update(id_user_, _id_assistance, _id_user, _id_course, _start_marking_date, now()::timestamp, _is_late));
 
 			 	IF (_UPDATE_ASSISTANCE) THEN
-					RETURN QUERY select bva.id_assistance, bva.id_user, bva.id_course, bva.start_marking_date, bva.end_marking_date, bva.is_late, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_assistance bva
+					RETURN QUERY select bva.id_assistance, bva.id_user, bva.id_course, bva.start_marking_date, bva.end_marking_date, bva.is_late, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person from business.view_assistance bva
 						inner join business.view_course bvc on bva.id_course = bvc.id_course
+						inner join business.view_schedule bvs on bvc.id_schedule = bvs.id_schedule
 						inner join core.view_user cvu on bva.id_user = cvu.id_user
 						inner join core.view_person cvp on cvu.id_person = cvp.id_person
 						where bva.id_assistance = _id_assistance;
 				ELSE
-					_EXCEPTION = 'Ocurrió un error al actualizar assistance';
+					_EXCEPTION = 'Ocurrió un error al registrar la asistencia';
 					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
 				END IF;
 				exception when others then 

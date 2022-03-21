@@ -437,6 +437,8 @@ export class ProfileDetailsComponent implements OnInit {
       ...profile,
       id_user_: parseInt(id_user_),
       id_profile: parseInt(profile.id_profile),
+      name_profile: profile.name_profile.trim(),
+      description_profile: profile.description_profile.trim(),
       company: {
         id_company: profile.id_company,
       },
@@ -482,7 +484,7 @@ export class ProfileDetailsComponent implements OnInit {
       .open({
         title: 'Eliminar perfil',
         message:
-          '¿Estás seguro de que deseas eliminar esta perfil? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas eliminar este perfil? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))

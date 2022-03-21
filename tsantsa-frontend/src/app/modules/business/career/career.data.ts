@@ -3,6 +3,7 @@ import { Career } from './career.types';
 
 export const careers: Career[] = [];
 export const career: Career = {
+  dependency: '0',
   id_career: '',
   company: company,
   name_career: '',

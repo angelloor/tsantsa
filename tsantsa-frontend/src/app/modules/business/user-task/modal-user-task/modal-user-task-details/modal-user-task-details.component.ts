@@ -1,9 +1,6 @@
 import { angelAnimations } from '@angel/animations';
 import { AngelAlertType } from '@angel/components/alert';
-import {
-  ActionAngelConfirmation,
-  AngelConfirmationService,
-} from '@angel/services/confirmation';
+import { AngelConfirmationService } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
@@ -19,15 +16,19 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
+import { TYPE_USER } from 'app/modules/core/user/user.types';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
 import { environment } from 'environments/environment';
 import { saveAs } from 'file-saver';
+import moment from 'moment';
 import { FileInput, FileValidator } from 'ngx-material-file-input';
 import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
 import { AttachedService } from '../../attached/attached.service';
 import { Attached } from '../../attached/attached.types';
 import { CommentService } from '../../comment/comment.service';
 import { Comment } from '../../comment/comment.types';
+import { ModalResourcesService } from '../../modal-resources/modal-resources.service';
 import { UserTaskService } from '../../user-task.service';
 import { UserTask } from '../../user-task.types';
 
@@ -35,11 +36,14 @@ import { UserTask } from '../../user-task.types';
   selector: 'app-modal-user-task-details',
   templateUrl: './modal-user-task-details.component.html',
   animations: angelAnimations,
+  providers: [LocalDatePipe],
 })
 export class ModalUserTaskDetailsComponent implements OnInit {
   private data!: AppInitialData;
   _urlPathAvatar: string = environment.urlBackend + '/resource/img/avatar/';
-
+  type_user: TYPE_USER = 'student';
+  maximum_rating: number = 0;
+  lenght_maximum_rating: number = 0;
   /**
    * Alert
    */
@@ -53,6 +57,8 @@ export class ModalUserTaskDetailsComponent implements OnInit {
    */
   userTask!: UserTask;
   userTaskForm!: FormGroup;
+  _isafter: boolean = false;
+
   private userTasks!: UserTask[];
 
   attacheds: Attached[] = [];
@@ -81,8 +87,10 @@ export class ModalUserTaskDetailsComponent implements OnInit {
     private _notificationService: NotificationService,
     private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
+    private _localDatePipe: LocalDatePipe,
     private _attachedService: AttachedService,
-    private _commentService: CommentService
+    private _commentService: CommentService,
+    private _modalResourcesService: ModalResourcesService
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -109,6 +117,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
      */
     this._store.pipe(takeUntil(this._unsubscribeAll)).subscribe((state) => {
       this.data = state.global;
+      this.type_user = this.data.user.type_user;
     });
     /**
      * Create the userTask form
@@ -118,7 +127,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       user: [''],
       task: [''],
       response_user_task: [
-        '',
+        { value: '', disabled: this.type_user == 'teacher' ? true : false },
         [Validators.required, Validators.maxLength(500)],
       ],
       shipping_date_user_task: [''],
@@ -152,6 +161,19 @@ export class ModalUserTaskDetailsComponent implements OnInit {
          * Get the userTask
          */
         this.userTask = userTask;
+
+        this.maximum_rating = this.userTask.task.course.period.maximum_rating;
+        this.lenght_maximum_rating = this.maximum_rating.toString().length;
+
+        this._isafter = this.isafter(this.userTask.task.limit_date);
+
+        if (
+          ((this._isafter || this.userTask.is_dispatched) &&
+            this.type_user == 'student') ||
+          this.userTask.is_qualified
+        ) {
+          this.userTaskForm.disable();
+        }
 
         this._attachedService
           .byUserTaskRead(this.userTask.id_user_task)
@@ -258,6 +280,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
                   /**
                    * Create an elemento form group
                    */
+
                   lotCommentFormGroups.push(
                     this._formBuilder.group({
                       id_comment: _comment.id_comment,
@@ -295,7 +318,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
                         },
                       ],
                       isOwner: [
-                        this.userTask.user.id_user == _comment.user.id_user,
+                        this.data.user.id_user == _comment.user.id_user,
                       ],
                     })
                   );
@@ -315,6 +338,13 @@ export class ModalUserTaskDetailsComponent implements OnInit {
          * Patch values to the form
          */
         this.patchForm();
+        /**
+         * update is_open
+         */
+        if (!this.userTask.is_open && this.type_user == 'student') {
+          this.changeIsOpen();
+        }
+
         /**
          * Mark for check
          */
@@ -367,7 +397,13 @@ export class ModalUserTaskDetailsComponent implements OnInit {
    * Pacth the form with the information of the database
    */
   patchForm(): void {
-    this.userTaskForm.patchValue(this.userTask);
+    this.userTaskForm.patchValue({
+      ...this.userTask,
+      shipping_date_user_task: this.parseDate(
+        this.userTask.shipping_date_user_task,
+        'medium'
+      ),
+    });
   }
   /**
    * On destroy
@@ -392,7 +428,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
   /**
    * Update the userTask
    */
-  updateUserTask(): void {
+  changeIsOpen(): void {
     /**
      * Get the userTask
      */
@@ -403,15 +439,85 @@ export class ModalUserTaskDetailsComponent implements OnInit {
      */
     userTask = {
       ...userTask,
+      response_user_task: userTask.response_user_task.trim(),
       id_user_: parseInt(id_user_),
       id_user_task: parseInt(userTask.id_user_task),
       user: {
-        id_user: parseInt(userTask.id_user),
+        id_user: parseInt(userTask.user.id_user),
       },
       task: {
-        id_task: parseInt(userTask.id_task),
+        id_task: parseInt(userTask.task.id_task),
       },
+      is_open: true,
     };
+
+    delete userTask.lotAttacheds;
+    delete userTask.lotComments;
+    delete userTask.removablefileInitial;
+    /**
+     * Update
+     */
+    this._userTaskService
+      .updateUserTask(userTask)
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe({
+        next: (_userTask: UserTask) => {
+          if (!_userTask) {
+            this._notificationService.error(
+              '¡Error interno!, consulte al administrador.'
+            );
+          }
+        },
+        error: (error: { error: MessageAPI }) => {
+          this._notificationService.error(
+            !error.error
+              ? '¡Error interno!, consulte al administrador.'
+              : !error.error.descripcion
+              ? '¡Error interno!, consulte al administrador.'
+              : error.error.descripcion
+          );
+        },
+      });
+  }
+  /**
+   * Update the userTask
+   */
+  updateUserTask(): void {
+    const date = new Date();
+    let _shipping_date_user_task = `${this.getDate(date.toString()).fullYear}-${
+      this.getDate(date.toString()).month
+    }-${this.getDate(date.toString()).day} ${
+      this.getDate(date.toString()).hours
+    }:${this.getDate(date.toString()).minutes}:${
+      this.getDate(date.toString()).seconds
+    }`;
+
+    /**
+     * Get the userTask
+     */
+    const id_user_ = this.data.user.id_user;
+    let userTask = this.userTaskForm.getRawValue();
+    /**
+     * Delete whitespace (trim() the atributes type string)
+     */
+    userTask = {
+      ...userTask,
+      response_user_task: userTask.response_user_task.trim(),
+      id_user_: parseInt(id_user_),
+      id_user_task: parseInt(userTask.id_user_task),
+      user: {
+        id_user: parseInt(userTask.user.id_user),
+      },
+      task: {
+        id_task: parseInt(userTask.task.id_task),
+      },
+      shipping_date_user_task: _shipping_date_user_task,
+      is_dispatched: true,
+    };
+
+    delete userTask.lotAttacheds;
+    delete userTask.lotComments;
+    delete userTask.removablefileInitial;
     /**
      * Update
      */
@@ -421,9 +527,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       .subscribe({
         next: (_userTask: UserTask) => {
           if (_userTask) {
-            this._notificationService.success(
-              'Mis tareas actualizada correctamente'
-            );
+            this._notificationService.success('Tarea enviada correctamente');
           } else {
             this._notificationService.error(
               '¡Error interno!, consulte al administrador.'
@@ -442,58 +546,72 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       });
   }
   /**
-   * Delete the userTask
+   * changeQualificationUserTask
    */
-  deleteUserTask(): void {
-    this._angelConfirmationService
-      .open({
-        title: 'Eliminar mis tareas',
-        message:
-          '¿Estás seguro de que deseas eliminar esta mis tareas? ¡Esta acción no se puede deshacer!',
-      })
-      .afterClosed()
+  changeQualificationUserTask(): void {
+    /**
+     * Get the userTask
+     */
+    const id_user_ = this.data.user.id_user;
+    let userTask = this.userTaskForm.getRawValue();
+
+    let qualification_user_task = userTask.qualification_user_task;
+
+    if (qualification_user_task == '') {
+      this._notificationService.warn('Tienes que ingresar la calificacion');
+      return;
+    } else if (parseInt(qualification_user_task) > this.maximum_rating) {
+      this._notificationService.warn(
+        'La calificacion no puede ser mayor a la nota maxima'
+      );
+      return;
+    }
+    /**
+     * Delete whitespace (trim() the atributes type string)
+     */
+    userTask = {
+      ...userTask,
+      response_user_task: userTask.response_user_task.trim(),
+      id_user_: parseInt(id_user_),
+      id_user_task: parseInt(userTask.id_user_task),
+      user: {
+        id_user: parseInt(userTask.user.id_user),
+      },
+      task: {
+        id_task: parseInt(userTask.task.id_task),
+      },
+      is_qualified: true,
+      qualification_user_task: parseInt(qualification_user_task),
+    };
+
+    delete userTask.lotAttacheds;
+    delete userTask.lotComments;
+    delete userTask.removablefileInitial;
+    /**
+     * Update
+     */
+    this._userTaskService
+      .updateUserTask(userTask)
       .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((confirm: ActionAngelConfirmation) => {
-        if (confirm === 'confirmed') {
-          const id_user_ = this.data.user.id_user;
-          const id_user_task = this.userTask.id_user_task;
-          /**
-           * Delete the userTask
-           */
-          this._userTaskService
-            .deleteUserTask(id_user_, id_user_task)
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe({
-              next: (response: boolean) => {
-                if (response) {
-                  /**
-                   * Return if the userTask wasn't deleted...
-                   */
-                  this._notificationService.success(
-                    'Mis tareas eliminada correctamente'
-                  );
-                } else {
-                  this._notificationService.error(
-                    '¡Error interno!, consulte al administrador.'
-                  );
-                }
-              },
-              error: (error: { error: MessageAPI }) => {
-                this._notificationService.error(
-                  !error.error
-                    ? '¡Error interno!, consulte al administrador.'
-                    : !error.error.descripcion
-                    ? '¡Error interno!, consulte al administrador.'
-                    : error.error.descripcion
-                );
-              },
-            });
-          /**
-           * Mark for check
-           */
-          this._changeDetectorRef.markForCheck();
-        }
-        this._layoutService.setOpenModal(false);
+      .subscribe({
+        next: (_userTask: UserTask) => {
+          if (_userTask) {
+            this._notificationService.success('Tarea calificada correctamente');
+          } else {
+            this._notificationService.error(
+              '¡Error interno!, consulte al administrador.'
+            );
+          }
+        },
+        error: (error: { error: MessageAPI }) => {
+          this._notificationService.error(
+            !error.error
+              ? '¡Error interno!, consulte al administrador.'
+              : !error.error.descripcion
+              ? '¡Error interno!, consulte al administrador.'
+              : error.error.descripcion
+          );
+        },
       });
   }
   /**
@@ -508,8 +626,8 @@ export class ModalUserTaskDetailsComponent implements OnInit {
     const size: string = parseFloat(
       (file.size / 1024 / 1024).toFixed(2)
     ).toString();
-    const name: string = file.name;
-    const type: string = this.getExtensionFile(name);
+    const name: string = this.getInfoFile(file.name).name;
+    const type: string = this.getInfoFile(file.name).extension;
 
     this._attachedService
       .createAttached(
@@ -524,10 +642,10 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           if (response) {
-            this._notificationService.success('Anexo subido correctamente');
+            this._notificationService.success('Archivo subido correctamente');
           } else {
             this._notificationService.error(
-              'Ocurrió un error subiendo el anexo'
+              'Ocurrió un error subiendo el archivo'
             );
           }
           /**
@@ -605,10 +723,12 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           if (response) {
-            this._notificationService.success('Anexo eliminado correctamente');
+            this._notificationService.success(
+              'Archivo eliminado correctamente'
+            );
           } else {
             this._notificationService.error(
-              'Ocurrió un error eliminado el anexo'
+              'Ocurrió un error eliminado el archivo'
             );
           }
           /**
@@ -644,7 +764,9 @@ export class ModalUserTaskDetailsComponent implements OnInit {
 
             this.editComment(index, true);
 
-            this._notificationService.success('Comment agregado correctamente');
+            this._notificationService.success(
+              'Comentario agregado correctamente'
+            );
           } else {
             this._notificationService.error(
               'Ocurrió un error agregar el comentario'
@@ -749,7 +871,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       .subscribe({
         next: (_comment: Comment) => {
           if (_comment) {
-            this._notificationService.success('Comment actualizado');
+            this._notificationService.success('Comentario actualizado');
           } else {
             this._notificationService.error(
               'Ocurrió un error al actualiar el comentario'
@@ -789,7 +911,7 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       .subscribe({
         next: (response: boolean) => {
           if (response) {
-            this._notificationService.success('Comment eliminado');
+            this._notificationService.success('Comentario eliminado');
           } else {
             this._notificationService.error(
               'Ocurrió un error eliminado el comentario'
@@ -812,11 +934,11 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       });
   }
   /**
-   * getExtensionFile
+   * getInfoFile
    * @param nameFile
-   * @returns
+   * @returns { name, extension }
    */
-  getExtensionFile = (nameFile: string): string => {
+  getInfoFile = (nameFile: string) => {
     let position: number = 0;
     for (let index = 0; index < nameFile.length; index++) {
       const caracter: string = nameFile.substring(index, index + 1);
@@ -824,7 +946,10 @@ export class ModalUserTaskDetailsComponent implements OnInit {
         position = index;
       }
     }
-    return nameFile.substring(position, nameFile.length);
+    return {
+      name: nameFile.substring(0, position),
+      extension: nameFile.substring(position, nameFile.length),
+    };
   };
   /**
    * getNameFile
@@ -855,11 +980,66 @@ export class ModalUserTaskDetailsComponent implements OnInit {
       : nameFile;
   }
   /**
+   * openModalResources
+   */
+  openModalResources() {
+    this._modalResourcesService.openModalResources(this.userTask.task.id_task);
+  }
+  /**
    * closeModalUserTask
    */
   closeModalUserTask(): void {
     this._matDialog.closeAll();
   }
+  /**
+   * parseDate
+   * @param date
+   * @returns
+   */
+  parseDate(date: string, format: string): string {
+    return this._localDatePipe.transform(date, format);
+  }
+  /**
+   * isafter
+   * @param secondDate
+   */
+  isafter(secondDate: any): boolean {
+    const firstDate = new Date();
+
+    const _secondDate = new Date(
+      `${this.getDate(secondDate).fullYear}-${this.getDate(secondDate).month}-${
+        this.getDate(secondDate).day
+      }T${this.getDate(secondDate).hours}:${this.getDate(secondDate).minutes}:${
+        this.getDate(secondDate).seconds
+      }`
+    );
+
+    var isafter = moment(firstDate).isAfter(_secondDate);
+    if (isafter) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  /**
+   * Return { day, month, fullYear, hours, minutes, seconds }
+   */
+  getDate = (stringDate: string) => {
+    const date = new Date(stringDate);
+    return {
+      day: date.getDate() <= 9 ? `0${date.getDate()}` : date.getDate(),
+      month:
+        date.getMonth() + 1 <= 9
+          ? `0${date.getMonth() + 1}`
+          : date.getMonth() + 1,
+      fullYear: date.getFullYear(),
+      hours: date.getHours() <= 9 ? '0' + date.getHours() : date.getHours(),
+      minutes:
+        date.getMinutes() <= 9 ? '0' + date.getMinutes() : date.getMinutes(),
+      seconds:
+        date.getSeconds() <= 9 ? '0' + date.getSeconds() : date.getSeconds(),
+    };
+  };
   /**
    * Track by function for ngFor loops
    * @param index

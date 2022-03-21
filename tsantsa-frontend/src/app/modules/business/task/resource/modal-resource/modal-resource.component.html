@@ -16,45 +16,45 @@
             {{alert.message}}
             <!-- name_resource -->
             <mat-error *ngIf="resourceForm.get('name_resource')?.hasError('required')">
-                • Ingrese name_resource
+                • Ingrese nombre del recurso
             </mat-error>
             <!-- description_resource -->
             <mat-error *ngIf="resourceForm.get('description_resource')?.hasError('required')">
-                • Ingrese description_resource
+                • Ingrese la descripción del recurso
             </mat-error>
             <!-- link_resource -->
             <mat-error *ngIf="resourceForm.get('link_resource')?.hasError('required')">
-                • Ingrese link_resource
+                • Ingrese el enlace del recurso
             </mat-error>
         </angel-alert>
         <!-- Alert -->
         <!-- name_resource -->
         <div class="mt-8">
             <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>nameResource</mat-label>
+                <mat-label>Nombre del recurso</mat-label>
                 <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:credit-card'">
                 </mat-icon>
-                <input matInput maxlength="100" [formControlName]="'name_resource'" [placeholder]="'name_resource'"
-                    [spellcheck]="true">
+                <input matInput maxlength="100" [formControlName]="'name_resource'"
+                    [placeholder]="'Ingrese el nombre del recurso'" [spellcheck]="true">
             </mat-form-field>
         </div> <!-- description_resource -->
         <div class="relative flex mt-8">
             <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
-                <mat-label>description_resource</mat-label>
+                <mat-label>Descripción del recurso</mat-label>
                 <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                 </mat-icon>
                 <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
                     cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_resource'"
-                    [placeholder]="'description_resource'" [spellcheck]="true"></textarea>
+                    [placeholder]="'Ingrese la descripción del recurso'" [spellcheck]="true"></textarea>
             </mat-form-field>
         </div> <!-- link_resource -->
         <div class="mt-8">
             <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>linkResource</mat-label>
+                <mat-label>Enlace del recurso</mat-label>
                 <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_outline:insert_link'">
                 </mat-icon>
-                <input matInput maxlength="500" [formControlName]="'link_resource'" [placeholder]="'link_resource'"
-                    [spellcheck]="false">
+                <input matInput maxlength="500" [formControlName]="'link_resource'"
+                    [placeholder]="'Ingrese el enlace del recurso'" [spellcheck]="false">
             </mat-form-field>
         </div>
         <div class="flex items-center justify-center sm:justify-end py-2 space-x-3 ng-star-inserted br-10 pt-6">

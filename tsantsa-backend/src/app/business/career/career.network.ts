@@ -55,4 +55,30 @@ routerCareer.delete('/delete', async (req: any, res: any) => {
 		});
 });
 
+routerCareer.post('/reportCareer', async (req: any, res: any) => {
+	await validation(req.body, req.url, req.headers.token)
+		.then((response: any) => {
+			if (response.codigo == '06-010') {
+				/**
+				 * Set message in headers
+				 * message in exposedHeaders (index.js)
+				 */
+				res.set('message', JSON.stringify(response));
+				res.send();
+			} else {
+				/**
+				 * Set name_report in headers
+				 * name_report in exposedHeaders (index.js)
+				 */
+				res.set('name_report', response.name_report);
+				/**
+				 * Send the file
+				 */
+				res.sendFile(response.pathFinal);
+			}
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
 export { routerCareer };

@@ -1,5 +1,10 @@
+import path from 'path';
+import { generateRandomNumber } from '../../../utils/global';
+import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { Company } from '../../core/company/company.class';
 import { _company } from '../../core/company/company.data';
+import { Report } from '../../report/report.class';
+import { reportPeriod } from '../../report/report.declarate';
 import {
 	dml_period_create,
 	dml_period_delete,
@@ -133,9 +138,9 @@ export class Period {
 		});
 	}
 
-	read() {
+	read(id_company: string) {
 		return new Promise<Period[]>(async (resolve, reject) => {
-			await view_period(this)
+			await view_period(this, id_company)
 				.then((periods: Period[]) => {
 					/**
 					 * Mutate response
@@ -150,9 +155,9 @@ export class Period {
 		});
 	}
 
-	specificRead() {
+	specificRead(id_company: string) {
 		return new Promise<Period>(async (resolve, reject) => {
-			await view_period_specific_read(this)
+			await view_period_specific_read(this, id_company)
 				.then((periods: Period[]) => {
 					/**
 					 * Mutate response
@@ -195,7 +200,52 @@ export class Period {
 				});
 		});
 	}
+	/**
+	 * Reports
+	 */
+	reportPeriod(id_company: string) {
+		return new Promise<any>(async (resolve, reject) => {
+			await view_period(this, id_company)
+				.then(async (periods: Period[]) => {
+					if (periods.length > 0) {
+						/**
+						 * Mutate response
+						 */
+						const _periods = this.mutateResponse(periods);
 
+						const name_report = `report${generateRandomNumber(9)}`;
+
+						const pathFinal = `${path.resolve(
+							'./'
+						)}/file_store/report/${name_report}.pdf`;
+						/**
+						 * Generar html
+						 */
+						const html = await reportPeriod(_periods);
+						/**
+						 * Instance the class
+						 */
+						const _report = new Report();
+
+						const landscape: boolean = false;
+
+						await _report
+							.generateReport(name_report, html, landscape)
+							.then(() => {
+								resolve({ pathFinal, name_report });
+							})
+							.catch((error: any) => {
+								reject(error);
+							});
+					} else {
+						resolve(_mensajes[10]);
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
 	/**
 	 * Eliminar ids de entidades externas y formatear la informacion en el esquema correspondiente
 	 * @param periods

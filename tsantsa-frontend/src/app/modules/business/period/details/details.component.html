@@ -41,14 +41,14 @@
 					<ng-container *ngIf="period.start_date_period">
 						<div class="flex sm:items-center">
 							<mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-							<div class="ml-6 leading-6">{{period.start_date_period | date:'mediumDate':'-0500':'en-US'}}
+							<div class="ml-6 leading-6">{{period.start_date_period | localDate:'longDate'}}
 							</div>
 						</div>
 					</ng-container> <!-- end_date_period -->
 					<ng-container *ngIf="period.end_date_period">
 						<div class="flex sm:items-center">
 							<mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-							<div class="ml-6 leading-6">{{period.end_date_period | date:'mediumDate':'-0500':'en-US'}}
+							<div class="ml-6 leading-6">{{period.end_date_period | localDate:'longDate'}}
 							</div>
 						</div>
 					</ng-container> <!-- maximum_rating -->
@@ -86,13 +86,13 @@
 				<div
 					class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
 					<!-- Save -->
-					<button mat-flat-button [color]="'primary'" [disabled]="periodForm.invalid" [matTooltip]="'Guardar'"
-						(click)="updatePeriod()">
+					<button mat-flat-button [color]="'primary'" [disabled]="periodForm.invalid || periodForm.disabled"
+						[matTooltip]="'Guardar'" (click)="updatePeriod()">
 						Guardar
 					</button>
 					<!-- Delete -->
-					<button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
-						(click)="deletePeriod()">
+					<button mat-stroked-button class="ml-2" [color]="'warn'" [disabled]="periodForm.disabled"
+						[matTooltip]="'Eliminar'" (click)="deletePeriod()">
 						Eliminar
 					</button>
 					<!-- Cancel -->
@@ -108,73 +108,80 @@
 				</div>
 				<form [formGroup]="periodForm" class="mb-8">
 					<!-- Alert -->
+					<angel-alert class="mt-8" *ngIf="periodForm.disabled" [appearance]="'outline'" [showIcon]="false"
+						[type]="'warning'" [@shake]="alert.type === 'error'">
+						El periodo ya tiene asignaturas creados
+					</angel-alert>
+					<!-- Alert -->
+					<!-- Alert -->
 					<angel-alert class="mt-8" *ngIf="periodForm.invalid || showAlert" [appearance]="'outline'"
 						[showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
 						<!-- Message if alert is actived for the component -->
 						{{alert.message}}
 						<!-- name_period -->
 						<mat-error *ngIf="periodForm.get('name_period')?.hasError('required')">
-							• Ingrese name_period
+							• Ingrese el nombre del periodo
 						</mat-error>
 						<!-- description_period -->
 						<mat-error *ngIf="periodForm.get('description_period')?.hasError('required')">
-							• Ingrese description_period
+							• Ingrese la descripción del periodo
 						</mat-error>
 						<!-- start_date_period -->
 						<mat-error *ngIf="periodForm.get('start_date_period')?.hasError('required')">
-							• Ingrese start_date_period
+							• Ingrese la fecha inicial del periodo
 						</mat-error>
 						<!-- end_date_period -->
 						<mat-error *ngIf="periodForm.get('end_date_period')?.hasError('required')">
-							• Ingrese end_date_period
+							• Ingrese la fecha final del periodo
 						</mat-error>
 						<!-- maximum_rating -->
 						<mat-error *ngIf="periodForm.get('maximum_rating')?.hasError('required')">
-							• Ingrese maximum_rating
+							• Ingrese la calificación máxima
 						</mat-error>
 						<mat-error *ngIf="periodForm.get('maximum_rating')?.hasError('max')">
-							• max maximum_rating 100
+							• Valor máximo de la calificación 100
 						</mat-error>
 						<mat-error *ngIf="periodForm.get('maximum_rating')?.hasError('min')">
-							• min maximum_rating 10
+							• Valor mínimo de la calificación 10
 						</mat-error>
 						<!-- approval_note_period -->
 						<mat-error *ngIf="periodForm.get('approval_note_period')?.hasError('required')">
-							• Ingrese approval_note_period
+							• Ingrese la nota mínima de aprobación
 						</mat-error>
 						<mat-error *ngIf="periodForm.get('approval_note_period')?.hasError('max')">
-							• max approval_note_period 100
+							• Valor máximo de la nota de aprobación 100
 						</mat-error>
 						<mat-error *ngIf="periodForm.get('approval_note_period')?.hasError('min')">
-							• min approval_note_period 5
+							• Valor mínimo de la nota de aprobación 5
 						</mat-error>
 					</angel-alert>
 					<!-- Alert -->
 					<!-- name_period -->
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
-							<mat-label>namePeriod</mat-label>
+							<mat-label>Nombre del periodo</mat-label>
 							<mat-icon matPrefix class="hidden sm:flex icon-size-5"
 								[svgIcon]="'heroicons_solid:credit-card'">
 							</mat-icon>
 							<input matInput maxlength="100" [formControlName]="'name_period'"
-								[placeholder]="'name_period'" [spellcheck]="true">
+								[placeholder]="'Ingrese el nombre del periodo'" [spellcheck]="true">
 						</mat-form-field>
 					</div> <!-- description_period -->
 					<div class="relative flex mt-8">
 						<mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
-							<mat-label>description_period</mat-label>
+							<mat-label>Descripción del periodo</mat-label>
 							<mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
 							</mat-icon>
 							<textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
 								cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_period'"
-								[placeholder]="'description_period'" [spellcheck]="true"></textarea>
+								[placeholder]="'Ingrese la descripción del periodo'" [spellcheck]="true"></textarea>
 						</mat-form-field>
 					</div> <!-- start_date_period -->
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
-							<mat-label>startDatePeriod</mat-label>
-							<input matInput [matDatepicker]="start_date_period" [formControlName]="'start_date_period'">
+							<mat-label>Fecha inicial del periodo</mat-label>
+							<input matInput [matDatepicker]="start_date_period" [formControlName]="'start_date_period'"
+								(dateChange)="changeStartDatePeriod(periodForm)" readonly>
 							<mat-datepicker-toggle matSuffix [for]="start_date_period">
 							</mat-datepicker-toggle>
 							<mat-datepicker #start_date_period></mat-datepicker>
@@ -182,8 +189,9 @@
 					</div> <!-- end_date_period -->
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
-							<mat-label>end_date_period</mat-label>
-							<input matInput [matDatepicker]="end_date_period" [formControlName]="'end_date_period'">
+							<mat-label>Fecha final del periodo</mat-label>
+							<input matInput [matDatepicker]="end_date_period" [formControlName]="'end_date_period'"
+								(dateChange)="changeEndDatePeriod(periodForm)" readonly>
 							<mat-datepicker-toggle matSuffix [for]="end_date_period">
 							</mat-datepicker-toggle>
 							<mat-datepicker #end_date_period></mat-datepicker>
@@ -191,24 +199,24 @@
 					</div> <!-- maximum_rating -->
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
-							<mat-label>maximum_rating</mat-label>
+							<mat-label>Calificación máxima</mat-label>
 							<mat-icon matPrefix class="hidden sm:flex icon-size-5"
 								[svgIcon]="'heroicons_solid:variable'">
 							</mat-icon>
 							<input matInput [formControlName]="'maximum_rating'" (change)="change()"
 								(keypress)="changeKeyPress(periodForm)" type="number" min="10" max="100"
-								[placeholder]="'maximum_rating'" [spellcheck]="false">
+								[placeholder]="'Ingrese la calificación máxima'" [spellcheck]="false">
 						</mat-form-field>
 					</div><!-- approval_note_period -->
 					<div class="mt-8">
 						<mat-form-field class="angel-mat-no-subscript w-full">
-							<mat-label>approval_note_period</mat-label>
+							<mat-label>Nota mínima de aprobación</mat-label>
 							<mat-icon matPrefix class="hidden sm:flex icon-size-5"
 								[svgIcon]="'heroicons_solid:check-circle'">
 							</mat-icon>
 							<span matSuffix>/ {{maximum_rating}}</span>
 							<input matInput [formControlName]="'approval_note_period'" type="number" min="5" max="100"
-								[placeholder]="'approval_note_period'" [spellcheck]="false">
+								[placeholder]="'Ingrese la nota mínima de aprobación'" [spellcheck]="false">
 						</mat-form-field>
 					</div>
 				</form>

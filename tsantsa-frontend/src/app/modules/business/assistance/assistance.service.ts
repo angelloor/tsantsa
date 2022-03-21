@@ -48,7 +48,7 @@ export class AssistanceService {
   /**
    * Create function
    */
-  createAssistance(id_user_: string): Observable<any> {
+  createAssistance(id_user_: string, id_course: string): Observable<any> {
     return this._assistances.pipe(
       take(1),
       switchMap((assistances) =>
@@ -57,6 +57,9 @@ export class AssistanceService {
             this._url + '/create',
             {
               id_user_: parseInt(id_user_),
+              course: {
+                id_course: parseInt(id_course),
+              },
             },
             {
               headers: this._headers,
@@ -296,5 +299,27 @@ export class AssistanceService {
           )
       )
     );
+  }
+  /**
+   * reportAssistanceByUserAndCourse
+   */
+  reportAssistanceByUserAndCourse(
+    id_user: string,
+    id_course: string
+  ): Observable<any> {
+    return this._httpClient
+      .post(
+        this._url + `/reportAssistanceByUserAndCourse`,
+        {
+          user: id_user,
+          course: id_course,
+        },
+        {
+          responseType: 'blob',
+          observe: 'response',
+          headers: new HttpHeaders().append('Content-Type', 'application/json'),
+        }
+      )
+      .pipe(map((response: any) => response));
   }
 }

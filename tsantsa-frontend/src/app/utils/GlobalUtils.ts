@@ -70,7 +70,11 @@ export class GlobalUtils {
     });
     return this.removeDuplicates(_routes);
   }
-
+  /**
+   * removeDuplicates
+   * @param ArrayRoutes
+   * @returns
+   */
   removeDuplicates(ArrayRoutes: string[]) {
     const _arrayRoutes = ArrayRoutes.concat();
     for (var i = 0; i < _arrayRoutes.length; ++i) {
@@ -81,5 +85,35 @@ export class GlobalUtils {
       }
     }
     return _arrayRoutes;
+  }
+  /**
+   * parseDateToString
+   * @param fecha
+   * @returns
+   */
+  parseDateToString(fecha: Date): string {
+    const date = new Date(fecha);
+    return `${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}/${
+      date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+    }/${date.getFullYear()}`;
+  }
+  /**
+   * blobToBase64
+   * @param blob
+   * @returns
+   */
+  blobToBase64(blob: any): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        const base64 = dataUrl.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(blob);
+    });
   }
 }

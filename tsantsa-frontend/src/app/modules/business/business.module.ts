@@ -23,6 +23,9 @@ import { SharedModule } from 'app/shared/shared.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { HomeComponent } from './home/home.component';
 import { ModalSelectCourseComponent } from './shared/modal-select-course/modal-select-course.component';
+import { ModalSelectPeriodComponent } from './shared/modal-select-period/modal-select-period.component';
+import { ModalSelectTaskComponent } from './shared/modal-select-task/modal-select-task.component';
+import { ModalSelectUserCourseComponent } from './shared/modal-select-user-course/modal-select-user-course.component';
 
 const businessRoutes: Route[] = [
   {
@@ -86,21 +89,25 @@ const businessRoutes: Route[] = [
 ];
 
 @NgModule({
-  declarations: [HomeComponent, ModalSelectCourseComponent],
+  declarations: [
+    HomeComponent,
+    ModalSelectCourseComponent,
+    ModalSelectPeriodComponent,
+    ModalSelectTaskComponent,
+    ModalSelectUserCourseComponent,
+  ],
   imports: [
     RouterModule.forChild(businessRoutes),
     FormsModule,
     CommonModule,
-    MatButtonModule,
     MatTooltipModule,
-    MatIconModule,
     MatSelectModule,
-    MatDialogModule,
     MatFormFieldModule,
+    MatDialogModule,
     MatButtonModule,
+    MatIconModule,
     MatButtonToggleModule,
     MatDividerModule,
-    MatIconModule,
     MatMenuModule,
     MatProgressBarModule,
     MatRippleModule,

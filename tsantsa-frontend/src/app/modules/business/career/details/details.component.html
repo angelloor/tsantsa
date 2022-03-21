@@ -51,7 +51,7 @@
                     <ng-container *ngIf="career.creation_date_career">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
-                            <div class="ml-6 leading-6">{{career.creation_date_career | date:'medium'}}</div>
+                            <div class="ml-6 leading-6">{{career.creation_date_career | localDate:'medium'}}</div>
                         </div>
                     </ng-container>
                 </div>
@@ -76,13 +76,13 @@
                 <div
                     class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
                     <!-- Save -->
-                    <button mat-flat-button [color]="'primary'" [disabled]="careerForm.invalid" [matTooltip]="'Guardar'"
-                        (click)="updateCareer()">
+                    <button mat-flat-button [color]="'primary'" [disabled]="careerForm.invalid || careerForm.disabled"
+                        [matTooltip]="'Guardar'" (click)="updateCareer()">
                         Guardar
                     </button>
                     <!-- Delete -->
-                    <button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
-                        (click)="deleteCareer()">
+                    <button mat-stroked-button class="ml-2" [color]="'warn'" [disabled]="careerForm.disabled"
+                        [matTooltip]="'Eliminar'" (click)="deleteCareer()">
                         Eliminar
                     </button>
                     <!-- Cancel -->
@@ -98,48 +98,53 @@
                 </div>
                 <form [formGroup]="careerForm" class="mb-8">
                     <!-- Alert -->
+                    <angel-alert class="mt-8" *ngIf="careerForm.disabled" [appearance]="'outline'" [showIcon]="false"
+                        [type]="'warning'" [@shake]="alert.type === 'error'">
+                        El curso ya tiene asignaturas creados
+                    </angel-alert>
+                    <!-- Alert -->
                     <angel-alert class="mt-8" *ngIf="careerForm.invalid || showAlert" [appearance]="'outline'"
                         [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
                         <!-- Message if alert is actived for the component -->
                         {{alert.message}}
                         <!-- name_career -->
                         <mat-error *ngIf="careerForm.get('name_career')?.hasError('required')">
-                            • Ingrese name_career
+                            • Ingrese el nombre del curso
                         </mat-error>
                         <!-- description_career -->
                         <mat-error *ngIf="careerForm.get('description_career')?.hasError('required')">
-                            • Ingrese description_career
+                            • Ingrese la descripción del curso
                         </mat-error>
                         <!-- status_career -->
                         <mat-error *ngIf="careerForm.get('status_career')?.hasError('required')">
-                            • Ingrese status_career
+                            • Ingrese el estado del curso
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
                     <!-- name_career -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameCareer</mat-label>
+                            <mat-label>Nombre del curso</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:credit-card'">
                             </mat-icon>
                             <input matInput maxlength="100" [formControlName]="'name_career'"
-                                [placeholder]="'name_career'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el nombre del curso'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- description_career -->
                     <div class="relative flex mt-8">
                         <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
-                            <mat-label>description_career</mat-label>
+                            <mat-label>Descripción del curso</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                             </mat-icon>
                             <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="1000"
                                 cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_career'"
-                                [placeholder]="'description_career'" [spellcheck]="true"></textarea>
+                                [placeholder]="'Ingrese la descripción del curso'" [spellcheck]="true"></textarea>
                         </mat-form-field>
                     </div> <!-- status_career -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>status_career</mat-label>
+                            <mat-label>Estado de curso</mat-label>
                             <mat-select [formControlName]="'status_career'">
                                 <mat-option [value]="true">Activo</mat-option>
                                 <mat-option [value]="false">Inactivo</mat-option>

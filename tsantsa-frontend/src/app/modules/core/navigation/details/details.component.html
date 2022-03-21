@@ -120,44 +120,44 @@
                         {{alert.message}}
                         <!-- name_navigation -->
                         <mat-error *ngIf="navigationForm.get('name_navigation')?.hasError('required')">
-                            • Ingrese name_navigation
+                            • Ingrese el nombre de la navegación
                         </mat-error>
                         <!-- description_navigation -->
                         <mat-error *ngIf="navigationForm.get('description_navigation')?.hasError('required')">
-                            • Ingrese description_navigation
+                            • Ingrese la descripción de la navegación
                         </mat-error>
                         <!-- type_navigation -->
                         <mat-error *ngIf="navigationForm.get('type_navigation')?.hasError('required')">
-                            • Seleccione type_navigation
+                            • Seleccione el tipo de la navegación
                         </mat-error>
                         <!-- status_navigation -->
                         <mat-error *ngIf="navigationForm.get('status_navigation')?.hasError('required')">
-                            • Seleccione status_navigation
+                            • Seleccione el estado de la navegación
                         </mat-error>
                         <!-- content_navigation -->
                         <mat-error *ngIf="navigationForm.get('content_navigation')?.hasError('required')">
-                            • Ingrese content_navigation
+                            • Ingrese el contenido de la navegación
                         </mat-error>
                     </angel-alert>
                     <!-- Alert -->
                     <!-- name_navigation -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>nameNavigation</mat-label>
+                            <mat-label>Nombre de la navegación</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:credit-card'">
                             </mat-icon>
                             <input matInput maxlength="100" [formControlName]="'name_navigation'"
-                                [placeholder]="'nameNavigation'" [spellcheck]="true">
+                                [placeholder]="'Ingrese el nombre de la navegación'" [spellcheck]="true">
                         </mat-form-field>
                     </div> <!-- description_navigation -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>descriptionNavigation</mat-label>
+                            <mat-label>Descripción de la navegación</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:tag'">
                             </mat-icon>
                             <input matInput maxlength="250" [formControlName]="'description_navigation'"
-                                [placeholder]="'descriptionNavigation'" [spellcheck]="true">
+                                [placeholder]="'Ingrese la descripción de la navegación'" [spellcheck]="true">
                         </mat-form-field>
                     </div><!-- type_navigation -->
                     <!-- Type Enum -->
@@ -175,7 +175,7 @@
                     <!-- status_navigation -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>status_navigation</mat-label>
+                            <mat-label>Estado de la navegación</mat-label>
                             <mat-select [formControlName]="'status_navigation'">
                                 <mat-option [value]="true">Activo</mat-option>
                                 <mat-option [value]="false">Inactivo</mat-option>
@@ -185,12 +185,12 @@
                     <!-- content_navigation -->
                     <div class="relative flex mt-8">
                         <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
-                            <mat-label>contentNavigation</mat-label>
+                            <mat-label>Contenido de la navegación</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
                                 [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
                             <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
                                 cdkAutosizeMinRows="1" cdkAutosizeMaxRows="30" [formControlName]="'content_navigation'"
-                                [placeholder]="'Estructura de la nevegación'" [spellcheck]="false"></textarea>
+                                [placeholder]="'Contenido de la navegación'" [spellcheck]="false"></textarea>
                         </mat-form-field>
                         <ng-container>
                             <div class="flex items-center w-10 pl-2">

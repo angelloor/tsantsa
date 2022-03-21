@@ -39,11 +39,12 @@ export class TaskDetailsComponent implements OnInit {
   categoriesCourse: Course[] = [];
   selectedCourse: Course = course;
 
-  nameEntity: string = 'Tarea';
+  havedDependency: boolean = false;
+
+  nameEntity: string = 'Tareas';
   private data!: AppInitialData;
 
   editMode: boolean = false;
-  userId: string = '';
   /**
    * Alert
    */
@@ -125,6 +126,7 @@ export class TaskDetailsComponent implements OnInit {
     this.taskForm = this._formBuilder.group({
       id_task: [''],
       id_course: ['', [Validators.required]],
+      id_user: ['', [Validators.required]],
       name_task: ['', [Validators.required, Validators.maxLength(100)]],
       description_task: ['', [Validators.required, Validators.maxLength(250)]],
       status_task: ['', [Validators.required]],
@@ -221,6 +223,11 @@ export class TaskDetailsComponent implements OnInit {
          * Patch values to the form
          */
         this.patchForm();
+
+        /**
+         * disabledDependency
+         */
+        this.disabledDependency(this.task.dependency);
         /**
          * Toggle the edit mode off
          */
@@ -278,7 +285,17 @@ export class TaskDetailsComponent implements OnInit {
     this.taskForm.patchValue({
       ...this.task,
       id_course: this.task.course.id_course,
+      id_user: this.task.user.id_user,
     });
+  }
+  /**
+   * disabledDependency
+   */
+  disabledDependency(dependency: string): void {
+    if (parseInt(dependency) >= 1) {
+      this.havedDependency = true;
+      this.taskForm.disable();
+    }
   }
   /**
    * On destroy
@@ -335,14 +352,28 @@ export class TaskDetailsComponent implements OnInit {
     const id_user_ = this.data.user.id_user;
     let task = this.taskForm.getRawValue();
     /**
+     *  change the default name
+     */
+    if (task.name_task.trim() == 'Nueva tarea') {
+      this._notificationService.warn(
+        'Tienes que cambiar el nombre de la tarea'
+      );
+      return;
+    }
+    /**
      * Delete whitespace (trim() the atributes type string)
      */
     task = {
       ...task,
+      name_task: task.name_task.trim(),
+      description_task: task.description_task.trim(),
       id_user_: parseInt(id_user_),
       id_task: parseInt(task.id_task),
       course: {
         id_course: parseInt(task.id_course),
+      },
+      user: {
+        id_user: parseInt(task.id_user),
       },
     };
     /**
@@ -388,14 +419,28 @@ export class TaskDetailsComponent implements OnInit {
     const id_user_ = this.data.user.id_user;
     let task = this.taskForm.getRawValue();
     /**
+     *  change the default name
+     */
+    if (task.name_task.trim() == 'Nueva tarea') {
+      this._notificationService.warn(
+        'Tienes que cambiar el nombre de la tarea'
+      );
+      return;
+    }
+    /**
      * Delete whitespace (trim() the atributes type string)
      */
     task = {
       ...task,
+      name_task: task.name_task.trim(),
+      description_task: task.description_task.trim(),
       id_user_: parseInt(id_user_),
       id_task: parseInt(task.id_task),
       course: {
         id_course: parseInt(task.id_course),
+      },
+      user: {
+        id_user: parseInt(task.id_user),
       },
       status_task: true,
     };
@@ -531,7 +576,7 @@ export class TaskDetailsComponent implements OnInit {
       .open({
         title: 'Añadir recurso',
         message:
-          '¿Estás seguro de que deseas añadir una nueva recurso? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas añadir un nuevo recurso? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -548,7 +593,7 @@ export class TaskDetailsComponent implements OnInit {
               next: (_resource: Resource) => {
                 if (_resource) {
                   this._notificationService.success(
-                    'Recurso agregada correctamente'
+                    'Recurso agregado correctamente'
                   );
                   /**
                    * Go to new recurso
@@ -586,7 +631,7 @@ export class TaskDetailsComponent implements OnInit {
       .open({
         title: 'Eliminar recurso',
         message:
-          '¿Estás seguro de que deseas eliminar esta recurso? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas eliminar este recurso? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -606,7 +651,7 @@ export class TaskDetailsComponent implements OnInit {
                    * Return if the resource wasn't deleted...
                    */
                   this._notificationService.success(
-                    'Recurso eliminada correctamente'
+                    'Recurso eliminado correctamente'
                   );
                 } else {
                   this._notificationService.error(

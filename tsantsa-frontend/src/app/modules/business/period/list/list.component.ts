@@ -313,7 +313,7 @@ export class PeriodListComponent implements OnInit {
       .open({
         title: 'Añadir periodo',
         message:
-          '¿Estás seguro de que deseas añadir una nueva periodo? ¡Esta acción no se puede deshacer!',
+          '¿Estás seguro de que deseas añadir un nuevo periodo? ¡Esta acción no se puede deshacer!',
       })
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
@@ -330,7 +330,7 @@ export class PeriodListComponent implements OnInit {
               next: (_period: Period) => {
                 if (_period) {
                   this._notificationService.success(
-                    'Periodo agregada correctamente'
+                    'Periodo agregado correctamente'
                   );
                   /**
                    * Go to new periodo

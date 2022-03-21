@@ -1,6 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { _mensajes } from '../utils/mensaje/mensaje';
-
+/**
+ * generateToken
+ * @param dataAuth
+ * @param expiresIn
+ * @returns token
+ */
 export const generateToken = (dataAuth: object, expiresIn: number = 180) => {
 	return new Promise<string>((resolve, reject) => {
 		try {
@@ -13,7 +18,11 @@ export const generateToken = (dataAuth: object, expiresIn: number = 180) => {
 		}
 	});
 };
-
+/**
+ * verifyToken
+ * @param token
+ * @returns decoded
+ */
 export const verifyToken = (token: string) => {
 	return new Promise((resolve, reject) => {
 		try {

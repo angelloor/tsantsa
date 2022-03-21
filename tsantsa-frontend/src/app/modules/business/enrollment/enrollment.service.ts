@@ -281,4 +281,22 @@ export class EnrollmentService {
       )
     );
   }
+  /**
+   * reportEnrollmentByCourse
+   */
+  reportEnrollmentByCourse(id_course: string): Observable<any> {
+    return this._httpClient
+      .post(
+        this._url + `/reportEnrollmentByCourse`,
+        {
+          course: id_course,
+        },
+        {
+          responseType: 'blob',
+          observe: 'response',
+          headers: new HttpHeaders().append('Content-Type', 'application/json'),
+        }
+      )
+      .pipe(map((response: any) => response));
+  }
 }

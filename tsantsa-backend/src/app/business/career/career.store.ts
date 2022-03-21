@@ -5,7 +5,7 @@ import { Career } from './career.class';
 /**
  * Inners and columns for the resolution of ids
  */
-const COLUMNS_RETURN: string = `bvc.id_career, bvc.id_company, bvc.name_career, bvc.description_career, bvc.status_career, bvc.creation_date_career, bvc.deleted_career, cvc.name_company, cvc.acronym_company, cvc.address_company, cvc.status_company`;
+const COLUMNS_RETURN: string = `(select * from core.utils_get_table_dependency('business', 'career', bvc.id_career) as dependency), bvc.id_career, bvc.id_company, bvc.name_career, bvc.description_career, bvc.status_career, bvc.creation_date_career, bvc.deleted_career, cvc.name_company, cvc.acronym_company, cvc.address_company, cvc.status_company`;
 const INNERS_JOIN: string = ` inner join core.view_company cvc on bvc.id_company = cvc.id_company`;
 
 export const dml_career_create = (career: Career) => {
@@ -30,12 +30,12 @@ export const dml_career_create = (career: Career) => {
 	});
 };
 
-export const view_career = (career: Career) => {
+export const view_career = (career: Career, id_company: string) => {
 	return new Promise<Career[]>(async (resolve, reject) => {
 		const query = `select ${COLUMNS_RETURN} from business.view_career bvc${INNERS_JOIN}${
 			career.name_career != 'query-all'
-				? ` where lower(bvc.name_career) LIKE '%${career.name_career}%'`
-				: ``
+				? ` where lower(bvc.name_career) LIKE '%${career.name_career}%' and bvc.id_company = ${id_company}`
+				: ` where bvc.id_company = ${id_company}`
 		} order by bvc.id_career desc`;
 
 		// console.log(query);
@@ -56,9 +56,12 @@ export const view_career = (career: Career) => {
 	});
 };
 
-export const view_career_specific_read = (career: Career) => {
+export const view_career_specific_read = (
+	career: Career,
+	id_company: string
+) => {
 	return new Promise<Career[]>(async (resolve, reject) => {
-		const query = `select ${COLUMNS_RETURN} from business.view_career bvc ${INNERS_JOIN} where bvc.id_career = ${career.id_career}`;
+		const query = `select ${COLUMNS_RETURN} from business.view_career bvc ${INNERS_JOIN} where bvc.id_career = ${career.id_career} and bvc.id_company = ${id_company}`;
 
 		// console.log(query);
 

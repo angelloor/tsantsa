@@ -181,6 +181,17 @@ export const validation = (user_task: UserTask, url: string, token: string) => {
 									.catch((error: any) => {
 										reject(error);
 									});
+							} else if (url.substring(0, 17) == '/bySenderUserRead') {
+								/** set required attributes for action */
+								_user_task.user = user_task.user;
+								await _user_task
+									.bySenderUserRead()
+									.then((_userTask: UserTask[]) => {
+										resolve(_userTask);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
 							} else if (url == '/update') {
 								/** set required attributes for action */
 								_user_task.id_user_ = user_task.id_user_;
@@ -191,14 +202,17 @@ export const validation = (user_task: UserTask, url: string, token: string) => {
 								/**
 								 * UTC -5
 								 */
-								if (user_task.shipping_date_user_task != null) {
+								if (
+									user_task.shipping_date_user_task != null &&
+									user_task.shipping_date_user_task != ''
+								) {
 									_user_task.shipping_date_user_task = parseDateToString(
 										new Date(user_task.shipping_date_user_task!)
 									);
-								} else {
-									_user_task.shipping_date_user_task =
-										user_task.shipping_date_user_task;
+								} else if (user_task.shipping_date_user_task == '') {
+									_user_task.shipping_date_user_task = null!;
 								}
+
 								_user_task.qualification_user_task =
 									user_task.qualification_user_task;
 								_user_task.is_open = user_task.is_open;
@@ -219,6 +233,16 @@ export const validation = (user_task: UserTask, url: string, token: string) => {
 								await _user_task
 									.delete()
 									.then((response: boolean) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 21) == '/reportUserTaskByUser') {
+								_user_task.user = user_task.user;
+								await _user_task
+									.reportUserTaskByUser()
+									.then((response: any) => {
 										resolve(response);
 									})
 									.catch((error: any) => {

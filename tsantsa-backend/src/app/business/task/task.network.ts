@@ -15,7 +15,27 @@ routerTask.post('/create', async (req: any, res: any) => {
 		});
 });
 
-routerTask.get('/read/:name_task', async (req: any, res: any) => {
+routerTask.get('/read/:user/:name_task', async (req: any, res: any) => {
+	await validation(req.params, req.url, req.headers.token)
+		.then((tasks: Task[]) => {
+			res.status(200).send(tasks);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
+routerTask.get('/allRead', async (req: any, res: any) => {
+	await validation(req.params, req.url, req.headers.token)
+		.then((tasks: Task[]) => {
+			res.status(200).send(tasks);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
+routerTask.get('/read/:user/:name_task', async (req: any, res: any) => {
 	await validation(req.params, req.url, req.headers.token)
 		.then((tasks: Task[]) => {
 			res.status(200).send(tasks);
@@ -26,6 +46,16 @@ routerTask.get('/read/:name_task', async (req: any, res: any) => {
 });
 
 routerTask.get('/specificRead/:id_task', async (req: any, res: any) => {
+	await validation(req.params, req.url, req.headers.token)
+		.then((task: Task) => {
+			res.status(200).send(task);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
+routerTask.get('/byUserRead/:user', async (req: any, res: any) => {
 	await validation(req.params, req.url, req.headers.token)
 		.then((task: Task) => {
 			res.status(200).send(task);
@@ -59,6 +89,33 @@ routerTask.delete('/delete', async (req: any, res: any) => {
 	await validation(req.query, req.url, req.headers.token)
 		.then((response: boolean) => {
 			success(res, response);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
+routerTask.post('/reportTaskByCourse', async (req: any, res: any) => {
+	await validation(req.body, req.url, req.headers.token)
+		.then((response: any) => {
+			if (response.codigo == '06-010') {
+				/**
+				 * Set message in headers
+				 * message in exposedHeaders (index.js)
+				 */
+				res.set('message', JSON.stringify(response));
+				res.send();
+			} else {
+				/**
+				 * Set name_report in headers
+				 * name_report in exposedHeaders (index.js)
+				 */
+				res.set('name_report', response.name_report);
+				/**
+				 * Send the file
+				 */
+				res.sendFile(response.pathFinal);
+			}
 		})
 		.catch((err: Mensaje | any) => {
 			error(res, err);

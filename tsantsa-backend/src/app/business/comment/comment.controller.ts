@@ -150,7 +150,6 @@ export const validation = (comment: Comment, url: string, token: string) => {
 								_comment.date_comment = parseDateToString(
 									new Date(comment.date_comment!)
 								);
-								_comment.date_comment = comment.date_comment;
 								await _comment
 									.update()
 									.then((_comment: Comment) => {

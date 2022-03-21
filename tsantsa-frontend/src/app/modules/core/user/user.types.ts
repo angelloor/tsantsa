@@ -7,7 +7,7 @@ export interface User {
   company: Company;
   person: Person;
   profile: Profile;
-  type_user: string;
+  type_user: TYPE_USER;
   name_user: string;
   password_user: string;
   avatar_user: string;

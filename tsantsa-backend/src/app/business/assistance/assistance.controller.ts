@@ -202,6 +202,19 @@ export const validation = (
 									.catch((error: any) => {
 										reject(error);
 									});
+							} else if (
+								url.substring(0, 32) == '/reportAssistanceByUserAndCourse'
+							) {
+								_assistance.user = assistance.user;
+								_assistance.course = assistance.course;
+								await _assistance
+									.reportAssistanceByUserAndCourse()
+									.then((response: any) => {
+										resolve(response);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
 							}
 						}
 					})

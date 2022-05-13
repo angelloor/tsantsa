@@ -1,4 +1,2 @@
-
-	import { Task } from './task.class';
-	export const _task = new Task();
-	
+import { Task } from './task.class';
+export const _task = new Task();

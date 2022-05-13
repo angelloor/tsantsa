@@ -1,0 +1,36 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Subir recurso</div>
+        <button mat-icon-button (click)="closeModalUploadResourceCourse()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- Modal user -->
+    <div class="flex flex-col flex-auto overflow-y-auto">
+        <!-- Main -->
+        <div class="flex-auto">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Seleccionar archivo</mat-label>
+                    <ngx-mat-file-input #removableInput
+                        (change)="removableInput.setDisabledState(true); uploadFile( $event.target); removableInput.clear($event);"
+                        [accept]="'.*'" (value)="removableInput">
+                    </ngx-mat-file-input>
+                    <mat-icon *ngIf="removableInput.empty" matSuffix>upload</mat-icon>
+                    <button mat-icon-button matSuffix *ngIf="!removableInput.empty"
+                        (click)="removableInput.setDisabledState(true)">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:download'"></mat-icon>
+                    </button>
+                    <button mat-icon-button matSuffix *ngIf="!removableInput.empty" [disabled]="false"
+                        (click)="removableInput.clear($event); removableInput.setDisabledState(false);">
+                        <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:trash'">
+                        </mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   // urlBackend: 'http://172.18.2.3:4000',
-  urlBackend: 'http://65.108.58.90:80',
+  urlBackend: 'http://192.168.59.1:4000',
+  // urlBackend: 'https://evatsantsa.com',
   passwordEncrypt: 'eNcR$TsAnTs$2022',
 };
 

@@ -1,3 +1,4 @@
+import { AngelAlertModule } from '@angel/components/alert';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,9 +24,11 @@ import { SharedModule } from 'app/shared/shared.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { HomeComponent } from './home/home.component';
 import { ModalSelectCourseComponent } from './shared/modal-select-course/modal-select-course.component';
+import { ModalSelectPartialComponent } from './shared/modal-select-partial/modal-select-partial.component';
 import { ModalSelectPeriodComponent } from './shared/modal-select-period/modal-select-period.component';
 import { ModalSelectTaskComponent } from './shared/modal-select-task/modal-select-task.component';
 import { ModalSelectUserCourseComponent } from './shared/modal-select-user-course/modal-select-user-course.component';
+import { ModalViewNewsletterComponent } from './home/modal-view-newsletter/modal-view-newsletter.component';
 
 const businessRoutes: Route[] = [
   {
@@ -95,6 +98,8 @@ const businessRoutes: Route[] = [
     ModalSelectPeriodComponent,
     ModalSelectTaskComponent,
     ModalSelectUserCourseComponent,
+    ModalSelectPartialComponent,
+    ModalViewNewsletterComponent,
   ],
   imports: [
     RouterModule.forChild(businessRoutes),
@@ -106,6 +111,7 @@ const businessRoutes: Route[] = [
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
+    AngelAlertModule,
     MatButtonToggleModule,
     MatDividerModule,
     MatMenuModule,

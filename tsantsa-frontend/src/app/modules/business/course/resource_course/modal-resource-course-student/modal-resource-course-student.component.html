@@ -1,0 +1,68 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">{{resourceCourse.file_name}}{{resourceCourse.extension}}</div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalResourceCourseStudent()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-col flex-auto overflow-y-auto">
+        <div class="flex flex-col w-full">
+            <!-- View mode -->
+            <ng-container>
+                <!-- Entity -->
+                <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+                    <div class="w-full max-w-3xl">
+                        <!-- Actions -->
+                        <div
+                            class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                            <!-- Save -->
+                            <button mat-flat-button [color]="'primary'" [matTooltip]="'Guardar'"
+                                (click)="downloadFile(resourceCourse.server_path)">
+                                Descargar
+                            </button>
+                        </div>
+                        <div class="flex flex-col pt-2 space-y-8">
+                            <!-- id_course -->
+                            <ng-container *ngIf="resourceCourse.course.id_course">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{selectedCourse.name_course}}</div>
+                                </div>
+                            </ng-container> <!-- file_name -->
+                            <ng-container *ngIf="resourceCourse.file_name">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{resourceCourse.file_name}}{{resourceCourse.extension}}
+                                    </div>
+                                </div>
+                            </ng-container> <!-- length_mb -->
+                            <ng-container *ngIf="resourceCourse.length_mb">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{resourceCourse.length_mb}} MB</div>
+                                </div>
+                            </ng-container> <!-- extension -->
+                            <ng-container *ngIf="resourceCourse.extension">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">
+                                        {{getTypeSelectResourceCourse(resourceCourse.extension) ?
+                                        getTypeSelectResourceCourse(resourceCourse.extension) :
+                                        resourceCourse.extension }}</div>
+                                </div>
+                            </ng-container> <!-- upload_date -->
+                            <ng-container *ngIf="resourceCourse.upload_date">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{resourceCourse.upload_date | date:'medium'}}</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

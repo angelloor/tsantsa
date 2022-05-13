@@ -7,6 +7,8 @@ import { Report } from '../../report/report.class';
 import { reportTaskByCourse } from '../../report/report.declarate';
 import { Course } from '../course/course.class';
 import { _course } from '../course/course.data';
+import { Partial } from '../partial/partial.class';
+import { _partial } from '../partial/partial.data';
 import {
 	dml_task_create,
 	dml_task_delete,
@@ -25,6 +27,7 @@ export class Task {
 	public id_task: number;
 	public course: Course;
 	public user: User;
+	public partial: Partial;
 	public name_task?: string;
 	public description_task?: string;
 	public status_task?: boolean;
@@ -37,6 +40,7 @@ export class Task {
 		id_task: number = 0,
 		course: Course = _course,
 		user: User = _user,
+		partial: Partial = _partial,
 		name_task: string = '',
 		description_task: string = '',
 		status_task: boolean = false,
@@ -48,6 +52,7 @@ export class Task {
 		this.id_task = id_task;
 		this.course = course;
 		this.user = user;
+		this.partial = partial;
 		this.name_task = name_task;
 		this.description_task = description_task;
 		this.status_task = status_task;
@@ -82,6 +87,13 @@ export class Task {
 	}
 	get _user() {
 		return this.user;
+	}
+
+	set _partial(partial: Partial) {
+		this.partial = partial;
+	}
+	get _partial() {
+		return this.partial;
 	}
 
 	set _name_task(name_task: string) {
@@ -347,6 +359,9 @@ export class Task {
 				},
 				user: {
 					id_user: item.id_user,
+				},
+				partial: {
+					id_partial: item.id_partial,
 				},
 				/**
 				 * Generate structure of second level the entity (is important add the ids of entity)

@@ -1,0 +1,80 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Glosario</div>
+        <button mat-icon-button (click)="closeModalGlossarys()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- Modal user -->
+    <div class="flex flex-col flex-auto overflow-y-auto pb-8">
+        <!-- Main -->
+        <div class="flex-auto">
+
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8">
+
+                <!-- Title -->
+                <div>
+                    <div class="ml-0.5 font-medium text-secondary">
+                        <ng-container *ngIf="count > 0">
+                            {{count}}
+                        </ng-container>
+                        {{count | i18nPlural: {
+                        '=0' : '¡No hay resultados!',
+                        '=1' : 'Glosario',
+                        'other': 'Glosarios'
+                        } }}
+                    </div>
+                </div>
+
+                <!-- Main actions -->
+                <div class="flex items-center mt-4">
+                    <!-- Search -->
+                    <div class="flex-auto">
+                        <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
+                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                            <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                                [placeholder]="'Buscar por nombre del termino'">
+                        </mat-form-field>
+                    </div>
+                    <!-- Add button -->
+                    <button class="ml-4" mat-flat-button [color]="'primary'" *ngIf="type_user != 'student'"
+                        (click)="createGlossary()">
+                        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                        <span class="ml-2 mr-1">Añadir</span>
+                    </button>
+                </div>
+            </div>
+            <!-- glossarys -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center">
+                <ng-container *ngIf="glossarys$ | async as glossarys">
+                    <ng-container *ngIf="glossarys.length">
+                        <ng-container *ngFor="let glossary of glossarys; let i = index; trackBy: trackByFn">
+                            <a class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out"
+                                (click)="openModalGlossary(glossary.id_glossary)">
+                                <div
+                                    class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                                    <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'"></mat-icon>
+                                </div>
+                                <!-- name_template -->
+                                <div class="mt-5 text-lg font-medium leading-5 text-center">{{glossary.term_glossary}}
+                                </div>
+                                <!-- description_template -->
+                                <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                                    {{minimumDescription(glossary.concept_glossary)}}</div>
+                                <!-- Last activity -->
+                                <div class="flex items-center mt-4 text-sm font-md">
+                                    <div class="text-secondary">Creado:</div>
+                                    <div class="ml-1">{{formatDateAsRelative(glossary.date_glossary!)}}</div>
+                                </div>
+                            </a>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+
+    </div>
+</div>

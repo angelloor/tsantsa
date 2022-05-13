@@ -18,10 +18,10 @@ export class ModalViewSchemaComponent implements OnInit {
     this.schema = this._data.schema;
   }
   /**
-   * close
+   * closeModalViewSchema
    */
-  close(): void {
-    this._modalViewSchemaService.closeModalViewSchemaService();
+  closeModalViewSchema(): void {
+    this._modalViewSchemaService.closeModalViewSchema();
   }
   /**
    * parseJsonToText

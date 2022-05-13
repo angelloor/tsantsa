@@ -3,34 +3,17 @@ import {
   AngelConfirmationService,
 } from '@angel/services/confirmation';
 import { AngelMediaWatcherService } from '@angel/services/media-watcher';
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
-import { ReportService } from 'app/modules/report/report.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
-import { GlobalUtils } from 'app/utils/GlobalUtils';
-import { fromEvent, merge, Observable, Subject, timer } from 'rxjs';
-import {
-  filter,
-  finalize,
-  switchMap,
-  takeUntil,
-  takeWhile,
-  tap,
-} from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { CourseService } from '../course.service';
 import { Course } from '../course.types';
 
@@ -48,15 +31,7 @@ export class CourseListComponent implements OnInit {
   openMatDrawer: boolean = false;
 
   private data!: AppInitialData;
-  /**
-   * Shortcut
-   */
-  private keyControl: boolean = false;
-  private keyShift: boolean = false;
-  private timeToWaitKey: number = 2; //ms
-  /**
-   * Shortcut
-   */
+
   drawerMode!: 'side' | 'over';
   searchInputControl: FormControl = new FormControl();
   selectedCourse!: Course;
@@ -73,17 +48,13 @@ export class CourseListComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _document: any,
     private _router: Router,
     private _angelMediaWatcherService: AngelMediaWatcherService,
     private _courseService: CourseService,
     private _notificationService: NotificationService,
     private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
-    private _authService: AuthService,
-    private _globalUtils: GlobalUtils,
-    private _matDialog: MatDialog,
-    private _reportService: ReportService
+    private _authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -200,60 +171,6 @@ export class CourseListComponent implements OnInit {
           this._changeDetectorRef.markForCheck();
         }
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Control')
-      ),
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Shift')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut create
-         */
-        if (keyUpOrKeyDown.key == 'Control') {
-          this.keyControl = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyControl = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-        if (keyUpOrKeyDown.key == 'Shift') {
-          this.keyShift = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyShift = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-
-        if (!this.isOpenModal && this.keyControl && this.keyShift) {
-          this.createCourse();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * On destroy
@@ -269,7 +186,6 @@ export class CourseListComponent implements OnInit {
   /** ----------------------------------------------------------------------------------------------------- */
   /** @ Public methods
    /** ----------------------------------------------------------------------------------------------------- */
-
   /**
    * Go to Curso
    * @param id

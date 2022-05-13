@@ -1,0 +1,45 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">{{glossary.term_glossary}} </div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalGlossaryStudent()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-col flex-auto overflow-y-auto">
+        <div class="flex flex-col w-full">
+            <!-- View mode -->
+            <ng-container>
+                <!-- Entity -->
+                <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+                    <div class="w-full max-w-3xl">
+                        <!-- Actions -->
+                        <div class="flex flex-col mt-4 pt-6 space-y-8">
+                            <!-- concept_glossary -->
+                            <ng-container>
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{glossary.concept_glossary ? glossary.concept_glossary
+                                        : 'Sin concepto'}}</div>
+                                </div>
+                            </ng-container> <!-- id_course -->
+                            <ng-container *ngIf="glossary.course.id_course ">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{selectedCourse.name_course}}</div>
+                                </div>
+                            </ng-container> <!-- date_glossary -->
+                            <ng-container *ngIf="glossary.date_glossary">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{glossary.date_glossary | date:'medium'}}</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

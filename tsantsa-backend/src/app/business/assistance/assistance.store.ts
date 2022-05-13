@@ -1,7 +1,6 @@
 import { clientTSANTSAPostgreSQL } from '../../../utils/conections';
 import { _mensajes } from '../../../utils/mensaje/mensaje';
 import { Assistance } from './assistance.class';
-
 /**
  * Inners and columns for the resolution of ids
  */

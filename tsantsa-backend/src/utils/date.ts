@@ -1,5 +1,5 @@
 /**
- * Return { day, month, fullYear, hours, minutes, seconds }
+ * Return { day, month, fullYear, hours, minutes, seconds, milliSeconds }
  */
 export const getFullDate = (stringDate: string) => {
 	const date = new Date(stringDate);
@@ -10,10 +10,12 @@ export const getFullDate = (stringDate: string) => {
 		hours: addCeroNumber(date.getHours()),
 		minutes: addCeroNumber(date.getMinutes()),
 		seconds: addCeroNumber(date.getSeconds()),
+		milliSeconds: date.getMilliseconds(),
 	};
 };
 /**
- * Return yyyy/mm/ddThh:mm:ss.000Z
+ * parseDateToString
+ * Return YYYY/MM/DDTHH:MM:SS.MSZ
  */
 export const parseDateToString = (date: Date) => {
 	return `${date.getFullYear()}-${addCeroNumber(
@@ -22,7 +24,7 @@ export const parseDateToString = (date: Date) => {
 		date.getHours()
 	)}:${addCeroNumber(date.getMinutes())}:${addCeroNumber(
 		date.getSeconds()
-	)}.000Z`;
+	)}.${date.getMinutes()}Z`;
 };
 /**
  * createDateAsUTC -5

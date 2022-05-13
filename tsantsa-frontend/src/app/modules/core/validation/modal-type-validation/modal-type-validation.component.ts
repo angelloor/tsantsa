@@ -89,18 +89,10 @@ export class ModalTypeValidationComponent implements OnInit {
     this._changeDetectorRef.markForCheck();
   }
   /**
-   * Save and close
+   * closeModalTypeValidation
    */
-  saveAndClose(): void {
-    // Close the dialog
-    this._modalTypeValidationService.closeModalTypeValidationService();
-  }
-
-  /**
-   * Discard the message
-   */
-  discard(): void {
-    this._modalTypeValidationService.closeModalTypeValidationService();
+  closeModalTypeValidation(): void {
+    this._modalTypeValidationService.closeModalTypeValidation();
   }
   /**
    * Send the message
@@ -118,7 +110,7 @@ export class ModalTypeValidationComponent implements OnInit {
       .subscribe({
         next: (_validation: Validation) => {
           if (_validation) {
-            this.saveAndClose();
+            this.closeModalTypeValidation();
             this._notificationService.success(
               'Validación agregada correctamente'
             );

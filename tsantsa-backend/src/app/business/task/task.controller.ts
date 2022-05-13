@@ -105,16 +105,19 @@ export const validation = (task: Task, url: string, token: string) => {
 					}
 
 					/**
-					 * Validation user
+					 * Validation partial
 					 */
 
-					if (url == '/update') {
-						attributeValidate('id_user', task.user.id_user, 'number', 10).catch(
-							(err) => {
-								validationStatus = true;
-								reject(err);
-							}
-						);
+					if (url == '/create' || url == '/update') {
+						attributeValidate(
+							'id_partial',
+							task.partial.id_partial,
+							'number',
+							5
+						).catch((err) => {
+							validationStatus = true;
+							reject(err);
+						});
 					}
 					/**
 					 * Continuar solo si no ocurrio errores en la validación
@@ -131,6 +134,7 @@ export const validation = (task: Task, url: string, token: string) => {
 							/** set required attributes for action */
 							_task.id_user_ = task.id_user_;
 							_task.course = task.course;
+							_task.partial = task.partial;
 							await _task
 								.create()
 								.then((_task: Task) => {
@@ -189,6 +193,7 @@ export const validation = (task: Task, url: string, token: string) => {
 							_task.id_task = task.id_task;
 							_task.course = task.course;
 							_task.user = task.user;
+							_task.partial = task.partial;
 							_task.name_task = task.name_task;
 							_task.description_task = task.description_task;
 							_task.status_task = task.status_task;
@@ -213,6 +218,7 @@ export const validation = (task: Task, url: string, token: string) => {
 							_task.id_task = task.id_task;
 							_task.course = task.course;
 							_task.user = task.user;
+							_task.partial = task.partial;
 							_task.name_task = task.name_task;
 							_task.description_task = task.description_task;
 							_task.status_task = task.status_task;

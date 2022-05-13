@@ -19,6 +19,10 @@
 						<mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
 						<span class="ml-1">Editar</span>
 					</button>
+					<button mat-stroked-button (click)="openModalQuimester()" class="ml-2">
+						<mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+						<span class="ml-1">Quimestres</span>
+					</button>
 					<button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
 						<mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
 						<span class="ml-1">Cerrar</span>
@@ -110,7 +114,7 @@
 					<!-- Alert -->
 					<angel-alert class="mt-8" *ngIf="periodForm.disabled" [appearance]="'outline'" [showIcon]="false"
 						[type]="'warning'" [@shake]="alert.type === 'error'">
-						El periodo ya tiene asignaturas creados
+						El periodo mantiene dependencia con otras procesos
 					</angel-alert>
 					<!-- Alert -->
 					<!-- Alert -->

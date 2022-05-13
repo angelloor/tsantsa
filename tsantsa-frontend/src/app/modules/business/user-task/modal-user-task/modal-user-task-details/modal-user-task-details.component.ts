@@ -1,9 +1,7 @@
 import { angelAnimations } from '@angel/animations';
 import { AngelAlertType } from '@angel/components/alert';
-import { AngelConfirmationService } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -12,7 +10,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
@@ -23,7 +20,7 @@ import { environment } from 'environments/environment';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import { FileInput, FileValidator } from 'ngx-material-file-input';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { AttachedService } from '../../attached/attached.service';
 import { Attached } from '../../attached/attached.types';
 import { CommentService } from '../../comment/comment.service';
@@ -80,12 +77,9 @@ export class ModalUserTaskDetailsComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _changeDetectorRef: ChangeDetectorRef,
     private _userTaskService: UserTaskService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
-    private _router: Router,
     private _matDialog: MatDialog,
     private _notificationService: NotificationService,
-    private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _localDatePipe: LocalDatePipe,
     private _attachedService: AttachedService,
@@ -350,31 +344,6 @@ export class ModalUserTaskDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (!this.isOpenModal && keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
 
   get formArrayAttacheds(): FormArray {

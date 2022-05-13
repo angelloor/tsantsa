@@ -1,0 +1,156 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">{{quimester.name_quimester}}</div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalQuimester()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-col flex-auto overflow-y-auto">
+        <div class="flex flex-col w-full">
+            <!-- View mode -->
+            <ng-container *ngIf="!editMode">
+                <!-- Header -->
+                <div
+                    class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+                    <!-- Background -->
+                    <div class="w-full h-40 bg-black z-10 opacity-0">
+                    </div>
+                    <h1 class="absolute z-20 text-white text-3xl" absolute z-20 text-white text-3xl>{{nameEntity}}</h1>
+                    <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+                </div>
+                <!-- Entity -->
+                <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+                    <div class="w-full max-w-3xl">
+                        <!-- Actions -->
+                        <div
+                            class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                            <button mat-stroked-button (click)="toggleEditMode(true)">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                <span class="ml-1">Editar</span>
+                            </button>
+                            <button mat-stroked-button (click)="openModalPartials()" class="ml-2">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                <span class="ml-1">Parciales</span>
+                            </button>
+                        </div>
+                        <div class="flex flex-col mt-4 pt-6 space-y-8">
+                            <!-- id_period -->
+                            <ng-container *ngIf="quimester.period.id_period">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{selectedPeriod.name_period}}</div>
+                                </div>
+                            </ng-container> <!-- name_quimester -->
+                            <ng-container *ngIf="quimester.name_quimester">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{quimester.name_quimester}}</div>
+                                </div>
+                            </ng-container> <!-- description_quimester -->
+                            <ng-container *ngIf="quimester.description_quimester">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:fire'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{quimester.description_quimester}}</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- Edit mode -->
+            <ng-container *ngIf="editMode">
+                <!-- Header -->
+                <div
+                    class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+                    <!-- Background -->
+                    <div class="w-full h-40 bg-black z-10 opacity-25">
+                    </div>
+                    <h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+                    <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+                </div>
+                <!-- form -->
+                <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+                    <div class="w-full max-w-3xl">
+                        <!-- Actions -->
+                        <div
+                            class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                            <!-- Save -->
+                            <button mat-flat-button [color]="'primary'" [disabled]="quimesterForm.invalid"
+                                [matTooltip]="'Guardar'" (click)="updateQuimester()">
+                                Guardar
+                            </button>
+                            <!-- Delete -->
+                            <button mat-stroked-button class="ml-2" [color]="'warn'" [matTooltip]="'Eliminar'"
+                                (click)="deleteQuimester()">
+                                Eliminar
+                            </button>
+                            <!-- Cancel -->
+                            <button mat-stroked-button class="ml-2 mr-2" [matTooltip]="'Cancelar'"
+                                (click)="toggleEditMode(false)">
+                                Cancelar
+                            </button>
+                        </div>
+                        <form [formGroup]="quimesterForm" class="mb-8">
+                            <!-- Alert -->
+                            <angel-alert class="mt-8" *ngIf="quimesterForm.invalid || showAlert"
+                                [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+                                [@shake]="alert.type === 'error'">
+                                <!-- Message if alert is actived for the component -->
+                                {{alert.message}}
+                                <!-- id_period -->
+                                <mat-error *ngIf="quimesterForm.get('id_period')?.hasError('required')">
+                                    • Seleccione el periodo
+                                </mat-error>
+                                <!-- name_quimester -->
+                                <mat-error *ngIf="quimesterForm.get('name_quimester')?.hasError('required')">
+                                    • Ingrese el nombre del quimestre
+                                </mat-error>
+                                <!-- description_quimester -->
+                                <mat-error *ngIf="quimesterForm.get('description_quimester')?.hasError('required')">
+                                    • Ingrese la descripción del quimestre
+                                </mat-error>
+                            </angel-alert>
+                            <!-- Alert -->
+                            <!-- id_period -->
+                            <div class="mt-8">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>Period</mat-label>
+                                    <mat-select [formControlName]="'id_period'" [value]="selectedPeriod.id_period"
+                                        [disabled]="true">
+                                        <ng-container *ngFor="let category of categoriesPeriod">
+                                            <mat-option [value]="category.id_period">
+                                                {{category.name_period}}</mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div><!-- name_quimester -->
+                            <div class="mt-8">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>nameQuimester</mat-label>
+                                    <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                        [svgIcon]="'heroicons_solid:fire'">
+                                    </mat-icon>
+                                    <input matInput maxlength="100" [formControlName]="'name_quimester'"
+                                        [placeholder]="'name_quimester'" [spellcheck]="false">
+                                </mat-form-field>
+                            </div> <!-- description_quimester -->
+                            <div class="mt-8">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>descriptionQuimester</mat-label>
+                                    <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                        [svgIcon]="'heroicons_solid:fire'">
+                                    </mat-icon>
+                                    <input matInput maxlength="250" [formControlName]="'description_quimester'"
+                                        [placeholder]="'description_quimester'" [spellcheck]="false">
+                                </mat-form-field>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

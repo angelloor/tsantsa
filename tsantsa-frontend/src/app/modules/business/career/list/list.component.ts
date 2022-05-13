@@ -3,14 +3,7 @@ import {
   AngelConfirmationService,
 } from '@angel/services/confirmation';
 import { AngelMediaWatcherService } from '@angel/services/media-watcher';
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,15 +12,8 @@ import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
-import { fromEvent, merge, Observable, Subject, timer } from 'rxjs';
-import {
-  filter,
-  finalize,
-  switchMap,
-  takeUntil,
-  takeWhile,
-  tap,
-} from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { CareerService } from '../career.service';
 import { Career } from '../career.types';
 
@@ -43,15 +29,7 @@ export class CareerListComponent implements OnInit {
   openMatDrawer: boolean = false;
 
   private data!: AppInitialData;
-  /**
-   * Shortcut
-   */
-  private keyControl: boolean = false;
-  private keyShift: boolean = false;
-  private timeToWaitKey: number = 2; //ms
-  /**
-   * Shortcut
-   */
+
   drawerMode!: 'side' | 'over';
   searchInputControl: FormControl = new FormControl();
   selectedCareer!: Career;
@@ -68,7 +46,6 @@ export class CareerListComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _document: any,
     private _router: Router,
     private _angelMediaWatcherService: AngelMediaWatcherService,
     private _careerService: CareerService,
@@ -192,60 +169,6 @@ export class CareerListComponent implements OnInit {
           this._changeDetectorRef.markForCheck();
         }
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Control')
-      ),
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Shift')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut create
-         */
-        if (keyUpOrKeyDown.key == 'Control') {
-          this.keyControl = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyControl = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-        if (keyUpOrKeyDown.key == 'Shift') {
-          this.keyShift = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyShift = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-
-        if (!this.isOpenModal && this.keyControl && this.keyShift) {
-          this.createCareer();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * On destroy

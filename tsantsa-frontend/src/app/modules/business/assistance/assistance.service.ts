@@ -300,26 +300,4 @@ export class AssistanceService {
       )
     );
   }
-  /**
-   * reportAssistanceByUserAndCourse
-   */
-  reportAssistanceByUserAndCourse(
-    id_user: string,
-    id_course: string
-  ): Observable<any> {
-    return this._httpClient
-      .post(
-        this._url + `/reportAssistanceByUserAndCourse`,
-        {
-          user: id_user,
-          course: id_course,
-        },
-        {
-          responseType: 'blob',
-          observe: 'response',
-          headers: new HttpHeaders().append('Content-Type', 'application/json'),
-        }
-      )
-      .pipe(map((response: any) => response));
-  }
 }

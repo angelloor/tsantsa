@@ -22,11 +22,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import * as moment from 'moment';
+import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { CourseComponent } from './course.component';
 import { courseRoutes } from './course.routing';
 import { CourseDetailsComponent } from './details/details.component';
 import { CourseListComponent } from './list/list.component';
 import { ModalEnrollmentComponent } from './modal-enrollment/modal-enrollment.component';
+import { ModalResourceCourseComponent } from './resource_course/modal-resource-course/modal-resource-course.component';
+import { ModalResourceCoursesComponent } from './resource_course/modal-resource-courses/modal-resource-courses.component';
+import { ModalUploadResourceCourseComponent } from './resource_course/modal-upload-resource-course/modal-upload-resource-course.component';
+import { ModalGlossarysComponent } from './glossary/modal-glossarys/modal-glossarys.component';
+import { ModalGlossaryComponent } from './glossary/modal-glossary/modal-glossary.component';
+import { ModalForumComponent } from './forum/modal-forum/modal-forum.component';
+import { ModalForumsComponent } from './forum/modal-forums/modal-forums.component';
+import { ModalGlossaryStudentComponent } from './glossary/modal-glossary-student/modal-glossary-student.component';
+import { ModalResourceCourseStudentComponent } from './resource_course/modal-resource-course-student/modal-resource-course-student.component';
 
 @NgModule({
   declarations: [
@@ -34,12 +44,22 @@ import { ModalEnrollmentComponent } from './modal-enrollment/modal-enrollment.co
     CourseDetailsComponent,
     CourseComponent,
     ModalEnrollmentComponent,
+    ModalResourceCoursesComponent,
+    ModalResourceCourseComponent,
+    ModalUploadResourceCourseComponent,
+    ModalGlossarysComponent,
+    ModalGlossaryComponent,
+    ModalForumComponent,
+    ModalForumsComponent,
+    ModalGlossaryStudentComponent,
+    ModalResourceCourseStudentComponent,
   ],
   imports: [
     RouterModule.forChild(courseRoutes),
     MatButtonModule,
     MatCheckboxModule,
     MatDatepickerModule,
+    MaterialFileInputModule,
     MatDividerModule,
     MatFormFieldModule,
     MatIconModule,

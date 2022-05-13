@@ -1,14 +1,12 @@
 import { angelAnimations } from '@angel/animations';
 import { AngelAlertType } from '@angel/components/alert';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData } from 'app/core/app/app.type';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { user } from '../../user/user.data';
 import { UserService } from '../../user/user.service';
 import { User } from '../../user/user.types';
@@ -52,9 +50,7 @@ export class SystemEventDetailsComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     private _systemEventListComponent: SystemEventListComponent,
     private _systemEventService: SystemEventService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
-    private _router: Router,
     private _userService: UserService
   ) {}
 
@@ -137,35 +133,6 @@ export class SystemEventDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-          /**
-           * Close Drawer
-           */
-          this.closeDrawer();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * Pacth the form with the information of the database

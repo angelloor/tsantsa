@@ -5,8 +5,7 @@ import {
   AngelConfirmationService,
 } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +15,7 @@ import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
 import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
 import moment from 'moment';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { career } from '../../career/career.data';
 import { CareerService } from '../../career/career.service';
 import { Career } from '../../career/career.types';
@@ -25,8 +24,11 @@ import { PeriodService } from '../../period/period.service';
 import { Period } from '../../period/period.types';
 import { CourseService } from '../course.service';
 import { Course } from '../course.types';
+import { ModalForumsService } from '../forum/modal-forums/modal-forums.service';
+import { ModalGlossarysService } from '../glossary/modal-glossarys/modal-glossarys.service';
 import { CourseListComponent } from '../list/list.component';
 import { ModalEnrollmentService } from '../modal-enrollment/modal-enrollment.service';
+import { ModalResourceCoursesService } from '../resource_course/modal-resource-courses/modal-resource-courses.service';
 
 @Component({
   selector: 'course-details',
@@ -80,7 +82,6 @@ export class CourseDetailsComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     private _courseListComponent: CourseListComponent,
     private _courseService: CourseService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
@@ -90,7 +91,10 @@ export class CourseDetailsComponent implements OnInit {
     private _periodService: PeriodService,
     private _careerService: CareerService,
     private _modalEnrollmentService: ModalEnrollmentService,
-    private _localDatePipe: LocalDatePipe
+    private _localDatePipe: LocalDatePipe,
+    private _modalResourceCoursesService: ModalResourceCoursesService,
+    private _modalGlossarysService: ModalGlossarysService,
+    private _modalForumsService: ModalForumsService
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -216,35 +220,6 @@ export class CourseDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (!this.isOpenModal && keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-          /**
-           * Close Drawer
-           */
-          this.closeDrawer();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * Pacth the form with the information of the database
@@ -315,7 +290,6 @@ export class CourseDetailsComponent implements OnInit {
      */
     this._changeDetectorRef.markForCheck();
   }
-
   /**
    * Update the course
    */
@@ -549,7 +523,6 @@ export class CourseDetailsComponent implements OnInit {
       );
     }
   }
-
   /**
    * changeEndDateSchedule
    * isBefore, isSame, and isAfter of moment
@@ -573,5 +546,25 @@ export class CourseDetailsComponent implements OnInit {
         'La hora final tiene que ser mayor que la inicial'
       );
     }
+  }
+  /**
+   * openModalResourceCourses
+   */
+  openModalResourceCourses(): void {
+    this._modalResourceCoursesService.openModalResourceCourses(
+      this.course.id_course
+    );
+  }
+  /**
+   * openModalGlossarys
+   */
+  openModalGlossarys(): void {
+    this._modalGlossarysService.openModalGlossarys(this.course.id_course);
+  }
+  /**
+   * openModalForums
+   */
+  openModalForums(): void {
+    this._modalForumsService.openModalForums(this.course.id_course);
   }
 }

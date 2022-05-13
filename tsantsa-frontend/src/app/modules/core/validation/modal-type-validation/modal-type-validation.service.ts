@@ -22,11 +22,11 @@ export class ModalTypeValidationService {
     private _layoutService: LayoutService
   ) {}
 
-  openModalTypeValidationService() {
+  openModalTypeValidation() {
     this._layoutService.setOpenModal(true);
     return this._dialog.open(ModalTypeValidationComponent, {
       minHeight: 'inherit',
-      maxHeight: 'inherit',
+      maxHeight: '90vh',
       height: 'auto',
       width: '32rem',
       maxWidth: '',
@@ -34,7 +34,7 @@ export class ModalTypeValidationService {
     });
   }
 
-  closeModalTypeValidationService() {
+  closeModalTypeValidation() {
     this._dialog.closeAll();
   }
 

@@ -94,17 +94,18 @@ export class UserComponent implements OnInit, OnDestroy {
     //   })
     //   .subscribe();
   }
-
+  /**
+   * openSettingsCompany
+   */
   openSettingsCompany(): void {
     this._settingsCompanyService
-      .openSettingsCompanyService(this.user.company.id_company)
+      .openSettingsCompany(this.user.company.id_company)
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(() => {
         this._layoutService.setOpenModal(false);
       });
   }
-
   /**
    * Sign out
    */

@@ -121,50 +121,55 @@
                     </ng-container>
 
                     <!-- title_academic -->
-                    <ng-container *ngIf="user.person.academic.title_academic">
+                    <!-- <ng-container *ngIf="user.person.academic.title_academic">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.academic.title_academic}}</div>
                         </div>
-                    </ng-container> <!-- abbreviation_academic -->
-                    <ng-container *ngIf="user.person.academic.abbreviation_academic">
+                    </ng-container>  -->
+                    <!-- abbreviation_academic -->
+                    <!-- <ng-container *ngIf="user.person.academic.abbreviation_academic">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'mat_outline:short_text'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.academic.abbreviation_academic}}</div>
                         </div>
-                    </ng-container> <!-- nivel_academic -->
-                    <ng-container *ngIf="user.person.academic.nivel_academic">
+                    </ng-container>  -->
+                    <!-- nivel_academic -->
+                    <!-- <ng-container *ngIf="user.person.academic.nivel_academic">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.academic.nivel_academic}}</div>
                         </div>
-                    </ng-container>
+                    </ng-container> -->
 
                     <!-- name_job -->
-                    <ng-container *ngIf="user.person.job.name_job">
+                    <!-- <ng-container *ngIf="user.person.job.name_job">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.job.name_job}}</div>
                         </div>
-                    </ng-container> <!-- address_job -->
-                    <ng-container *ngIf="user.person.job.address_job">
+                    </ng-container>  -->
+                    <!-- address_job -->
+                    <!-- <ng-container *ngIf="user.person.job.address_job">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:location-marker'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.job.address_job}}</div>
                         </div>
-                    </ng-container> <!-- phone_job -->
-                    <ng-container *ngIf="user.person.job.phone_job">
+                    </ng-container>  -->
+                    <!-- phone_job -->
+                    <!-- <ng-container *ngIf="user.person.job.phone_job">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:phone'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.job.phone_job}}</div>
                         </div>
-                    </ng-container> <!-- position_job -->
-                    <ng-container *ngIf="user.person.job.position_job">
+                    </ng-container>  -->
+                    <!-- position_job -->
+                    <!-- <ng-container *ngIf="user.person.job.position_job">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:collection'"></mat-icon>
                             <div class="ml-6 leading-6">{{user.person.job.position_job}}</div>
                         </div>
-                    </ng-container>
+                    </ng-container> -->
                 </div>
             </div>
         </div>
@@ -346,7 +351,7 @@
                     <!-- type_user -->
                     <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
-                            <mat-label>type_user</mat-label>
+                            <mat-label>Tipo de usuario</mat-label>
                             <mat-select [formControlName]="'type_user'">
                                 <ng-container *ngFor="let type of typeUser">
                                     <mat-option [value]="type.value_type">
@@ -463,7 +468,7 @@
                     </div>
 
                     <!-- title_academic -->
-                    <div class="mt-8">
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Titulo académico</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
@@ -472,8 +477,9 @@
                             <input matInput maxlength="250" [formControlName]="'title_academic'"
                                 [placeholder]="'Ingrese el titulo académico'" [spellcheck]="true">
                         </mat-form-field>
-                    </div> <!-- abbreviation_academic -->
-                    <div class="mt-8">
+                    </div> -->
+                    <!-- abbreviation_academic -->
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Abreviación del titulo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'mat_solid:short_text'">
@@ -481,8 +487,9 @@
                             <input matInput maxlength="50" [formControlName]="'abbreviation_academic'"
                                 [placeholder]="'Ingrese la abreviación  del titulo'" [spellcheck]="true">
                         </mat-form-field>
-                    </div> <!-- nivel_academic -->
-                    <div class="mt-8">
+                    </div> -->
+                    <!-- nivel_academic -->
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Nivel académico</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
@@ -491,10 +498,10 @@
                             <input matInput maxlength="100" [formControlName]="'nivel_academic'"
                                 [placeholder]="'Ingrese el nivel académico'" [spellcheck]="true">
                         </mat-form-field>
-                    </div>
+                    </div> -->
 
                     <!-- name_job -->
-                    <div class="mt-8">
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Nombre del trabajo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
@@ -503,8 +510,9 @@
                             <input matInput maxlength="200" [formControlName]="'name_job'"
                                 [placeholder]="'Ingrese el nombre del trabajo'" [spellcheck]="true">
                         </mat-form-field>
-                    </div> <!-- address_job -->
-                    <div class="mt-8">
+                    </div> -->
+                    <!-- address_job -->
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Dirección del trabajo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
@@ -513,8 +521,9 @@
                             <input matInput maxlength="200" [formControlName]="'address_job'"
                                 [placeholder]="'Ingrese la dirección del trabajo'" [spellcheck]="false">
                         </mat-form-field>
-                    </div> <!-- phone_job -->
-                    <div class="mt-8">
+                    </div> -->
+                    <!-- phone_job -->
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Teléfono del trabajo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:phone'">
@@ -522,8 +531,9 @@
                             <input matInput maxlength="13" [formControlName]="'phone_job'"
                                 [placeholder]="'Ingrese el teléfono del trabajo'" [spellcheck]="false">
                         </mat-form-field>
-                    </div> <!-- position_job -->
-                    <div class="mt-8">
+                    </div> -->
+                    <!-- position_job -->
+                    <!-- <div class="mt-8">
                         <mat-form-field class="angel-mat-no-subscript w-full">
                             <mat-label>Cargo</mat-label>
                             <mat-icon matPrefix class="hidden sm:flex icon-size-5"
@@ -532,7 +542,7 @@
                             <input matInput maxlength="150" [formControlName]="'position_job'"
                                 [placeholder]="'Ingrese el cargo que desempeña en su trabajo'" [spellcheck]="true">
                         </mat-form-field>
-                    </div>
+                    </div> -->
                 </form>
             </div>
         </div>

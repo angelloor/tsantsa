@@ -24,9 +24,13 @@ import { PeriodDetailsComponent } from './details/details.component';
 import { PeriodListComponent } from './list/list.component';
 import { PeriodComponent } from './period.component';
 import { periodRoutes } from './period.routing';
+import { ModalQuimesterComponent } from './quimester/modal-quimester/modal-quimester.component';
+import { ModalQuimestersComponent } from './quimester/modal-quimesters/modal-quimesters.component';
+import { ModalPartialsComponent } from './quimester/partial/modal-partials/modal-partials.component';
+import { ModalPartialComponent } from './quimester/partial/modal-partial/modal-partial.component';
 
 @NgModule({
-  declarations: [PeriodListComponent, PeriodDetailsComponent, PeriodComponent],
+  declarations: [PeriodListComponent, PeriodDetailsComponent, PeriodComponent, ModalQuimesterComponent, ModalQuimestersComponent, ModalPartialsComponent, ModalPartialComponent],
   imports: [
     RouterModule.forChild(periodRoutes),
     MatButtonModule,

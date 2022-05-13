@@ -18,7 +18,7 @@ export class ModalSelectCourseService {
 
     return (this.dialogRef = this._dialog.open(ModalSelectCourseComponent, {
       minHeight: 'inherit',
-      maxHeight: 'inherit',
+      maxHeight: '90vh',
       height: 'auto',
       width: '32rem',
       maxWidth: '',

@@ -19,10 +19,10 @@ export class ModalSelectCourseComponent implements OnInit {
   selectCourseForm!: FormGroup;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public _data: any,
-    private _formBuilder: FormBuilder,
-    private _courseService: CourseService,
-    private _modalSelectCourseService: ModalSelectCourseService
+    @Inject(MAT_DIALOG_DATA) public _data: any, 
+    private _formBuilder: FormBuilder,  
+    private _courseService: CourseService,  
+    private _modalSelectCourseService: ModalSelectCourseService 
   ) {}
 
   ngOnInit(): void {

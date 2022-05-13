@@ -1,12 +1,5 @@
 import { AngelMediaWatcherService } from '@angel/services/media-watcher';
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -51,7 +44,6 @@ export class UserTaskListComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _document: any,
     private _router: Router,
     private _angelMediaWatcherService: AngelMediaWatcherService,
     private _userTaskService: UserTaskService,

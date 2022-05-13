@@ -15,10 +15,39 @@
                 <!-- Actions -->
                 <div
                     class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
-                    <button mat-stroked-button (click)="toggleEditMode(true)">
+                    <button mat-stroked-button (click)="toggleEditMode(true)" class="mr-2">
                         <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
                         <span class="ml-1">Editar</span>
                     </button>
+                    <!-- Button -->
+                    <button class="mr-2" mat-flat-button [color]="'primary'" [matTooltip]="'Matrículas'"
+                        (click)="openModalEnrollment()">
+                        <span class="relative">
+                            Matrículas
+                        </span>
+                    </button>
+                    <!-- Button -->
+                    <button class="mr-2" mat-flat-button [color]="'primary'" [matTooltip]="'Material de apoyo'"
+                        [matMenuTriggerFor]="courseOptions">
+                        <span class="relative">
+                            Extras
+                        </span>
+                    </button>
+                    <mat-menu [xPosition]="'before'" #courseOptions="matMenu">
+                        <button mat-menu-item (click)="openModalResourceCourses()">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'">
+                            </mat-icon>
+                            <span>Recursos</span>
+                        </button>
+                        <button mat-menu-item (click)="openModalGlossarys()">
+                            <mat-icon [svgIcon]="'heroicons_outline:office-building'"></mat-icon>
+                            <span>Glosario</span>
+                        </button>
+                        <button mat-menu-item (click)="openModalForums()">
+                            <mat-icon [svgIcon]="'heroicons_outline:printer'"></mat-icon>
+                            <span>Foro</span>
+                        </button>
+                    </mat-menu>
                     <button mat-stroked-button class="ml-auto" [matTooltip]="'Cerrar'" [routerLink]="['../']">
                         <mat-icon class="icon-size-5" [svgIcon]="'heroicons_outline:x'"></mat-icon>
                         <span class="ml-1">Cerrar</span>
@@ -129,7 +158,7 @@
                     <!-- Alert -->
                     <angel-alert class="mt-8" *ngIf="courseForm.disabled" [appearance]="'outline'" [showIcon]="false"
                         [type]="'warning'" [@shake]="alert.type === 'error'">
-                        La asignatura ya tiene tareas creadas
+                        La asignatura mantiene dependencia con otras procesos
                     </angel-alert>
                     <!-- Alert -->
                     <!-- Alert -->
@@ -195,7 +224,8 @@
                             </mat-icon>
                             <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" maxlength="250"
                                 cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30" [formControlName]="'description_course'"
-                                [placeholder]="'Ingrese la descripción de la asignatura'" [spellcheck]="true"></textarea>
+                                [placeholder]="'Ingrese la descripción de la asignatura'"
+                                [spellcheck]="true"></textarea>
                         </mat-form-field>
                     </div> <!-- id_period -->
                     <div class="mt-8">
@@ -260,14 +290,6 @@
                                 max="9999" min="60" [placeholder]="'Ingrese el tiempo de tolerancia'"
                                 [spellcheck]="false">
                         </mat-form-field>
-                    </div>
-                    <!-- Enrollment -->
-                    <div class="mt-4">
-                        <div class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
-                            (click)="openModalEnrollment()">
-                            <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:view-list'"></mat-icon>
-                            <span class="ml-2 font-medium text-secondary group-hover:underline">Ver matrículas</span>
-                        </div>
                     </div>
                 </form>
             </div>

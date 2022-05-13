@@ -44,7 +44,11 @@ export class TaskService {
   /**
    * Create function
    */
-  createTask(id_user_: string, id_course: string): Observable<any> {
+  createTask(
+    id_user_: string,
+    id_course: string,
+    id_partial: string
+  ): Observable<any> {
     return this._tasks.pipe(
       take(1),
       switchMap((tasks) =>
@@ -55,6 +59,9 @@ export class TaskService {
               id_user_: parseInt(id_user_),
               course: {
                 id_course: parseInt(id_course),
+              },
+              partial: {
+                id_partial: parseInt(id_partial),
               },
             },
             {

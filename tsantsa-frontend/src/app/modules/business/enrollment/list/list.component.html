@@ -1,89 +1,71 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-y-auto" cdkScrollable>
 
-    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+    <!-- Main -->
+    <div class="flex-auto">
 
-        <!-- Drawer -->
-        <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'"
-            [disableClose]="true" #matDrawer>
-            <router-outlet></router-outlet>
-        </mat-drawer>
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8">
 
-        <mat-drawer-content class="flex flex-col">
-
-            <!-- Main -->
-            <div class="flex-auto">
-
-                <!-- Header -->
-                <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
-
-                    <!-- Title -->
-                    <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Mis asignaturas</div>
-                        <div class="ml-0.5 font-medium text-secondary">
-                            <ng-container *ngIf="count > 0">
-                                {{count}}
-                            </ng-container>
-                            {{count | i18nPlural: {
-                            '=0' : 'No hay asignaturas',
-                            '=1' : 'Asignatura',
-                            'other': 'Asignaturas'
-                            } }}
-                        </div>
-                    </div>
-
-                    <!-- Main actions -->
-                    <div class="flex items-center mt-4">
-                        <!-- Search -->
-                        <div class="flex-auto">
-                            <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
-                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Buscar por nombre de la asignatura'">
-                            </mat-form-field>
-                        </div>
-                    </div>
+            <!-- Title -->
+            <div>
+                <div class="text-4xl font-extrabold tracking-tight leading-none text-center">Mis asignaturas</div>
+                <div class="ml-0.5 font-medium text-secondary text-center mt-2">
+                    <ng-container *ngIf="count > 0">
+                        {{count}}
+                    </ng-container>
+                    {{count | i18nPlural: {
+                    '=0' : 'No hay asignaturas',
+                    '=1' : 'asignatura',
+                    'other': 'asignaturas'
+                    } }}
                 </div>
-                <!-- list -->
-                <div class="relative">
-                    <ng-container *ngIf="enrollments$ | async as enrollments">
-                        <ng-container *ngIf="enrollments.length; else noResults">
-                            <ng-container *ngFor="let enrollment of enrollments; let i = index; trackBy: trackByFn">
-                                <!-- Entity -->
-                                <div class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer hover:bg-hover border-b"
-                                    [ngClass]="{'bg-primary-50 dark:bg-hover': selectedEnrollment && selectedEnrollment.id_enrollment === enrollment.id_enrollment}"
-                                    [routerLink]="['./', enrollment.id_enrollment]">
-                                    <div
-                                        class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                        <ng-container *ngIf="true">
-                                            <div
-                                                class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                {{enrollment.course.name_course.charAt(0)}}
-                                            </div>
-                                        </ng-container>
+            </div>
+            <angel-alert class="mt-8" *ngIf="count == 0" [appearance]="'outline'" [showIcon]="false" [type]="alert.type"
+                [@shake]="alert.type === 'info'">
+                ¡No hay asignaturas por el momento!
+            </angel-alert>
+        </div>
+
+        <!-- enrollments -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto px-6 md:px-8 items-center">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <ng-container *ngIf="enrollments$ | async as enrollments">
+                    <ng-container *ngFor="let enrollment of enrollments; let i = index; trackBy: trackByFn">
+                        <a class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out"
+                            [routerLink]="['./', enrollment.id_enrollment]">
+                            <div
+                                class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                                <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'"></mat-icon>
+                            </div>
+                            <!-- name_template -->
+                            <div class="mt-5 text-lg font-medium leading-5">{{enrollment.course.name_course}}</div>
+                            <!-- description_template -->
+                            <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                                {{enrollment.course.description_course}}</div>
+                            <!-- status_template -->
+                            <div class="flex items-center mt-5 -space-x-1.5">
+                                <div class="text-lg font-medium leading-5 mr-4">Estado</div>
+                                <ng-container class="ml-4">
+                                    <div *ngIf="enrollment.status_enrollment"
+                                        class="mr-4 w-4 h-4 bg-green-700 rounded-full">
                                     </div>
-                                    <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{enrollment.course.name_course}}
-                                        </div>
-                                        <div class="leading-5 truncate text-secondary">
-                                            {{enrollment.course.description_course}}</div>
+                                    <div *ngIf="!enrollment.status_enrollment"
+                                        class="mr-4 w-4 h-4 bg-red-600 rounded-full">
                                     </div>
-                                </div>
-                            </ng-container>
-                        </ng-container>
+                                </ng-container>
+                            </div>
+                            <!-- Last activity -->
+                            <div class="flex items-center mt-4 text-sm font-md">
+                                <div class="text-secondary">Matriculado:</div>
+                                <div class="ml-1">{{formatDateAsRelative(enrollment.date_enrollment!)}}</div>
+                            </div>
+                        </a>
                     </ng-container>
 
-                    <!-- No Results -->
-                    <ng-template #noResults>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">¡No hay
-                            resultados!</div>
-                    </ng-template>
-
-                </div>
-
+                </ng-container>
             </div>
+        </div>
 
-        </mat-drawer-content>
-
-    </mat-drawer-container>
+    </div>
 
 </div>

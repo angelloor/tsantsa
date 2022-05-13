@@ -47,7 +47,7 @@
                 <!-- status_enrollment -->
                 <div>
                     <mat-form-field class="angel-mat-no-subscript w-full">
-                        <mat-label>Estado de la matíicula</mat-label>
+                        <mat-label>Estado de la matricula</mat-label>
                         <mat-select [value]="enrollment.status_enrollment" [disabled]="true"
                             [matTooltip]="enrollment.status_enrollment ? 'La matrícula se encuentra activa': 'Matrícula inactiva'">
                             <mat-option [value]="true">Activo</mat-option>
@@ -109,13 +109,47 @@
                 </div>
             </div>
         </div>
-        <!-- Enrollment -->
-        <div class="mt-4">
-            <div class="group inline-flex items-center mt-2 -ml-4 py-2 px-4 rounded cursor-pointer"
-                (click)="openModalAssistance()">
-                <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:blur_linear'"></mat-icon>
-                <span class="ml-2 font-medium text-secondary group-hover:underline">Ver asistencias</span>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center mt-4">
+            <a (click)="openModalAssistance()"
+                class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out cursor-pointer">
+                <div
+                    class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                    <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'"></mat-icon>
+                </div>
+                <div class="mt-5 text-lg font-medium leading-5">Ver asistencias</div>
+                <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                    Marca tu entrada y salida de la clase</div>
+            </a>
+            <a (click)="openModalResourceCourses()"
+                class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out cursor-pointer">
+                <div
+                    class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                    <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'"></mat-icon>
+                </div>
+                <div class="mt-5 text-lg font-medium leading-5">Recursos</div>
+                <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                    Encuentra recursos de la asignatura como apoyo para tu aprendizaje</div>
+            </a>
+            <a (click)="openModalGlossarys()"
+                class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out cursor-pointer">
+                <div
+                    class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                    <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'"></mat-icon>
+                </div>
+                <div class="mt-5 text-lg font-medium leading-5">Glosario</div>
+                <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                    Encuentra terminologia de acuerdo a la asignatura</div>
+            </a>
+            <a (click)="openModalForums()"
+                class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out cursor-pointer">
+                <div
+                    class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                    <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'"></mat-icon>
+                </div>
+                <div class="mt-5 text-lg font-medium leading-5">Foro</div>
+                <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                    Discute co tus compañeros respecto a temas de la asignatura</div>
+            </a>
         </div>
     </form>
 </div>

@@ -1,0 +1,152 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">{{forum.title_forum}}</div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalForum()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-col flex-auto overflow-y-auto">
+        <div class="flex flex-col w-full">
+            <!-- Edit mode -->
+            <ng-container>
+                <!-- form -->
+                <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+                    <div class="w-full max-w-3xl">
+                        <form [formGroup]="forumForm" class="mb-8">
+                            <!-- Alert -->
+                            <angel-alert class="mt-8" *ngIf="forumForm.invalid || showAlert" [appearance]="'outline'"
+                                [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
+                                <!-- Message if alert is actived for the component -->
+                                {{alert.message}}
+                                <!-- title_forum -->
+                                <mat-error *ngIf="forumForm.get('title_forum')?.hasError('required')">
+                                    • Ingrese title_forum
+                                </mat-error>
+                                <!-- description_forum -->
+                                <mat-error *ngIf="forumForm.get('description_forum')?.hasError('required')">
+                                    • Ingrese description_forum
+                                </mat-error>
+                            </angel-alert>
+                            <!-- Alert -->
+                            <!-- title_forum -->
+                            <div class="flex items-center mt-8" *ngIf="isCreator">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>titleForum</mat-label>
+                                    <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                        [svgIcon]="'heroicons_solid:fire'">
+                                    </mat-icon>
+                                    <input matInput maxlength="100" [formControlName]="'title_forum'"
+                                        [placeholder]="'title_forum'" [spellcheck]="true">
+                                </mat-form-field>
+                                <button *ngIf="!btn_title_forum" class="w-8 h-8 min-h-8 ml-2" mat-icon-button
+                                    (click)="editField('title_forum', true)" matTooltip="Editar">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:edit'">
+                                    </mat-icon>
+                                </button>
+                                <button *ngIf="btn_title_forum" class="w-8 h-8 min-h-8 ml-2" mat-icon-button
+                                    (click)="saveField('title_forum')" matTooltip="Guardar">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:save'">
+                                    </mat-icon>
+                                </button>
+                            </div> <!-- description_forum -->
+                            <div class="flex items-center mt-8">
+                                <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                                    <mat-label *ngIf="isCreator">description_forum</mat-label>
+                                    <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                        [svgIcon]="'heroicons_solid:menu-alt-2'"></mat-icon>
+                                    <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                                        cdkAutosizeMinRows="5" cdkAutosizeMaxRows="30" maxlength="250"
+                                        [formControlName]="'description_forum'"
+                                        [placeholder]="'Contenido de la navegación'" [spellcheck]="true"></textarea>
+                                </mat-form-field>
+                                <button *ngIf="isCreator && !btn_description_forum" class="w-8 h-8 min-h-8 ml-2"
+                                    mat-icon-button (click)="editField('description_forum', true)" matTooltip="Editar">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:edit'">
+                                    </mat-icon>
+                                </button>
+                                <button *ngIf="isCreator && btn_description_forum" class="w-8 h-8 min-h-8 ml-2"
+                                    mat-icon-button (click)="saveField('description_forum')" matTooltip="Guardar">
+                                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:save'">
+                                    </mat-icon>
+                                </button>
+                            </div>
+                            <!-- comment_forum -->
+                            <button
+                                class="group inline-flex items-center mt-4 mb-4 -ml-4 py-2 px-4 rounded cursor-pointer"
+                                [disabled]="expireForum" (click)="addCommentForum()">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:plus-circle'"></mat-icon>
+                                <span class="ml-2 font-medium text-secondary group-hover:underline">Añadir
+                                    comentario</span>
+                            </button>
+                            <div class="space-y-4" *ngIf="commentForum.length > 0">
+                                <ng-container
+                                    *ngFor="let elementComment of formArrayCommentForum.controls; let i = index; let first = first; let last = last; trackBy: trackByFn">
+                                    <div class="relative flex">
+                                        <button mat-icon-button *ngIf="commentForum.length > 0"
+                                            [matTooltip]="formArrayCommentForum.getRawValue()[i].user.person.name_person + ' ' + formArrayCommentForum.getRawValue()[i].user.person.last_name_person">
+                                            <span class="relative">
+                                                <img class="w-7 h-7 rounded-full"
+                                                    *ngIf="formArrayCommentForum.getRawValue()[i].user.avatar_user"
+                                                    [src]="_urlPathAvatar + formArrayCommentForum.getRawValue()[i].user.avatar_user">
+                                            </span>
+                                        </button>
+                                        <div class="angel-mat-no-subscript flex-auto w-full ml-2">
+                                            <mat-form-field class="angel-mat-no-subscript flex-auto w-full">
+                                                <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                                                    maxlength="250" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30"
+                                                    [formControl]="getFromControl(formArrayCommentForum, i, 'value_comment_forum')"
+                                                    [placeholder]="'Ingrese el comentario'"
+                                                    [spellcheck]="false"></textarea>
+                                            </mat-form-field>
+                                            <div class="mt-2 text-sm">
+                                                {{formArrayCommentForum.getRawValue()[i].date_comment_forum
+                                                |
+                                                localDate:'medium'}}
+                                            </div>
+                                        </div>
+                                        <ng-container>
+                                            <div *ngIf="formArrayCommentForum.getRawValue()[i].isOwner"
+                                                class="flex items-center flex-col w-10 pl-2 self-center pb-6">
+                                                <button *ngIf="!formArrayCommentForum.getRawValue()[i].editMode"
+                                                    class="w-8 h-8 min-h-8" [disabled]="expireForum" mat-icon-button
+                                                    (click)="editCommentForum(i, true)" matTooltip="Editar">
+                                                    <mat-icon class="icon-size-5" [svgIcon]="'mat_solid:edit'">
+                                                    </mat-icon>
+                                                </button>
+                                                <button *ngIf="formArrayCommentForum.getRawValue()[i].editMode"
+                                                    class="w-8 h-8 min-h-8" [disabled]="expireForum" mat-icon-button
+                                                    (click)="saveComment(i)" matTooltip="Guardar">
+                                                    <mat-icon class="icon-size-5" [svgIcon]="'mat_outline:save'">
+                                                    </mat-icon>
+                                                </button>
+                                                <button *ngIf="formArrayCommentForum.getRawValue()[i].editMode"
+                                                    class="w-8 h-8 min-h-8" [disabled]="expireForum " mat-icon-button
+                                                    (click)="deleteComment(i)" matTooltip="Eliminar">
+                                                    <mat-icon class="icon-size-5"
+                                                        [svgIcon]="'mat_solid:delete_outline'">
+                                                    </mat-icon>
+                                                </button>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <!-- comment_forum -->
+                        </form>
+                        <!-- Actions -->
+                        <div class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl"
+                            *ngIf="isCreator">
+                            <!-- Delete -->
+                            <button mat-flat-button [color]="'primary'" [matTooltip]="'Eliminar'"
+                                [disabled]="lengthCommentForum > 0" (click)="deleteForum()">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

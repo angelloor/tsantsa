@@ -5,8 +5,7 @@ import {
   AngelConfirmationService,
 } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -20,10 +19,13 @@ import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { course } from '../../course/course.data';
 import { CourseService } from '../../course/course.service';
 import { Course } from '../../course/course.types';
+import { partial } from '../../period/quimester/partial/partial.data';
+import { PartialService } from '../../period/quimester/partial/partial.service';
+import { Partial } from '../../period/quimester/partial/partial.types';
 import { TaskListComponent } from '../list/list.component';
 import { ModalResourceService } from '../resource/modal-resource/modal-resource.service';
 import { ResourceService } from '../resource/resource.service';
@@ -38,6 +40,9 @@ import { Task } from '../task.types';
 export class TaskDetailsComponent implements OnInit {
   categoriesCourse: Course[] = [];
   selectedCourse: Course = course;
+
+  categoriesPartial: Partial[] = [];
+  selectedPartial: Partial = partial;
 
   havedDependency: boolean = false;
 
@@ -79,7 +84,6 @@ export class TaskDetailsComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     private _taskListComponent: TaskListComponent,
     private _taskService: TaskService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
@@ -87,6 +91,7 @@ export class TaskDetailsComponent implements OnInit {
     private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _courseService: CourseService,
+    private _partialService: PartialService,
     private _resourceService: ResourceService,
     private _modalResourceService: ModalResourceService
   ) {}
@@ -127,6 +132,7 @@ export class TaskDetailsComponent implements OnInit {
       id_task: [''],
       id_course: ['', [Validators.required]],
       id_user: ['', [Validators.required]],
+      id_partial: ['', [Validators.required]],
       name_task: ['', [Validators.required, Validators.maxLength(100)]],
       description_task: ['', [Validators.required, Validators.maxLength(250)]],
       status_task: ['', [Validators.required]],
@@ -219,6 +225,19 @@ export class TaskDetailsComponent implements OnInit {
             )!;
           });
 
+        // Partial
+        this._partialService
+          .readAllPartial()
+          .pipe(takeUntil(this._unsubscribeAll))
+          .subscribe((partials: Partial[]) => {
+            this.categoriesPartial = partials;
+
+            this.selectedPartial = this.categoriesPartial.find(
+              (item) =>
+                item.id_partial == this.task.partial.id_partial.toString()
+            )!;
+          });
+
         /**
          * Patch values to the form
          */
@@ -237,35 +256,6 @@ export class TaskDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (!this.isOpenModal && keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-          /**
-           * Close Drawer
-           */
-          this.closeDrawer();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   get formArrayResources(): FormArray {
     return this.taskForm.get('resources') as FormArray;
@@ -286,6 +276,7 @@ export class TaskDetailsComponent implements OnInit {
       ...this.task,
       id_course: this.task.course.id_course,
       id_user: this.task.user.id_user,
+      id_partial: this.task.partial.id_partial,
     });
   }
   /**
@@ -375,6 +366,9 @@ export class TaskDetailsComponent implements OnInit {
       user: {
         id_user: parseInt(task.id_user),
       },
+      partial: {
+        id_partial: parseInt(task.id_partial),
+      },
     };
     /**
      * Update
@@ -442,8 +436,12 @@ export class TaskDetailsComponent implements OnInit {
       user: {
         id_user: parseInt(task.id_user),
       },
+      partial: {
+        id_partial: parseInt(task.id_partial),
+      },
       status_task: true,
     };
+
     /**
      * Update
      */

@@ -1,21 +1,12 @@
-import { AngelConfirmationService } from '@angel/services/confirmation';
-import { AngelMediaWatcherService } from '@angel/services/media-watcher';
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AngelAlertType } from '@angel/components/alert';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
-import { NotificationService } from 'app/shared/notification/notification.service';
+import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { EnrollmentService } from '../enrollment.service';
@@ -26,17 +17,24 @@ import { Enrollment } from '../enrollment.types';
   templateUrl: './list.component.html',
 })
 export class EnrollmentListComponent implements OnInit {
-  @ViewChild('matDrawer', { static: true }) matDrawer!: MatDrawer;
   count: number = 0;
   enrollments$!: Observable<Enrollment[]>;
 
-  openMatDrawer: boolean = false;
-
   private data!: AppInitialData;
 
-  drawerMode!: 'side' | 'over';
   searchInputControl: FormControl = new FormControl();
   selectedEnrollment!: Enrollment;
+
+  /**
+   * Alert
+   */
+  alert: { type: AngelAlertType; message: string } = {
+    type: 'info',
+    message: '',
+  };
+  /**
+   * Alert
+   */
 
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   /**
@@ -50,12 +48,8 @@ export class EnrollmentListComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _document: any,
     private _router: Router,
-    private _angelMediaWatcherService: AngelMediaWatcherService,
     private _enrollmentService: EnrollmentService,
-    private _notificationService: NotificationService,
-    private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _authService: AuthService
   ) {}
@@ -139,43 +133,6 @@ export class EnrollmentListComponent implements OnInit {
         })
       )
       .subscribe();
-    /**
-     * Subscribe to media changes
-     */
-    this._angelMediaWatcherService.onMediaChange$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(({ matchingAliases }) => {
-        /**
-         * Set the drawerMode if the given breakpoint is active
-         */
-        if (matchingAliases.includes('lg')) {
-          this.drawerMode = 'side';
-        } else {
-          this.drawerMode = 'over';
-        }
-        /**
-         * Mark for check
-         */
-        this._changeDetectorRef.markForCheck();
-      });
-    /**
-     * Subscribe to MatDrawer opened change
-     */
-    this.matDrawer.openedChange
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((opened) => {
-        this.openMatDrawer = opened;
-        if (!opened) {
-          /**
-           * Remove the selected when drawer closed
-           */
-          this.selectedEnrollment = null!;
-          /**
-           * Mark for check
-           */
-          this._changeDetectorRef.markForCheck();
-        }
-      });
   }
   /**
    * On destroy
@@ -207,7 +164,7 @@ export class EnrollmentListComponent implements OnInit {
     /**
      * Go to Mis cursos
      */
-    this._router.navigate([this.openMatDrawer ? '../' : './', id], {
+    this._router.navigate(['./', id], {
       relativeTo: route,
     });
     /**
@@ -234,6 +191,13 @@ export class EnrollmentListComponent implements OnInit {
      * Mark for check
      */
     this._changeDetectorRef.markForCheck();
+  }
+  /**
+   * Format the given ISO_8601 date as a relative date
+   * @param date
+   */
+  formatDateAsRelative(date: string): string {
+    return moment(date, moment.ISO_8601).locale('es').fromNow();
   }
   /**
    * Track by function for ngFor loops

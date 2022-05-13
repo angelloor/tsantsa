@@ -330,6 +330,7 @@ export class UserTask {
 						period: {
 							id_period: item.id_period,
 							maximum_rating: item.maximum_rating,
+							approval_note_period: item.approval_note_period,
 						},
 						career: {
 							id_career: item.id_career,
@@ -384,6 +385,7 @@ export class UserTask {
 			delete _userTask.id_course;
 			delete _userTask.id_period;
 			delete _userTask.maximum_rating;
+			delete _userTask.approval_note_period;
 			delete _userTask.id_career;
 			delete _userTask.id_schedule;
 			delete _userTask.name_course;

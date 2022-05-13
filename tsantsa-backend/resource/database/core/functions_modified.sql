@@ -1079,10 +1079,10 @@ AS $BODY$
 						_ID_PERSON = (select * from core.dml_person_create(id_user_, _ID_ACADEMIC, _ID_JOB, '', 'Nuevo', 'usuario', '', '', false));
 						
 						IF (_ID_PERSON >= 1) THEN
-							_ID_PROFILE = (select vp.id_profile from core.view_profile vp order by vp.id_profile asc limit 1);
+							_ID_PROFILE = (select vp.id_profile from core.view_profile vp order by vp.id_profile desc limit 1);
 							
 							IF (_ID_PROFILE >= 1) THEN
-								_ID_USER = (select * from core.dml_user_create(id_user_, _ID_COMPANY, _ID_PERSON, _ID_PROFILE, 'teacher', 'new.user@tsantsa.com', '', 'default.svg', false, false));
+								_ID_USER = (select * from core.dml_user_create(id_user_, _ID_COMPANY, _ID_PERSON, _ID_PROFILE, 'student', 'new.user@tsantsa.com', '', 'default.svg', false, false));
 								
 								IF (_ID_USER >= 1) THEN
 									RETURN QUERY select vu.id_user, vu.id_company, vu.id_person, vu.id_profile, vu.type_user, vu.name_user, vu.password_user, vu.avatar_user, vu.status_user, vu.deleted_user, vc.name_company, vc.status_company, vp.id_academic, vp.id_job, vp.dni_person, vp.name_person, vp.last_name_person, vp.address_person, vp.phone_person, va.title_academic, va.abbreviation_academic, va.nivel_academic, vj.name_job, vj.address_job, vj.phone_job, vj.position_job, vpr.type_profile, vpr.name_profile, vpr.description_profile, vpr.status_profile from core.view_user vu
@@ -1689,4 +1689,94 @@ AS $BODY$
 $BODY$;
 
 ALTER FUNCTION core.dml_session_by_company_release_all(numeric, numeric)
+    OWNER TO postgres;
+
+-- FUNCTION: core.dml_newsletter_create_modified(numeric, numeric)
+-- DROP FUNCTION IF EXISTS core.dml_newsletter_create_modified(numeric, numeric);
+
+CREATE OR REPLACE FUNCTION core.dml_newsletter_create_modified(
+	id_user_ numeric,
+	_id_company numeric)
+    RETURNS TABLE(id_newsletter numeric, id_company numeric, id_user numeric, name_newsletter character varying, description_newsletter character varying, date_newsletter timestamp with time zone, deleted_newsletter boolean, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+			DECLARE
+				_ID_NEWSLETTER NUMERIC;
+				_EXCEPTION TEXT DEFAULT 'Internal Error';
+			BEGIN
+				_ID_NEWSLETTER = (select * from core.dml_newsletter_create(id_user_, _id_company, id_user_, 'Nuevo anuncio', '', now()::timestamp, false));
+
+				IF (_ID_NEWSLETTER >= 1) THEN
+					RETURN QUERY select cvn.id_newsletter, cvn.id_company, cvn.id_user, cvn.name_newsletter, cvn.description_newsletter, cvn.date_newsletter, cvn.deleted_newsletter, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person  from core.view_newsletter cvn
+						inner join core.view_user cvu on cvn.id_user = cvu.id_user
+						inner join core.view_person cvp on cvu.id_person = cvp.id_person
+						where cvn.id_newsletter = _ID_NEWSLETTER;
+				ELSE
+					_EXCEPTION = 'Ocurrió un error al ingresar newsletter';
+					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+				END IF;
+				exception when others then 
+					-- RAISE NOTICE '%', SQLERRM;
+					IF (_EXCEPTION = 'Internal Error') THEN
+						RAISE EXCEPTION '%',SQLERRM USING DETAIL = '_database';
+					ELSE
+						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+					END IF;
+			END;
+			
+$BODY$;
+
+ALTER FUNCTION core.dml_newsletter_create_modified(numeric, numeric)
+    OWNER TO postgres;
+
+-- FUNCTION: core.dml_newsletter_update_modified(numeric, numeric, numeric, numeric, character varying, character varying, timestamp with time zone, boolean)
+-- DROP FUNCTION IF EXISTS core.dml_newsletter_update_modified(numeric, numeric, numeric, numeric, character varying, character varying, timestamp with time zone, boolean);
+
+CREATE OR REPLACE FUNCTION core.dml_newsletter_update_modified(
+	id_user_ numeric,
+	_id_newsletter numeric,
+	_id_company numeric,
+	_id_user numeric,
+	_name_newsletter character varying,
+	_description_newsletter character varying,
+	_date_newsletter timestamp with time zone,
+	_deleted_newsletter boolean)
+    RETURNS TABLE(id_newsletter numeric, id_company numeric, id_user numeric, name_newsletter character varying, description_newsletter character varying, date_newsletter timestamp with time zone, deleted_newsletter boolean, id_person numeric, id_profile numeric, type_user core."TYPE_USER", name_user character varying, password_user character varying, avatar_user character varying, status_user boolean, id_academic numeric, id_job numeric, dni_person character varying, name_person character varying, last_name_person character varying, address_person character varying, phone_person character varying) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+			 DECLARE
+			 	_UPDATE_NEWSLETTER BOOLEAN;
+				_EXCEPTION TEXT DEFAULT 'Internal Error';
+			 BEGIN
+			 	_UPDATE_NEWSLETTER = (select * from core.dml_newsletter_update(id_user_, _id_newsletter, _id_company, _id_user, _name_newsletter, _description_newsletter, _date_newsletter, _deleted_newsletter));
+
+			 	IF (_UPDATE_NEWSLETTER) THEN
+					RETURN QUERY select cvn.id_newsletter, cvn.id_company, cvn.id_user, cvn.name_newsletter, cvn.description_newsletter, cvn.date_newsletter, cvn.deleted_newsletter, cvu.id_person, cvu.id_profile, cvu.type_user, cvu.name_user, cvu.password_user, cvu.avatar_user, cvu.status_user, cvp.id_academic, cvp.id_job, cvp.dni_person, cvp.name_person, cvp.last_name_person, cvp.address_person, cvp.phone_person  from core.view_newsletter cvn
+						inner join core.view_user cvu on cvn.id_user = cvu.id_user
+						inner join core.view_person cvp on cvu.id_person = cvp.id_person
+						where cvn.id_newsletter = _id_newsletter; 
+				ELSE
+					_EXCEPTION = 'Ocurrió un error al actualizar newsletter';
+					RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+				END IF;
+				exception when others then 
+					-- RAISE NOTICE '%', SQLERRM;
+					IF (_EXCEPTION = 'Internal Error') THEN
+						RAISE EXCEPTION '%',SQLERRM USING DETAIL = '_database';
+					ELSE
+						RAISE EXCEPTION '%',_EXCEPTION USING DETAIL = '_database';
+					END IF;
+			 END;
+			 
+$BODY$;
+
+ALTER FUNCTION core.dml_newsletter_update_modified(numeric, numeric, numeric, numeric, character varying, character varying, timestamp with time zone, boolean)
     OWNER TO postgres;

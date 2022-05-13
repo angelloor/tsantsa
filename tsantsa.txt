@@ -1,0 +1,37 @@
+Las tareas que se muestren segun su asignatura y remplazar el panel de tareas por tareas pendientes, solo mostrar las tareas que esten con estado pendiente.
+
+
+
+1 periodo tiene 2 quimestres
+
+y un quimestre tiene 4 parciles.
+
+los cursos tiene parciales
+
+
+que las tareas que se muestren las tareas que solo los profesores han creado y que sean seaparadas por asignaturas
+
+
+insertar los recursos en las asignaturas. recursos fisicos. para que pueadas subir documentos
+
+
+
+inertar un foro en cada asignatura, los temas de discusion lo pueden crear los estudiante sy docentes
+igual los comentarios lo pueden hacer los estudiantes y los docentes.
+
+
+el glosario, debe estar en cada materia,  nombre, concepto, fecha.
+
+
+
+crear un vista personalizada para cada curso en lo cual se muestre las tareas de acuerdo a los parciales, (como la captura que envia edgar)
+
+
+que en el reporte de las notas se separe por quimestres, y por evaluacion freceunte que seria cada paprcial, y mostrar aprobado y reprobado. y las faltas de cada estudiante.
+
+
+
+crear eventos informativos y mostrarlos en el dashboard.
+
+
+

@@ -545,7 +545,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Por defecto)', 'Navegación por defecto para el administrador', 'defaultNavigation', true, '[
 	{
 		"id": "core",
-		"title": "Core",
+		"title": "Administración",
 		"subtitle": "Administración core del sistema",
 		"type": "group",
 		"icon": "heroicons_outline:chip",
@@ -584,6 +584,13 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:user",
 				"link": "/core/user"
+			},
+			{
+				"id": "core.newsletter",
+				"title": "Anuncios",
+				"type": "basic",
+				"icon": "heroicons_outline:document",
+				"link": "/core/newsletter"
 			},
 			{
 				"id": "core.session",
@@ -635,13 +642,6 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:academic-cap",
 				"link": "/business/course"
-			},
-			{
-				"id": "business.task",
-				"title": "Tareas",
-				"type": "basic",
-				"icon": "heroicons_outline:book-open",
-				"link": "/business/task"
 			}
 		]
 	},
@@ -664,7 +664,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Compacta)', 'Navegación compacta para el administrador', 'compactNavigation',  true, '[
   {
     "id": "core",
-    "title": "Core",
+    "title": "Administración",
     "type": "aside",
     "icon": "heroicons_outline:chip",
     "children": []
@@ -695,7 +695,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Futurista)', 'Navegación futurista para el administrador', 'futuristicNavigation',  true, '[
 	{
 		"id": "core",
-		"title": "Core",
+		"title": "Administración",
 		"subtitle": "Administración core del sistema",
 		"type": "group",
 		"icon": "heroicons_outline:chip",
@@ -734,6 +734,13 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:user",
 				"link": "/core/user"
+			},
+			{
+				"id": "core.newsletter",
+				"title": "Anuncios",
+				"type": "basic",
+				"icon": "heroicons_outline:document",
+				"link": "/core/newsletter"
 			},
 			{
 				"id": "core.session",
@@ -785,13 +792,6 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:academic-cap",
 				"link": "/business/course"
-			},
-			{
-				"id": "business.task",
-				"title": "Tareas",
-				"type": "basic",
-				"icon": "heroicons_outline:book-open",
-				"link": "/business/task"
 			}
 		]
 	},
@@ -814,7 +814,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Administrador (Horizontal)', 'Navegación horizontal para el administrador', 'horizontalNavigation', true, '[
   {
     "id": "core",
-    "title": "Core",
+    "title": "Administración",
     "type": "aside",
     "icon": "heroicons_outline:chip",
     "children": []
@@ -845,7 +845,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Por defecto)', 'Navegación por defecto para el maestro', 'defaultNavigation', true, '[
 	{
 		"id": "core",
-		"title": "Core",
+		"title": "Administración",
 		"subtitle": "Administración core del sistema",
 		"type": "group",
 		"icon": "heroicons_outline:chip",
@@ -856,6 +856,13 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:user",
 				"link": "/core/user"
+			},
+			{
+				"id": "core.newsletter",
+				"title": "Anuncios",
+				"type": "basic",
+				"icon": "heroicons_outline:document",
+				"link": "/core/newsletter"
 			}
 		]
 	},
@@ -929,7 +936,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Compacta)', 'Navegación compacta para el maestro', 'compactNavigation',  true, '[
   {
     "id": "core",
-    "title": "Core",
+    "title": "Administración",
     "type": "aside",
     "icon": "heroicons_outline:chip",
     "children": []
@@ -960,7 +967,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Futurista)', 'Navegación futurista para el maestro', 'futuristicNavigation',  true, '[
 	{
 		"id": "core",
-		"title": "Core",
+		"title": "Administración",
 		"subtitle": "Administración core del sistema",
 		"type": "group",
 		"icon": "heroicons_outline:chip",
@@ -971,6 +978,13 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:user",
 				"link": "/core/user"
+			},
+			{
+				"id": "core.newsletter",
+				"title": "Anuncios",
+				"type": "basic",
+				"icon": "heroicons_outline:document",
+				"link": "/core/newsletter"
 			}
 		]
 	},
@@ -1044,7 +1058,7 @@ BEGIN
 			VALUES (_CURRENT_ID_NAVIGATION, 1, 'Maestro (Horizontal)', 'Navegación horizontal para el maestro', 'horizontalNavigation', true, '[
   {
     "id": "core",
-    "title": "Core",
+    "title": "Administración",
     "type": "aside",
     "icon": "heroicons_outline:chip",
     "children": []

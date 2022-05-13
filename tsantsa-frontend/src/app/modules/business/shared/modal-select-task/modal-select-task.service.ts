@@ -18,7 +18,7 @@ export class ModalSelectTaskService {
 
     return (this.dialogRef = this._dialog.open(ModalSelectTaskComponent, {
       minHeight: 'inherit',
-      maxHeight: 'inherit',
+      maxHeight: '90vh',
       height: 'auto',
       width: '32rem',
       maxWidth: '',

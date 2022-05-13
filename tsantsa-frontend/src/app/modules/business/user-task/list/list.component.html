@@ -61,11 +61,20 @@
                                             </div>
                                         </ng-container>
                                     </div>
-                                    <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{userTask.task.name_task}}
+                                    <div class="min-w-0 ml-4" *ngIf="type_user == 'teacher'">
+                                        <div class="font-medium leading-5 truncate">{{userTask.user.person.name_person +
+                                            ' ' + userTask.user.person.last_name_person}}
                                         </div>
                                         <div class="leading-5 truncate text-secondary">
-                                            {{userTask.task.description_task}}</div>
+                                            {{userTask.task.name_task + ' -> ' + (userTask.is_qualified ? 'Tarea
+                                            calificada': (userTask.is_dispatched ? 'Tarea enviada' : (userTask.is_open ?
+                                            'Tarea abierta': 'Tarea sin abrir') ))}}</div>
+                                    </div>
+                                    <div class="min-w-0 ml-4" *ngIf="type_user == 'student'">
+                                        <div class="font-medium leading-5 truncate">{{userTask.task.course.name_course}}
+                                        </div>
+                                        <div class="leading-5 truncate text-secondary">
+                                            {{userTask.task.name_task + ' -> ' +userTask.task.description_task}}</div>
                                     </div>
                                 </div>
                             </ng-container>

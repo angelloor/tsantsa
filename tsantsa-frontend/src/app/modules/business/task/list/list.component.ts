@@ -1,13 +1,5 @@
-import { AngelConfirmationService } from '@angel/services/confirmation';
 import { AngelMediaWatcherService } from '@angel/services/media-watcher';
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,16 +8,10 @@ import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
-import { fromEvent, merge, Observable, Subject, timer } from 'rxjs';
-import {
-  filter,
-  finalize,
-  switchMap,
-  takeUntil,
-  takeWhile,
-  tap,
-} from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { ModalSelectCourseService } from '../../shared/modal-select-course/modal-select-course.service';
+import { ModalSelectPartialService } from '../../shared/modal-select-partial/modal-select-partial.service';
 import { TaskService } from '../task.service';
 import { Task } from '../task.types';
 
@@ -41,15 +27,7 @@ export class TaskListComponent implements OnInit {
   openMatDrawer: boolean = false;
 
   private data!: AppInitialData;
-  /**
-   * Shortcut
-   */
-  private keyControl: boolean = false;
-  private keyShift: boolean = false;
-  private timeToWaitKey: number = 2; //ms
-  /**
-   * Shortcut
-   */
+
   drawerMode!: 'side' | 'over';
   searchInputControl: FormControl = new FormControl();
   selectedTask!: Task;
@@ -66,15 +44,14 @@ export class TaskListComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _document: any,
     private _router: Router,
     private _angelMediaWatcherService: AngelMediaWatcherService,
     private _taskService: TaskService,
     private _notificationService: NotificationService,
-    private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _authService: AuthService,
-    private _modalSelectCourseService: ModalSelectCourseService
+    private _modalSelectCourseService: ModalSelectCourseService,
+    private _modalSelectPartialService: ModalSelectPartialService
   ) {}
 
   ngOnInit(): void {
@@ -194,60 +171,6 @@ export class TaskListComponent implements OnInit {
           this._changeDetectorRef.markForCheck();
         }
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Control')
-      ),
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Shift')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut create
-         */
-        if (keyUpOrKeyDown.key == 'Control') {
-          this.keyControl = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyControl = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-        if (keyUpOrKeyDown.key == 'Shift') {
-          this.keyShift = true;
-
-          timer(100, 100)
-            .pipe(
-              finalize(() => {
-                this.keyShift = false;
-              }),
-              takeWhile(() => this.timeToWaitKey > 0),
-              takeUntil(this._unsubscribeAll),
-              tap(() => this.timeToWaitKey--)
-            )
-            .subscribe();
-        }
-
-        if (!this.isOpenModal && this.keyControl && this.keyShift) {
-          this.createTask();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * On destroy
@@ -317,37 +240,45 @@ export class TaskListComponent implements OnInit {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((id_course: string) => {
         if (id_course) {
-          const id_user_ = this.data.user.id_user;
-          /**
-           * Create the tarea
-           */
-          this._taskService
-            .createTask(id_user_, id_course)
+          this._modalSelectPartialService
+            .openModalSelectPartial()
+            .afterClosed()
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe({
-              next: (_task: Task) => {
-                if (_task) {
-                  this._notificationService.success(
-                    'Tarea agregada correctamente'
-                  );
-                  /**
-                   * Go to new tarea
-                   */
-                } else {
-                  this._notificationService.error(
-                    '¡Error interno!, consulte al administrador.'
-                  );
-                }
-              },
-              error: (error: { error: MessageAPI }) => {
-                this._notificationService.error(
-                  !error.error
-                    ? '¡Error interno!, consulte al administrador.'
-                    : !error.error.descripcion
-                    ? '¡Error interno!, consulte al administrador.'
-                    : error.error.descripcion
-                );
-              },
+            .subscribe((id_partial: string) => {
+              if (id_partial) {
+                const id_user_ = this.data.user.id_user;
+                /**
+                 * Create the tarea
+                 */
+                this._taskService
+                  .createTask(id_user_, id_course, id_partial)
+                  .pipe(takeUntil(this._unsubscribeAll))
+                  .subscribe({
+                    next: (_task: Task) => {
+                      if (_task) {
+                        this._notificationService.success(
+                          'Tarea agregada correctamente'
+                        );
+                        /**
+                         * Go to new tarea
+                         */
+                      } else {
+                        this._notificationService.error(
+                          '¡Error interno!, consulte al administrador.'
+                        );
+                      }
+                    },
+                    error: (error: { error: MessageAPI }) => {
+                      this._notificationService.error(
+                        !error.error
+                          ? '¡Error interno!, consulte al administrador.'
+                          : !error.error.descripcion
+                          ? '¡Error interno!, consulte al administrador.'
+                          : error.error.descripcion
+                      );
+                    },
+                  });
+              }
             });
         }
       });

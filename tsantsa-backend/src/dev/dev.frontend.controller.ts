@@ -6,7 +6,7 @@ import {
 	entityReplaceUnderscore,
 	entityToLowerCase,
 	entityToUpperCase,
-	entityToUpperCaseOutInitial
+	entityToUpperCaseOutInitial,
 } from './utils/dev.utils';
 
 const entityFrontendGenerate = (body: BodyFrontendGenerate) => {
@@ -1862,7 +1862,9 @@ const generateDetailsComponent = (
 					  console.log(response);
 					  if (response) {
 						/**
-						 * Return if the ${entityToUpperCaseOutInitial(entity)} wasn't deleted...
+						 * Return if the ${entityToUpperCaseOutInitial(
+								entity
+							)} wasn't deleted_newsletter...
 						 */
 						this._notificationService.success(
 						  '${nameVisibility} eliminada correctamente'
@@ -2159,4 +2161,3 @@ export class ${entityToUpperCase(entity)}Module {}
 };
 
 export { entityFrontendGenerate };
-

@@ -377,6 +377,18 @@ export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 										? item.qualification_user_task
 										: 'Sin calificar'
 								}</td>
+								<td>${
+									item.qualification_user_task
+										? `${
+												parseInt(item.qualification_user_task!.toString()!)! >=
+												parseInt(
+													item.task.course.period.approval_note_period!.toString()!
+												)
+													? 'Tarea aprobada'
+													: 'Tarea reprovada'
+										  }`
+										: 'Pendiente'
+								}</td>
 
 							</tr>
 						`;
@@ -412,6 +424,7 @@ export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 								<td>Fecha límite de entrega</td>
 								<td>Fecha de entrega</td>
 								<td>Calificación</td>
+								<td>Estado</td>
 							</tr>
 						</thead>
 						<tbody>
@@ -463,13 +476,17 @@ export const reportAssistanceByUserAndCourse = async (
 					getFullDate(item.start_marking_date!).seconds
 				}</td>
 								<td>${_dateEndDateSchedule.hours}:${_dateEndDateSchedule.minutes}</td>				
-								<td>${getFullDate(item.end_marking_date!).day}-${
-					getFullDate(item.end_marking_date!).month
-				}-${getFullDate(item.end_marking_date!).fullYear} ${
-					getFullDate(item.end_marking_date!).hours
-				}:${getFullDate(item.end_marking_date!).minutes}:${
-					getFullDate(item.end_marking_date!).seconds
-				}</td>
+								<td>${
+									item.end_marking_date == null
+										? 'No registra marcación'
+										: `${getFullDate(item.end_marking_date!).day}-${
+												getFullDate(item.end_marking_date!).month
+										  }-${getFullDate(item.end_marking_date!).fullYear} ${
+												getFullDate(item.end_marking_date!).hours
+										  }:${getFullDate(item.end_marking_date!).minutes}:${
+												getFullDate(item.end_marking_date!).seconds
+										  }`
+								}</td>
 								<td>${item.is_late ? 'Atraso' : 'A tiempo'}</td>
 
 							</tr>
@@ -510,7 +527,7 @@ export const reportAssistanceByUserAndCourse = async (
 								<td>Hora de entrada</td>
 								<td>Marcación de entrada</td>
 								<td>Hora de salida</td>
-								<td>Marcación de entrada</td>
+								<td>Marcación de salida</td>
 								<td>Puntualidad</td>
 							</tr>
 						</thead>

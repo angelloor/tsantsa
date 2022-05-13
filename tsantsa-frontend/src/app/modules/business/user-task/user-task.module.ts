@@ -22,11 +22,11 @@ import { SharedModule } from 'app/shared/shared.module';
 import * as moment from 'moment';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { UserTaskListComponent } from './list/list.component';
+import { ModalResourcesComponent } from './modal-resources/modal-resources.component';
 import { ModalUserTaskDetailsComponent } from './modal-user-task/modal-user-task-details/modal-user-task-details.component';
 import { ModalUserTaskComponent } from './modal-user-task/modal-user-task.component';
 import { UserTaskComponent } from './user-task.component';
 import { userTaskRoutes } from './user-task.routing';
-import { ModalResourcesComponent } from './modal-resources/modal-resources.component';
 
 @NgModule({
   declarations: [

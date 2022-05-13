@@ -5,12 +5,10 @@ import {
   AngelConfirmationService,
 } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -23,7 +21,7 @@ import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
 import { SecurityCap } from 'app/utils/SecurityCap';
 import { environment } from 'environments/environment';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { company } from '../../company/company.data';
 import { CompanyService } from '../../company/company.service';
 import { Company } from '../../company/company.types';
@@ -110,7 +108,6 @@ export class UserDetailsComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     private _userListComponent: UserListComponent,
     private _userService: UserService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
     private _securityCap: SecurityCap,
     private _activatedRoute: ActivatedRoute,
@@ -176,18 +173,15 @@ export class UserDetailsComponent implements OnInit {
       phone_person: ['', [Validators.required, Validators.maxLength(13)]],
 
       id_academic: [''],
-      title_academic: ['', [Validators.required, Validators.maxLength(250)]],
-      abbreviation_academic: [
-        '',
-        [Validators.required, Validators.maxLength(50)],
-      ],
-      nivel_academic: ['', [Validators.required, Validators.maxLength(100)]],
+      title_academic: ['', [Validators.maxLength(250)]],
+      abbreviation_academic: ['', [Validators.maxLength(50)]],
+      nivel_academic: ['', [Validators.maxLength(100)]],
 
       id_job: [''],
-      name_job: ['', [Validators.required, Validators.maxLength(200)]],
-      address_job: ['', [Validators.required, Validators.maxLength(200)]],
-      phone_job: ['', [Validators.required, Validators.maxLength(13)]],
-      position_job: ['', [Validators.required, Validators.maxLength(150)]],
+      name_job: ['', [Validators.maxLength(200)]],
+      address_job: ['', [Validators.maxLength(200)]],
+      phone_job: ['', [Validators.maxLength(13)]],
+      position_job: ['', [Validators.maxLength(150)]],
     });
     /**
      * Validations
@@ -442,35 +436,6 @@ export class UserDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (!this.isOpenModal && keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-          /**
-           * Close Drawer
-           */
-          this.closeDrawer();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * Pacth the form with the information of the database

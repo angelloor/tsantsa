@@ -3,7 +3,6 @@ import { AppConfig } from 'app/core/app/app.config';
 import { RememberMe } from 'app/core/app/app.type';
 import { Message } from 'app/layout/common/messages/messages.types';
 import { User } from 'app/modules/core/user/user.types';
-
 /**
  * User preferences
  */

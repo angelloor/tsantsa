@@ -26,6 +26,13 @@
                 </div>
                 <div class="flex flex-col mt-4 pt-6 space-y-8">
                     <!-- name_task -->
+                    <ng-container *ngIf="task.partial.id_partial">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+                            <div class="ml-6 leading-6">{{selectedPartial.name_partial}}</div>
+                        </div>
+                    </ng-container>
+                    <!-- name_task -->
                     <ng-container *ngIf="task.name_task">
                         <div class="flex sm:items-center">
                             <mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>

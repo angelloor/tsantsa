@@ -190,7 +190,9 @@ export class ModalEnrollmentComponent implements OnInit {
   ): FormControl {
     return formArray.controls[index].get(control) as FormControl;
   }
-
+  /**
+   * closeModalEnrollment
+   */
   closeModalEnrollment() {
     this._modalEnrollmentService.closeModalEnrollment();
   }

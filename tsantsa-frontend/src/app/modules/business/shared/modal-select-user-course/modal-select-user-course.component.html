@@ -2,7 +2,7 @@
 
     <!-- Header -->
     <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
-        <div class="text-lg">Seleccionar un curso</div>
+        <div class="text-lg">Complete la selección para continuar</div>
         <button mat-icon-button (click)="closeModalSelectUserCourse()" [tabIndex]="-1">
             <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
         </button>
@@ -24,7 +24,7 @@
         <!-- curso -->
         <div class="flex flex-auto mt-6">
             <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>Cursos</mat-label>
+                <mat-label>Asignatura</mat-label>
                 <mat-select [formControlName]="'id_course'" (selectionChange)="changeSelect()">
                     <mat-option *ngFor="let category of categoriesCourse" [value]="category.id_course"
                         [disabled]="!category.status_course" [matTooltip]="category.description_course">

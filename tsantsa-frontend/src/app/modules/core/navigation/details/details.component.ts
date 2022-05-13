@@ -6,14 +6,7 @@ import {
 } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,7 +16,7 @@ import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
 import { ModalViewSchemaService } from 'app/shared/modal-view-schema/modal-view-schema.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { NavigationListComponent } from '../list/list.component';
 import { NavigationService } from '../navigation.service';
 import {
@@ -92,7 +85,6 @@ export class NavigationDetailsComponent implements OnInit {
     private _changeDetectorRef: ChangeDetectorRef,
     private _navigationListComponent: NavigationListComponent,
     private _navigationService: NavigationService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
     private _router: Router,
@@ -197,35 +189,6 @@ export class NavigationDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (!this.isOpenModal && keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-          /**
-           * Close Drawer
-           */
-          this.closeDrawer();
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
   /**
    * Pacth the form with the information of the database
@@ -490,11 +453,11 @@ export class NavigationDetailsComponent implements OnInit {
     return isValid;
   }
   /**
-   * viewSchema
+   * openModalViewSchema
    */
-  viewSchema() {
+  openModalViewSchema() {
     this._modalViewSchemeService
-      .openModalViewSchemaService(this.schema)
+      .openModalViewSchema(this.schema)
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(() => {

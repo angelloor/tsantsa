@@ -24,7 +24,7 @@ export class SettingsCompanyService {
     return this._myCompany.asObservable();
   }
 
-  openSettingsCompanyService(id_company: string) {
+  openSettingsCompany(id_company: string) {
     this._layoutService.setOpenModal(true);
     return this._dialog.open(SettingsCompanyComponent, {
       minHeight: 'inherit',
@@ -37,7 +37,7 @@ export class SettingsCompanyService {
     });
   }
 
-  closeSettingsCompanyService() {
+  closeSettingsCompany() {
     this._dialog.closeAll();
   }
 }

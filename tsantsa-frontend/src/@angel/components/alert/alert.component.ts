@@ -49,7 +49,7 @@ export class AngelAlertComponent implements OnChanges, OnInit, OnDestroy {
   /**
    * Constructor
    */
-  constructor(
+  constructor( 
     private _changeDetectorRef: ChangeDetectorRef,
     private _angelAlertService: AngelAlertService,
     private _angelUtilsService: AngelUtilsService

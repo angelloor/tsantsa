@@ -42,6 +42,13 @@
 				"link": "/core/user"
 			},
 			{
+				"id": "core.newsletter",
+				"title": "Anuncios",
+				"type": "basic",
+				"icon": "heroicons_outline:document",
+				"link": "/core/newsletter"
+			},
+			{
 				"id": "core.session",
 				"title": "Sesiones",
 				"type": "basic",

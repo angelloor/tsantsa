@@ -56,6 +56,13 @@ const coreRoutes: Route[] = [
     loadChildren: () => import('./user/user.module').then((m) => m.UserModule),
   },
   {
+    path: 'newsletter',
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    loadChildren: () =>
+      import('./newsletter/newsletter.module').then((m) => m.NewsletterModule),
+  },
+  {
     path: 'session',
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],

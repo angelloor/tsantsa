@@ -1,18 +1,17 @@
 import { angelAnimations } from '@angel/animations';
 import { AngelAlertType } from '@angel/components/alert';
-import { AngelConfirmationService } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData } from 'app/core/app/app.type';
 import { LayoutService } from 'app/layout/layout.service';
-import { NotificationService } from 'app/shared/notification/notification.service';
+import { ModalForumsService } from 'app/modules/business/course/forum/modal-forums/modal-forums.service';
+import { ModalGlossarysService } from 'app/modules/business/course/glossary/modal-glossarys/modal-glossarys.service';
+import { ModalResourceCoursesService } from 'app/modules/business/course/resource_course/modal-resource-courses/modal-resource-courses.service';
 import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
-import { filter, fromEvent, merge, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { EnrollmentService } from '../../enrollment.service';
 import { Enrollment } from '../../enrollment.types';
 import { ModalAssistancesService } from '../../modal-assistances/modal-assistances.service';
@@ -58,16 +57,14 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
     private _store: Store<{ global: AppInitialData }>,
     private _changeDetectorRef: ChangeDetectorRef,
     private _enrollmentService: EnrollmentService,
-    @Inject(DOCUMENT) private _document: any,
     private _formBuilder: FormBuilder,
-    private _activatedRoute: ActivatedRoute,
-    private _router: Router,
-    private _notificationService: NotificationService,
-    private _angelConfirmationService: AngelConfirmationService,
     private _layoutService: LayoutService,
     private _matDialog: MatDialog,
     private _localDatePipe: LocalDatePipe,
-    private _modalAssistancesService: ModalAssistancesService
+    private _modalAssistancesService: ModalAssistancesService,
+    private _modalResourceCoursesService: ModalResourceCoursesService,
+    private _modalGlossarysService: ModalGlossarysService,
+    private _modalForumsService: ModalForumsService
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -137,31 +134,6 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
          */
         this._changeDetectorRef.markForCheck();
       });
-    /**
-     * Shortcuts
-     */
-    merge(
-      fromEvent(this._document, 'keydown').pipe(
-        takeUntil(this._unsubscribeAll),
-        filter<KeyboardEvent | any>((e) => e.key === 'Escape')
-      )
-    )
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((keyUpOrKeyDown) => {
-        /**
-         * Shortcut Escape
-         */
-        if (!this.isOpenModal && keyUpOrKeyDown.key == 'Escape') {
-          /**
-           * Navigate parentUrl
-           */
-          const parentUrl = this._router.url.split('/').slice(0, -1).join('/');
-          this._router.navigate([parentUrl]);
-        }
-      });
-    /**
-     * Shortcuts
-     */
   }
 
   /**
@@ -232,8 +204,29 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
    * @param date
    * @returns
    */
-
   parseDate(date: string) {
     return this._localDatePipe.transform(date, 'longDate');
+  }
+  /**
+   * openModalResourceCourses
+   */
+  openModalResourceCourses(): void {
+    this._modalResourceCoursesService.openModalResourceCourses(
+      this.enrollment.course.id_course
+    );
+  }
+  /**
+   * openModalGlossarys
+   */
+  openModalGlossarys(): void {
+    this._modalGlossarysService.openModalGlossarys(
+      this.enrollment.course.id_course
+    );
+  }
+  /**
+   * openModalForums
+   */
+  openModalForums(): void {
+    this._modalForumsService.openModalForums(this.enrollment.course.id_course);
   }
 }

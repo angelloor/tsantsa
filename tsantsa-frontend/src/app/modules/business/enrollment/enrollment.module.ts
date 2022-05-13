@@ -23,9 +23,9 @@ import * as moment from 'moment';
 import { EnrollmentComponent } from './enrollment.component';
 import { enrollmentRoutes } from './enrollment.routing';
 import { EnrollmentListComponent } from './list/list.component';
+import { ModalAssistancesComponent } from './modal-assistances/modal-assistances.component';
 import { ModalEnrollmentDetailsComponent } from './modal-enrollment/modal-enrollment-details/modal-enrollment-details.component';
 import { ModalEnrollmentComponent } from './modal-enrollment/modal-enrollment.component';
-import { ModalAssistancesComponent } from './modal-assistances/modal-assistances.component';
 
 @NgModule({
   declarations: [

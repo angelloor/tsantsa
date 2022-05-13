@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  urlBackend: 'https://tsantsa.com',
+  urlBackend: 'https://evatsantsa.com',
   passwordEncrypt: 'eNcR$TsAnTs$2022',
 };

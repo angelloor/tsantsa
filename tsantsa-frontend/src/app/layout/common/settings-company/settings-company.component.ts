@@ -268,10 +268,10 @@ export class SettingsCompanyComponent implements OnInit {
       });
   }
   /**
-   * Save and close
+   * closeSettingsCompany
    */
-  close(): void {
-    this._settingsCompanyService.closeSettingsCompanyService();
+  closeSettingsCompany(): void {
+    this._settingsCompanyService.closeSettingsCompany();
   }
   /**
    * byCompanyReleaseAll

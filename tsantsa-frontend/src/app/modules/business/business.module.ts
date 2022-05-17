@@ -22,13 +22,19 @@ import { Route, RouterModule } from '@angular/router';
 import { AuthGuard } from 'app/core/auth/guards/auth.guard';
 import { SharedModule } from 'app/shared/shared.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { HomeComponent } from './home/home.component';
+import { ModalViewNewsletterComponent } from './home/modal-view-newsletter/modal-view-newsletter.component';
 import { ModalSelectCourseComponent } from './shared/modal-select-course/modal-select-course.component';
 import { ModalSelectPartialComponent } from './shared/modal-select-partial/modal-select-partial.component';
 import { ModalSelectPeriodComponent } from './shared/modal-select-period/modal-select-period.component';
 import { ModalSelectTaskComponent } from './shared/modal-select-task/modal-select-task.component';
 import { ModalSelectUserCourseComponent } from './shared/modal-select-user-course/modal-select-user-course.component';
-import { ModalViewNewsletterComponent } from './home/modal-view-newsletter/modal-view-newsletter.component';
+import { ModalResourcesComponent } from './user-task/modal-resources/modal-resources.component';
+import { ModalUserTaskComponent } from './user-task/modal-user-task/modal-user-task.component';
+import { ModalUserTasksComponent } from './user-task/modal-user-tasks/modal-user-tasks.component';
+import { ModalUserTasksByCourseComponent } from './user-task/modal-user-tasks-by-course/modal-user-tasks-by-course.component';
+import { ModalSelectReportUserTaskComponent } from './shared/modal-select-report-user-task/modal-select-report-user-task.component';
 
 const businessRoutes: Route[] = [
   {
@@ -76,13 +82,6 @@ const businessRoutes: Route[] = [
       import('./enrollment/enrollment.module').then((m) => m.EnrollmentModule),
   },
   {
-    path: 'user-task',
-    canActivate: [AuthGuard],
-    canActivateChild: [AuthGuard],
-    loadChildren: () =>
-      import('./user-task/user-task.module').then((m) => m.UserTaskModule),
-  },
-  {
     path: 'assistance',
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
@@ -100,12 +99,18 @@ const businessRoutes: Route[] = [
     ModalSelectUserCourseComponent,
     ModalSelectPartialComponent,
     ModalViewNewsletterComponent,
+    ModalUserTaskComponent,
+    ModalResourcesComponent,
+    ModalUserTasksComponent,
+    ModalUserTasksByCourseComponent,
+    ModalSelectReportUserTaskComponent,
   ],
   imports: [
     RouterModule.forChild(businessRoutes),
     FormsModule,
     CommonModule,
     MatTooltipModule,
+    MaterialFileInputModule,
     MatSelectModule,
     MatFormFieldModule,
     MatDialogModule,

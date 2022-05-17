@@ -10,6 +10,7 @@ import { LayoutService } from 'app/layout/layout.service';
 import { ModalForumsService } from 'app/modules/business/course/forum/modal-forums/modal-forums.service';
 import { ModalGlossarysService } from 'app/modules/business/course/glossary/modal-glossarys/modal-glossarys.service';
 import { ModalResourceCoursesService } from 'app/modules/business/course/resource_course/modal-resource-courses/modal-resource-courses.service';
+import { ModalUserTasksByCourseService } from 'app/modules/business/user-task/modal-user-tasks-by-course/modal-user-tasks-by-course.service';
 import { LocalDatePipe } from 'app/shared/pipes/local-date.pipe';
 import { Subject, takeUntil } from 'rxjs';
 import { EnrollmentService } from '../../enrollment.service';
@@ -64,7 +65,8 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
     private _modalAssistancesService: ModalAssistancesService,
     private _modalResourceCoursesService: ModalResourceCoursesService,
     private _modalGlossarysService: ModalGlossarysService,
-    private _modalForumsService: ModalForumsService
+    private _modalForumsService: ModalForumsService,
+    private _modalUserTasksByCourseService: ModalUserTasksByCourseService
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -228,5 +230,13 @@ export class ModalEnrollmentDetailsComponent implements OnInit {
    */
   openModalForums(): void {
     this._modalForumsService.openModalForums(this.enrollment.course.id_course);
+  }
+  /**
+   * openModalForums
+   */
+  openModalUserTasksByCourse(): void {
+    this._modalUserTasksByCourseService.openModalUserTasksByCourse(
+      this.enrollment.course.id_course
+    );
   }
 }

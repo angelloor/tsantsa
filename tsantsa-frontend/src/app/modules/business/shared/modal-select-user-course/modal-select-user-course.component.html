@@ -12,7 +12,7 @@
         <!-- user -->
         <div class="flex flex-auto">
             <mat-form-field class="angel-mat-no-subscript w-full">
-                <mat-label>Usuarios</mat-label>
+                <mat-label>Estudiante</mat-label>
                 <mat-select [formControlName]="'id_user'" (selectionChange)="changeSelect()">
                     <mat-option *ngFor="let category of categoriesUser" [value]="category.id_user"
                         [matTooltip]="category.person.dni_person">

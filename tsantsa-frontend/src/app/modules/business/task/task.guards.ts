@@ -6,16 +6,16 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TaskDetailsComponent } from './details/details.component';
+import { ModalTaskComponent } from './modal-task/modal-task.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanDeactivateTaskDetails
-  implements CanDeactivate<TaskDetailsComponent>
+  implements CanDeactivate<ModalTaskComponent>
 {
   canDeactivate(
-    component: TaskDetailsComponent,
+    component: ModalTaskComponent,
     currentRoute: ActivatedRouteSnapshot,
     currentState: RouterStateSnapshot,
     nextState: RouterStateSnapshot
@@ -51,12 +51,7 @@ export class CanDeactivateTaskDetails
        */
       return true;
     } else {
-      /**
-       * Close the drawer first, and then navigate
-       */
-      return component.closeDrawer().then(() => {
-        return true;
-      });
+      return true;
     }
   }
 }

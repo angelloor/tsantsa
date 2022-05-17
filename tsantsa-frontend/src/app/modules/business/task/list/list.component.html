@@ -1,94 +1,83 @@
-<div class="absolute inset-0 flex flex-col min-w-0 overflow-hidden">
+<div class="absolute inset-0 flex flex-col min-w-0 overflow-y-auto" cdkScrollable>
 
-    <mat-drawer-container class="flex-auto h-full bg-card dark:bg-transparent" (backdropClick)="onBackdropClicked()">
+    <!-- Main -->
+    <div class="flex-auto">
 
-        <!-- Drawer -->
-        <mat-drawer class="w-full md:w-160 dark:bg-gray-900" [mode]="drawerMode" [opened]="false" [position]="'end'"
-            [disableClose]="true" #matDrawer>
-            <router-outlet></router-outlet>
-        </mat-drawer>
-
-        <mat-drawer-content class="flex flex-col">
-
-            <!-- Main -->
-            <div class="flex-auto">
-
-                <!-- Header -->
-                <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8 border-b">
-
-                    <!-- Title -->
-                    <div>
-                        <div class="text-4xl font-extrabold tracking-tight leading-none">Tareas</div>
-                        <div class="ml-0.5 font-medium text-secondary">
-                            <ng-container *ngIf="count > 0">
-                                {{count}}
-                            </ng-container>
-                            {{count | i18nPlural: {
-                            '=0' : 'No hay tareas',
-                            '=1' : 'Tarea',
-                            'other': 'Tareas'
-                            } }}
-                        </div>
-                    </div>
-
-                    <!-- Main actions -->
-                    <div class="flex items-center mt-4">
-                        <!-- Search -->
-                        <div class="flex-auto">
-                            <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
-                                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
-                                <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
-                                    [placeholder]="'Buscar por nombre de tarea'">
-                            </mat-form-field>
-                        </div>
-                        <!-- Add button -->
-                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="createTask()">
-                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                            <span class="ml-2 mr-1">Añadir</span>
-                        </button>
-                    </div>
-                </div>
-                <!-- list -->
-                <div class="relative">
-                    <ng-container *ngIf="tasks$ | async as tasks">
-                        <ng-container *ngIf="tasks.length; else noResults">
-                            <ng-container *ngFor="let task of tasks; let i = index; trackBy: trackByFn">
-                                <!-- Entity -->
-                                <div class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer hover:bg-hover border-b"
-                                    [ngClass]="{'bg-primary-50 dark:bg-hover': selectedTask && selectedTask.id_task === task.id_task}"
-                                    [routerLink]="['./', task.id_task]">
-                                    <div
-                                        class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
-                                        <ng-container *ngIf="true">
-                                            <div
-                                                class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
-                                                {{task.name_task.charAt(0)}}
-                                            </div>
-                                        </ng-container>
-                                    </div>
-                                    <div class="min-w-0 ml-4">
-                                        <div class="font-medium leading-5 truncate">{{task.name_task}}
-                                        </div>
-                                        <div class="leading-5 truncate text-secondary">
-                                            {{task.description_task}}</div>
-                                    </div>
-                                </div>
-                            </ng-container>
-                        </ng-container>
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8">
+            <!-- Title -->
+            <div>
+                <div class="text-4xl font-extrabold tracking-tight leading-none text-center">Tareas</div>
+                <div class="ml-0.5 font-medium text-secondary text-center mt-2">
+                    <ng-container *ngIf="count > 0">
+                        {{count}}
                     </ng-container>
-
-                    <!-- No Results -->
-                    <ng-template #noResults>
-                        <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">¡No hay
-                            resultados!</div>
-                    </ng-template>
-
+                    {{count | i18nPlural: {
+                    '=0' : 'No hay tareas',
+                    '=1' : 'Tarea',
+                    'other': 'Tareas'
+                    } }}
                 </div>
-
             </div>
 
-        </mat-drawer-content>
+            <!-- Main actions -->
+            <div class="flex items-center mt-4">
+                <!-- Search -->
+                <div class="flex-auto">
+                    <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
+                        <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                        <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                            [placeholder]="'Buscar por nombre de tarea'">
+                    </mat-form-field>
+                </div>
+            </div>
 
-    </mat-drawer-container>
+        </div>
 
+        <!-- list -->
+        <div class="flex flex-col sm:flex-row md:flex-col flex-auto px-6 md:px-8 items-center">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <ng-container *ngIf="tasks$ | async as tasks">
+                    <ng-container *ngFor="let task of tasks; let i = index; trackBy: trackByFn">
+                        <a class="flex flex-col items-center w-56 p-6 rounded-lg shadow bg-card rounded-lg hover:shadow-xl transition-shadow duration-150 ease-in-out"
+                            (click)="openModalTask(task.id_task)">
+                            <div
+                                class="flex items-center justify-center p-4 rounded-full bg-primary-50 text-primary-700 dark:bg-primary dark:text-on-primary">
+                                <mat-icon class="text-current" [svgIcon]="'heroicons_outline:template'">
+                                </mat-icon>
+                            </div>
+                            <!-- name_template -->
+                            <div class="mt-5 text-lg font-medium leading-5">{{task.name_task}}
+                            </div>
+                            <!-- description_template -->
+                            <div class="mt-0.5 line-clamp-2 text-secondary text-center">
+                                {{task.description_task}}</div>
+                            <!-- status_template -->
+                            <div class="flex items-center mt-5 -space-x-1.5">
+                                <div class="text-lg font-medium leading-5 mr-4">Estado</div>
+                                <a class="ml-4"
+                                    [matTooltip]="task.status_task ? 'tarea enviada' : 'tarea pendiente de envio'">
+                                    <div *ngIf="task.status_task" class="mr-4 w-4 h-4 bg-green-700 rounded-full">
+                                    </div>
+                                    <div *ngIf="!task.status_task" class="mr-4 w-4 h-4 bg-red-600 rounded-full">
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- Last activity -->
+                            <div class="flex items-center mt-4 text-sm font-md">
+                                <div class="text-secondary">Creado:</div>
+                                <div class="ml-1">{{formatDateAsRelative(task.creation_date_task!)}}</div>
+                            </div>
+                        </a>
+                    </ng-container>
+
+                </ng-container>
+                <!-- New task -->
+                <div (click)="createTask()" *ngIf="query == ''"
+                    class="flex flex-col items-center justify-center w-56 rounded-lg cursor-pointer border-2 border-gray-300 border-dashed hover:bg-hover transition-colors duration-150 ease-in-out">
+                    <mat-icon class="icon-size-12 text-hint" [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

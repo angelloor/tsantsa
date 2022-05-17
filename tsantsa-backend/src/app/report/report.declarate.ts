@@ -358,6 +358,9 @@ export const reportTaskByCourse = async (tasks: Task[]) => {
  */
 export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 	return new Promise<string>(async (resolve, reject) => {
+		let promedio: number = 0;
+		let count: number = 0;
+
 		const generateRow = (userTasks: UserTask[]) => {
 			let result: string = '';
 
@@ -365,7 +368,7 @@ export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 				result += `<tr>
 								<td>${index + 1}</td>
 								<td>${item.task.name_task}</td>
-								<td>${item.task.course.name_course}</td>
+								<td>${item.task.description_task}</td>
 								<td>${getFullDate(item.task.limit_date!).day}-${
 					getFullDate(item.task.limit_date!).month
 				}-${getFullDate(item.task.limit_date!).fullYear}</td>
@@ -377,22 +380,14 @@ export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 										? item.qualification_user_task
 										: 'Sin calificar'
 								}</td>
-								<td>${
-									item.qualification_user_task
-										? `${
-												parseInt(item.qualification_user_task!.toString()!)! >=
-												parseInt(
-													item.task.course.period.approval_note_period!.toString()!
-												)
-													? 'Tarea aprobada'
-													: 'Tarea reprovada'
-										  }`
-										: 'Pendiente'
-								}</td>
-
 							</tr>
 						`;
+				count += 1;
+				promedio += item.qualification_user_task
+					? parseInt(item.qualification_user_task.toString())
+					: 0;
 			});
+
 			return result;
 		};
 
@@ -408,9 +403,19 @@ export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 				${await generateHeader('Reporte de notas')}
 				<div class="containerBody">
 					<div class="title">
-						<h2>Estudiante: ${
+						<h2><strong>Estudiante:</strong> ${
 							userTasks.length > 0
 								? `${userTasks[0].user.person.name_person} ${userTasks[0].user.person.last_name_person}`
+								: ''
+						}</h2>
+						<h2><strong>Asignatura:</strong> ${
+							userTasks.length > 0
+								? `${userTasks[0].task.course.name_course}`
+								: ''
+						}</h2>
+						<h2><strong>Parcial:</strong> ${
+							userTasks.length > 0
+								? `${userTasks[0].task.partial.name_partial}`
 								: ''
 						}</h2>
 						<h2>Notas</h2>
@@ -419,16 +424,29 @@ export const reportUserTaskByUser = async (userTasks: UserTask[]) => {
 						<thead>
 							<tr>
 								<td>#</td>
-								<td>Nombre de la tarea</td>
-								<td>Nombre de la asignatura</td>
+								<td>Nombre</td>
+								<td>Descripción</td>
 								<td>Fecha límite de entrega</td>
 								<td>Fecha de entrega</td>
 								<td>Calificación</td>
-								<td>Estado</td>
 							</tr>
 						</thead>
 						<tbody>
-						${userTasks.length > 0 ? `${generateRow(userTasks)}` : ''}		
+						${userTasks.length > 0 ? `${generateRow(userTasks)}` : ''}	
+						<tr><td></td></tr>
+						<tr><td></td></tr>
+						<tr><td></td></tr>
+						<tr><td></td></tr>
+						<tr><td></td></tr>
+						<tr><td></td></tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><strong>Promedio del Parcial</strong></td>
+							<td>${promedio / count}</td>
+						</tr>
 						</tbody>
 					</table>
 				</div>
@@ -609,8 +627,8 @@ body {
 
 .reporte>.containerBody>.title>h2 {
 	color: black;
-	font-size: 16px;
-	font-weight: bold;
+	font-size: 14px;
+	font-weight: 300;
 	padding: 0px 6px;
 }
 

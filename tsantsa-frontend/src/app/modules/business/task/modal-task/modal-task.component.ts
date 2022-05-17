@@ -5,7 +5,7 @@ import {
   AngelConfirmationService,
 } from '@angel/services/confirmation';
 import { OverlayRef } from '@angular/cdk/overlay';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -13,7 +13,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { MatDrawerToggleResult } from '@angular/material/sidenav';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
@@ -26,18 +26,22 @@ import { Course } from '../../course/course.types';
 import { partial } from '../../period/quimester/partial/partial.data';
 import { PartialService } from '../../period/quimester/partial/partial.service';
 import { Partial } from '../../period/quimester/partial/partial.types';
-import { TaskListComponent } from '../list/list.component';
+import { ModalUserTasksService } from '../../user-task/modal-user-tasks/modal-user-tasks.service';
 import { ModalResourceService } from '../resource/modal-resource/modal-resource.service';
 import { ResourceService } from '../resource/resource.service';
 import { Resource } from '../resource/resource.types';
 import { TaskService } from '../task.service';
 import { Task } from '../task.types';
+import { ModalTaskService } from './modal-task.service';
+
 @Component({
-  selector: 'task-details',
-  templateUrl: './details.component.html',
+  selector: 'app-modal-task',
+  templateUrl: './modal-task.component.html',
   animations: angelAnimations,
 })
-export class TaskDetailsComponent implements OnInit {
+export class ModalTaskComponent implements OnInit {
+  id_task: string = '';
+
   categoriesCourse: Course[] = [];
   selectedCourse: Course = course;
 
@@ -80,9 +84,9 @@ export class TaskDetailsComponent implements OnInit {
    * Constructor
    */
   constructor(
+    @Inject(MAT_DIALOG_DATA) public _data: any,
     private _store: Store<{ global: AppInitialData }>,
     private _changeDetectorRef: ChangeDetectorRef,
-    private _taskListComponent: TaskListComponent,
     private _taskService: TaskService,
     private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
@@ -93,7 +97,9 @@ export class TaskDetailsComponent implements OnInit {
     private _courseService: CourseService,
     private _partialService: PartialService,
     private _resourceService: ResourceService,
-    private _modalResourceService: ModalResourceService
+    private _modalResourceService: ModalResourceService,
+    private _modalTaskService: ModalTaskService,
+    private _modalUserTasksService: ModalUserTasksService
   ) {}
 
   /** ----------------------------------------------------------------------------------------------------- */
@@ -104,6 +110,7 @@ export class TaskDetailsComponent implements OnInit {
    * On init
    */
   ngOnInit(): void {
+    this.id_task = this._data.id_task;
     /**
      * isOpenModal
      */
@@ -122,10 +129,6 @@ export class TaskDetailsComponent implements OnInit {
       this.data = state.global;
     });
     /**
-     * Open the drawer
-     */
-    this._taskListComponent.matDrawer.open();
-    /**
      * Create the task form
      */
     this.taskForm = this._formBuilder.group({
@@ -140,6 +143,13 @@ export class TaskDetailsComponent implements OnInit {
       limit_date: ['', [Validators.required]],
       resources: this._formBuilder.array([]),
     });
+    /**
+     * Get the tasks
+     */
+    this._taskService
+      .readTaskByIdLocal(this.id_task)
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe();
     /**
      * Get the tasks
      */
@@ -158,10 +168,6 @@ export class TaskDetailsComponent implements OnInit {
     this._taskService.task$
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((task: Task) => {
-        /**
-         * Open the drawer in case it is closed
-         */
-        this._taskListComponent.matDrawer.open();
         /**
          * Get the task
          */
@@ -308,13 +314,6 @@ export class TaskDetailsComponent implements OnInit {
   /** ----------------------------------------------------------------------------------------------------- */
   /** @ Public methods
 	  /** ----------------------------------------------------------------------------------------------------- */
-
-  /**
-   * Close the drawer
-   */
-  closeDrawer(): Promise<MatDrawerToggleResult> {
-    return this._taskListComponent.matDrawer.close();
-  }
   /**
    * Toggle edit mode
    * @param editMode
@@ -670,7 +669,18 @@ export class TaskDetailsComponent implements OnInit {
         }
       });
   }
-
+  /**
+   * openModalUserTasks
+   */
+  openModalUserTasks(): void {
+    this._modalUserTasksService.openModalUserTasks(this.id_task);
+  }
+  /**
+   * closeModalTask
+   */
+  closeModalTask(): void {
+    this._modalTaskService.closeModalTask();
+  }
   /**
    * Track by function for ngFor loops
    * @param index

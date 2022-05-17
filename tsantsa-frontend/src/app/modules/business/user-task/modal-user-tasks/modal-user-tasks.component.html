@@ -1,0 +1,92 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">Tareas recibidas</div>
+        <button mat-icon-button (click)="closeModalUserTasks()" [tabIndex]="-1">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <!-- Modal user -->
+    <div class="flex flex-col flex-auto overflow-y-auto pb-8">
+        <!-- Main -->
+        <div class="flex-auto">
+
+
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row md:flex-col flex-auto justify-between py-8 px-6 md:px-8">
+
+                <!-- Title -->
+                <div>
+                    <div class="ml-0.5 font-medium text-secondary">
+                        <ng-container *ngIf="count > 0">
+                            {{count}}
+                        </ng-container>
+                        {{count | i18nPlural: {
+                        '=0' : 'No hay tareas',
+                        '=1' : 'Tarea',
+                        'other': 'Tareas'
+                        } }}
+                    </div>
+                </div>
+
+                <!-- Main actions -->
+                <div class="flex items-center mt-4">
+                    <!-- Search -->
+                    <div class="flex-auto">
+                        <mat-form-field class="angel-mat-dense angel-mat-no-subscript w-full min-w-50">
+                            <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:search'"></mat-icon>
+                            <input matInput [formControl]="searchInputControl" [autocomplete]="'off'"
+                                [placeholder]="'Buscar por nombre del estudiante'">
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <!-- list -->
+            <div class="relative">
+                <ng-container *ngIf="userTasks$ | async as userTasks">
+                    <ng-container *ngIf="userTasks.length; else noResults">
+                        <ng-container *ngFor="let userTask of userTasks; let i = index; trackBy: trackByFn">
+                            <!-- Entity -->
+                            <div class="z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer hover:bg-hover border-2 ml-8 mr-8 rounded-md"
+                                [ngClass]="{'bg-primary-50 dark:bg-hover': selectedUserTask && selectedUserTask.id_user_task === userTask.id_user_task}"
+                                (click)="openModalUserTask(userTask.id_user_task)">
+                                <div
+                                    class="flex flex-0 items-center justify-center w-10 h-10 rounded-full overflow-hidden">
+                                    <ng-container *ngIf="true">
+                                        <div
+                                            class="flex items-center justify-center w-full h-full rounded-full text-lg uppercase bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200">
+                                            {{userTask.task.name_task.charAt(0)}}
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <div class="min-w-0 ml-4" *ngIf="type_user == 'teacher'">
+                                    <div class="font-medium leading-5 truncate">{{userTask.user.person.name_person +
+                                        ' ' + userTask.user.person.last_name_person}}
+                                    </div>
+                                    <div class="leading-5 truncate text-secondary">
+                                        {{userTask.task.name_task + ' -> ' + (userTask.is_qualified ? 'Tarea
+                                        calificada': (userTask.is_dispatched ? 'Tarea enviada' : (userTask.is_open ?
+                                        'Tarea abierta': 'Tarea sin abrir') ))}}</div>
+                                </div>
+                                <div class="min-w-0 ml-4" *ngIf="type_user == 'student'">
+                                    <div class="font-medium leading-5 truncate">{{userTask.task.course.name_course}}
+                                    </div>
+                                    <div class="leading-5 truncate text-secondary">
+                                        {{userTask.task.name_task + ' -> ' +userTask.task.description_task}}</div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+
+                <!-- No Results -->
+                <ng-template #noResults>
+                    <div class="p-8 sm:p-8 pb-0 sm:pb-0 border-t text-2xl font-semibold tracking-tight text-center">¡No
+                        hay
+                        resultados!</div>
+                </ng-template>
+
+            </div>
+        </div>
+    </div>

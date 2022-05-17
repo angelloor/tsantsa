@@ -114,13 +114,6 @@
 				"link": "/business/my-courses"
 			},
 			{
-				"id": "business.user-task",
-				"title": "Mis tareas",
-				"type": "basic",
-				"icon": "mat_outline:auto_stories",
-				"link": "/business/user-task"
-			},
-			{
 				"id": "business.assistance",
 				"title": "Mis asistencias",
 				"type": "basic",

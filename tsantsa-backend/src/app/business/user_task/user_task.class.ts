@@ -12,7 +12,11 @@ import {
 	dml_user_task_delete,
 	dml_user_task_update,
 	view_user_task,
+	view_user_task_by_course_query_read,
+	view_user_task_by_course_read,
 	view_user_task_by_sender_user_read,
+	view_user_task_by_task_query_read,
+	view_user_task_by_task_read,
 	view_user_task_by_user_read,
 	view_user_task_specific_read,
 } from './user_task.store';
@@ -142,9 +146,43 @@ export class UserTask {
 		});
 	}
 
-	read() {
+	queryRead() {
 		return new Promise<UserTask[]>(async (resolve, reject) => {
 			await view_user_task(this)
+				.then((userTasks: UserTask[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _userTasks = this.mutateResponse(userTasks);
+
+					resolve(_userTasks);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
+	byTaskQueryRead() {
+		return new Promise<UserTask[]>(async (resolve, reject) => {
+			await view_user_task_by_task_query_read(this)
+				.then((userTasks: UserTask[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _userTasks = this.mutateResponse(userTasks);
+
+					resolve(_userTasks);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
+	byCourseQueryRead() {
+		return new Promise<UserTask[]>(async (resolve, reject) => {
+			await view_user_task_by_course_query_read(this)
 				.then((userTasks: UserTask[]) => {
 					/**
 					 * Mutate response
@@ -196,6 +234,40 @@ export class UserTask {
 	bySenderUserRead() {
 		return new Promise<UserTask[]>(async (resolve, reject) => {
 			await view_user_task_by_sender_user_read(this)
+				.then((userTasks: UserTask[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _userTasks = this.mutateResponse(userTasks);
+
+					resolve(_userTasks);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
+	byTaskRead() {
+		return new Promise<UserTask[]>(async (resolve, reject) => {
+			await view_user_task_by_task_read(this)
+				.then((userTasks: UserTask[]) => {
+					/**
+					 * Mutate response
+					 */
+					const _userTasks = this.mutateResponse(userTasks);
+
+					resolve(_userTasks);
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
+		});
+	}
+
+	byCourseRead() {
+		return new Promise<UserTask[]>(async (resolve, reject) => {
+			await view_user_task_by_course_read(this)
 				.then((userTasks: UserTask[]) => {
 					/**
 					 * Mutate response
@@ -343,6 +415,17 @@ export class UserTask {
 						status_course: item.status_course,
 						creation_date_course: item.creation_date_course,
 					},
+					partial: {
+						id_partial: item.id_partial,
+						quimester: {
+							id_quimester: item.id_quimester,
+							period: {
+								id_period: item.id_period,
+							},
+							name_quimester: item.name_quimester,
+						},
+						name_partial: item.name_partial,
+					},
 					name_task: item.name_task,
 					description_task: item.description_task,
 					status_task: item.status_task,
@@ -351,7 +434,7 @@ export class UserTask {
 				},
 				/**
 				 * Generate structure of second level the entity (is important add the ids of entity)
-				 * similar the return of read
+				 * similar the return of queryRead
 				 */
 			};
 			/**

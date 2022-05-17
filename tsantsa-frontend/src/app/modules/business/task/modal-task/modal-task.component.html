@@ -1,0 +1,284 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Header -->
+    <div class="flex flex-0 items-center justify-between h-16 pr-3 sm:pr-5 pl-6 sm:pl-8 bg-primary text-on-primary">
+        <div class="text-lg">{{task.name_task}}</div>
+        <button mat-icon-button [tabIndex]="-1" (click)="closeModalTask()">
+            <mat-icon class="text-current" [svgIcon]="'heroicons_outline:x'"></mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-col flex-auto overflow-y-auto">
+        <div class="flex flex-col w-full">
+            <!-- View mode -->
+            <ng-container *ngIf="!editMode">
+                <!-- Header -->
+                <div
+                    class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+                    <!-- Background -->
+                    <div class="w-full h-40 bg-black z-10 opacity-0">
+                    </div>
+                    <h1 class="absolute z-20 text-white text-3xl" absolute z-20 text-white text-3xl>{{nameEntity}}</h1>
+                    <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+                </div>
+                <!-- Entity -->
+                <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+                    <div class="w-full max-w-3xl">
+                        <!-- Actions -->
+                        <div
+                            class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                            <button mat-stroked-button (click)="toggleEditMode(true)" class="mr-2">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                                <span class="ml-1">Editar</span>
+                            </button>
+                            <!-- Button -->
+                            <button class="mr-2" mat-flat-button [color]="'primary'" [matTooltip]="'Tareas recibidas'"
+                                (click)="openModalUserTasks()">
+                                <span class="relative">
+                                    Ver tareas
+                                </span>
+                            </button>
+                        </div>
+                        <div class="flex flex-col mt-4 pt-6 space-y-8">
+                            <!-- name_task -->
+                            <ng-container *ngIf="task.partial.id_partial">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{selectedPartial.name_partial}}</div>
+                                </div>
+                            </ng-container>
+                            <!-- name_task -->
+                            <ng-container *ngIf="task.name_task">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:credit-card'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{task.name_task}}</div>
+                                </div>
+                            </ng-container> <!-- description_task -->
+                            <ng-container *ngIf="task.description_task">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:tag'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{task.description_task}}</div>
+                                </div>
+                            </ng-container> <!-- id_course -->
+                            <ng-container *ngIf="task.course.id_course">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{selectedCourse.name_course}}</div>
+                                </div>
+                            </ng-container> <!-- status_task -->
+                            <ng-container>
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:status-online'"></mat-icon>
+                                    <div *ngIf="task.status_task" class="ml-6 mt-1 w-3 h-3 bg-green-700 rounded-full">
+                                    </div>
+                                    <div *ngIf="!task.status_task" class="ml-6 mt-1 w-3 h-3 bg-red-600 rounded-full">
+                                    </div>
+                                </div>
+                            </ng-container> <!-- limit_date -->
+                            <ng-container *ngIf="task.limit_date">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{task.limit_date | localDate:'medium'}}</div>
+                                </div>
+                            </ng-container> <!-- creation_date_task -->
+                            <ng-container *ngIf="task.creation_date_task">
+                                <div class="flex sm:items-center">
+                                    <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                                    <div class="ml-6 leading-6">{{task.creation_date_task | localDate:'medium'}}</div>
+                                </div>
+                            </ng-container>
+                            <div *ngIf="resources.length" class="flex flex-col mt-4 pt-6 border-t space-y-8">
+                                <!-- resources -->
+                                <ng-container *ngIf="resources.length">
+                                    <div class="flex">
+                                        <mat-icon [svgIcon]="'heroicons_outline:menu'"></mat-icon>
+                                        <div class="min-w-0 ml-6 space-y-1">
+                                            <ng-container *ngFor="let _resource of resources; trackBy: trackByFn">
+                                                <div class="flex items-center leading-6">
+                                                    <div>{{_resource.name_resource}}</div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <!-- Edit mode -->
+            <ng-container *ngIf="editMode">
+                <!-- Header -->
+                <div
+                    class="relative w-full h-40 flex items-center bg-accent-100 dark:bg-accent-700 place-content-center">
+                    <!-- Background -->
+                    <div class="w-full h-40 bg-black z-10 opacity-25">
+                    </div>
+                    <h1 class="absolute z-20 text-white text-3xl">{{nameEntity}}</h1>
+                    <img class="absolute inset-0 object-cover w-full h-full" src="app/../assets/images/background.jpg">
+                </div>
+                <!-- form -->
+                <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+                    <div class="w-full max-w-3xl">
+                        <!-- Actions -->
+                        <div
+                            class="flex items-center -mx-6 sm:-mx-12 py-4 pr-6 pl-6 sm:pr-12 sm:pl-12 border-t bg-gray-100 dark:bg-transparent rounded-t-none rounded-b-2xl">
+                            <!-- Save -->
+                            <button mat-flat-button [color]="'primary'"
+                                [disabled]="taskForm.invalid || task.enrollment == '0' || havedDependency"
+                                [matTooltip]="'Enviar tarea'" (click)="sendTask()">
+                                Enviar
+                            </button>
+                            <!-- Save -->
+                            <button mat-flat-button class="ml-2" [color]="'primary'"
+                                [disabled]="taskForm.invalid || havedDependency" [matTooltip]="'Guardar'"
+                                (click)="updateTask()">
+                                Guardar
+                            </button>
+                            <!-- Delete -->
+                            <button mat-stroked-button class="ml-2" [color]="'warn'" [disabled]="havedDependency"
+                                [matTooltip]="'Eliminar'" (click)="deleteTask()">
+                                Eliminar
+                            </button>
+                            <!-- Cancel -->
+                            <button mat-stroked-button class="ml-2 mr-2" [matTooltip]="'Cancelar'"
+                                (click)="toggleEditMode(false)">
+                                Cancelar
+                            </button>
+                        </div>
+                        <form [formGroup]="taskForm" class="mb-8">
+                            <!-- Alert -->
+                            <angel-alert class="mt-8" *ngIf="havedDependency" [appearance]="'outline'"
+                                [showIcon]="false" [type]="'warning'" [@shake]="alert.type === 'error'">
+                                La tarea ya ha sido enviada
+                            </angel-alert>
+                            <!-- Alert -->
+                            <!-- Alert -->
+                            <angel-alert class="mt-8" *ngIf="taskForm.invalid || showAlert" [appearance]="'outline'"
+                                [showIcon]="false" [type]="alert.type" [@shake]="alert.type === 'error'">
+                                <!-- Message if alert is actived for the component -->
+                                {{alert.message}}
+                                <!-- id_course -->
+                                <mat-error *ngIf="taskForm.get('id_course')?.hasError('required')">
+                                    • Seleccione la asignatura
+                                </mat-error>
+                                <!-- name_task -->
+                                <mat-error *ngIf="taskForm.get('name_task')?.hasError('required')">
+                                    • Ingrese el nombre de la tarea
+                                </mat-error>
+                                <!-- description_task -->
+                                <mat-error *ngIf="taskForm.get('description_task')?.hasError('required')">
+                                    • Ingrese la descripción de la tarea
+                                </mat-error>
+                                <!-- status_task -->
+                                <mat-error *ngIf="taskForm.get('status_task')?.hasError('required')">
+                                    • Ingrese el estado de la tarea
+                                </mat-error>
+                                <!-- limit_date -->
+                                <mat-error *ngIf="taskForm.get('limit_date')?.hasError('required')">
+                                    • Ingrese la fecha límite de entrega
+                                </mat-error>
+                            </angel-alert>
+                            <!-- Alert -->
+                            <!-- name_task -->
+                            <div class="mt-8">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>Nombre de la tarea</mat-label>
+                                    <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                        [svgIcon]="'heroicons_solid:credit-card'">
+                                    </mat-icon>
+                                    <input matInput maxlength="100" [formControlName]="'name_task'"
+                                        [placeholder]="'Ingrese el nombre de la tarea'" [spellcheck]="true">
+                                </mat-form-field>
+                            </div> <!-- description_task -->
+                            <div class="relative flex mt-8">
+                                <mat-form-field class="angel-mat-textarea angel-mat-no-subscript w-full">
+                                    <mat-label>Descripción de la tarea</mat-label>
+                                    <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                        [svgIcon]="'heroicons_solid:tag'">
+                                    </mat-icon>
+                                    <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+                                        maxlength="250" cdkAutosizeMinRows="3" cdkAutosizeMaxRows="30"
+                                        [formControlName]="'description_task'"
+                                        [placeholder]="'Ingrese la descripción de la tarea'"
+                                        [spellcheck]="true"></textarea>
+                                </mat-form-field>
+                            </div> <!-- id_course -->
+                            <div class="mt-8">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>Asignatura</mat-label>
+                                    <mat-select [formControlName]="'id_course'" [value]="selectedCourse.id_course">
+                                        <ng-container *ngFor="let category of categoriesCourse">
+                                            <mat-option [value]="category.id_course">
+                                                {{category.name_course}}</mat-option>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div> <!-- limit_date -->
+                            <div class="mt-8">
+                                <mat-form-field class="angel-mat-no-subscript w-full">
+                                    <mat-label>Fecha límite de entrega</mat-label>
+                                    <input matInput [matDatepicker]="limit_date" [formControlName]="'limit_date'"
+                                        readonly>
+                                    <mat-datepicker-toggle matSuffix [for]="limit_date">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #limit_date></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <!-- resource -->
+                            <div class="mt-8">
+                                <div class="space-y-4">
+                                    <ng-container
+                                        *ngFor="let enrollment of formArrayResources.controls; let i = index; let first = first; let last = last; trackBy: trackByFn">
+                                        <div class="relative flex">
+                                            <mat-form-field class="angel-mat-no-subscript w-full">
+                                                <mat-icon matPrefix class="hidden sm:flex icon-size-5"
+                                                    [svgIcon]="'mat_outline:insert_link'">
+                                                </mat-icon>
+                                                <input matInput maxlength="100"
+                                                    [matTooltip]="formArrayResources.getRawValue()[i].link_resource"
+                                                    readonly
+                                                    [formControl]="getFromControl(formArrayResources, i, 'name_resource')"
+                                                    [placeholder]="'name_resource'" [spellcheck]="false">
+                                            </mat-form-field>
+                                            <ng-container>
+                                                <div class="flex items-start w-10 pl-2">
+                                                    <button class="w-8 h-8 min-h-8 mt-2" mat-icon-button
+                                                        (click)="editResourceField(formArrayResources.getRawValue()[i].id_resource)"
+                                                        matTooltip="Editar">
+                                                        <mat-icon class="icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:pencil'">
+                                                        </mat-icon>
+                                                    </button>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container>
+                                                <div class="flex items-start w-10 pl-2">
+                                                    <button class="w-8 h-8 min-h-8 mt-2" mat-icon-button
+                                                        (click)="removeResourceField(formArrayResources.getRawValue()[i].id_resource)"
+                                                        matTooltip="Eliminar">
+                                                        <mat-icon class="icon-size-5"
+                                                            [svgIcon]="'heroicons_solid:trash'">
+                                                        </mat-icon>
+                                                    </button>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center justify-center sm:justify-end py-2 space-x-3 ng-star-inserted br-10 pt-6">
+                                <!-- Send -->
+                                <button class="order-first sm:order-last" mat-stroked-button [color]="'primary'"
+                                    (click)="addResourceField()">
+                                    Añadir recurso
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

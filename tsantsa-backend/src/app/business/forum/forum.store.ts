@@ -138,7 +138,7 @@ export const dml_forum_delete = (forum: Forum) => {
 	return new Promise<boolean>(async (resolve, reject) => {
 		const query = `select * from business.dml_forum_delete(${forum.id_user_},${forum.id_forum}) as result`;
 
-		console.log(query);
+		// console.log(query);
 
 		try {
 			const response = await clientTSANTSAPostgreSQL.query(query);

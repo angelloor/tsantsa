@@ -907,13 +907,6 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:book-open",
 				"link": "/business/task"
-			},
-			{
-				"id": "business.user-task",
-				"title": "Mis tareas",
-				"type": "basic",
-				"icon": "mat_outline:auto_stories",
-				"link": "/business/user-task"
 			}
 		]
 	},
@@ -1029,13 +1022,6 @@ BEGIN
 				"type": "basic",
 				"icon": "heroicons_outline:book-open",
 				"link": "/business/task"
-			},
-			{
-				"id": "business.user-task",
-				"title": "Mis tareas",
-				"type": "basic",
-				"icon": "mat_outline:auto_stories",
-				"link": "/business/user-task"
 			}
 		]
 	},
@@ -1107,14 +1093,7 @@ BEGIN
 				"type": "basic",
 				"icon": "mat_outline:ballot",
 				"link": "/business/my-courses"
-			},
-			{
-				"id": "business.user-task",
-				"title": "Mis tareas",
-				"type": "basic",
-				"icon": "mat_outline:auto_stories",
-				"link": "/business/user-task"
-			},
+			}
 			{
 				"id": "business.assistance",
 				"title": "Mis asistencias",
@@ -1171,13 +1150,6 @@ BEGIN
 				"type": "basic",
 				"icon": "mat_outline:ballot",
 				"link": "/business/my-courses"
-			},
-			{
-				"id": "business.user-task",
-				"title": "Mis tareas",
-				"type": "basic",
-				"icon": "mat_outline:auto_stories",
-				"link": "/business/user-task"
 			},
 			{
 				"id": "business.assistance",

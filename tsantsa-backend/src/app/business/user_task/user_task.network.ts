@@ -15,7 +15,7 @@ routerUserTask.post('/create', async (req: any, res: any) => {
 		});
 });
 
-routerUserTask.get('/read/:response_user_task', async (req: any, res: any) => {
+routerUserTask.get('/queryRead/:user', async (req: any, res: any) => {
 	await validation(req.params, req.url, req.headers.token)
 		.then((userTasks: UserTask[]) => {
 			res.status(200).send(userTasks);
@@ -24,6 +24,32 @@ routerUserTask.get('/read/:response_user_task', async (req: any, res: any) => {
 			error(res, err);
 		});
 });
+
+routerUserTask.get(
+	'/byTaskQueryRead/:task/:user',
+	async (req: any, res: any) => {
+		await validation(req.params, req.url, req.headers.token)
+			.then((userTasks: UserTask[]) => {
+				res.status(200).send(userTasks);
+			})
+			.catch((err: Mensaje | any) => {
+				error(res, err);
+			});
+	}
+);
+
+routerUserTask.get(
+	'/byCourseQueryRead/:task/:user',
+	async (req: any, res: any) => {
+		await validation(req.params, req.url, req.headers.token)
+			.then((userTasks: UserTask[]) => {
+				res.status(200).send(userTasks);
+			})
+			.catch((err: Mensaje | any) => {
+				error(res, err);
+			});
+	}
+);
 
 routerUserTask.get(
 	'/specificRead/:id_user_task',
@@ -49,6 +75,26 @@ routerUserTask.get('/byUserRead/:user', async (req: any, res: any) => {
 });
 
 routerUserTask.get('/bySenderUserRead/:user', async (req: any, res: any) => {
+	await validation(req.params, req.url, req.headers.token)
+		.then((userTask: UserTask) => {
+			res.status(200).send(userTask);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
+routerUserTask.get('/byTaskRead/:task', async (req: any, res: any) => {
+	await validation(req.params, req.url, req.headers.token)
+		.then((userTask: UserTask) => {
+			res.status(200).send(userTask);
+		})
+		.catch((err: Mensaje | any) => {
+			error(res, err);
+		});
+});
+
+routerUserTask.get('/byCourseRead/:task', async (req: any, res: any) => {
 	await validation(req.params, req.url, req.headers.token)
 		.then((userTask: UserTask) => {
 			res.status(200).send(userTask);

@@ -563,14 +563,15 @@ $BODY$;
 ALTER FUNCTION business.dml_task_update_modified(numeric, numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
     OWNER TO postgres;
 
--- FUNCTION: business.dml_task_send(numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
--- DROP FUNCTION IF EXISTS business.dml_task_send(numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean);
+-- FUNCTION: business.dml_task_send(numeric, numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
+-- DROP FUNCTION IF EXISTS business.dml_task_send(numeric, numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean);
 
 CREATE OR REPLACE FUNCTION business.dml_task_send(
 	id_user_ numeric,
 	_id_task numeric,
 	_id_course numeric,
 	_id_user numeric,
+	_id_partial numeric,
 	_name_task character varying,
 	_description_task character varying,
 	_status_task boolean,
@@ -599,11 +600,11 @@ AS $BODY$
 					_COUNT_USER_TASK = (select count(*) from business.view_user_task bvut where bvut.id_user = _X.id_user and bvut.id_task = _id_task);
 				
 					IF (_COUNT_USER_TASK = 0) THEN
-						_ID_USER_TASK = (select * from business.dml_user_task_create(id_user_, _X.id_user, _id_task, '', null, null, false, false, false));
+						_ID_USER_TASK = (select * from business.dml_user_task_create(id_user_, _X.id_user, _id_task, '', null, 0, false, false, false));
 					END IF;
 				END LOOP;
-				
-				_SEND_TASK = (select * from business.dml_task_update(id_user_, _id_task, _id_course, _id_user, _name_task, _description_task, _status_task, _creation_date_task, _limit_date, _deleted_task));
+					
+				_SEND_TASK = (select * from business.dml_task_update(id_user_, _id_task, _id_course, _id_user, _id_partial, _name_task, _description_task, _status_task, _creation_date_task, _limit_date, _deleted_task));
 	
 				IF (_SEND_TASK) THEN
 					RETURN QUERY select bvt.id_task, bvt.id_course, bvt.id_user, bvt.name_task, bvt.description_task, bvt.status_task, bvt.creation_date_task, bvt.limit_date, bvt.deleted_task, bvc.id_period, bvc.id_career, bvc.id_schedule, bvc.name_course, bvc.description_course, bvc.status_course, bvc.creation_date_course, bvp.name_period, bvp.description_period, bvp.start_date_period, bvp.end_date_period, bvp.maximum_rating, bvp.approval_note_period, bvca.name_career, bvca.description_career, bvca.status_career, bvca.creation_date_career, bvs.start_date_schedule, bvs.end_date_schedule, bvs.tolerance_schedule, bvs.creation_date_schedule from business.view_task bvt
@@ -627,7 +628,7 @@ AS $BODY$
 			
 $BODY$;
 
-ALTER FUNCTION business.dml_task_send(numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
+ALTER FUNCTION business.dml_task_send(numeric, numeric, numeric, numeric, numeric, character varying, character varying, boolean, timestamp without time zone, timestamp without time zone, boolean)
     OWNER TO postgres;
 
 -- FUNCTION: business.dml_resource_create_modified(numeric, numeric)

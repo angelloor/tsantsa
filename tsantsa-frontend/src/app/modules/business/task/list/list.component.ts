@@ -1,34 +1,33 @@
-import { AngelMediaWatcherService } from '@angel/services/media-watcher';
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { angelAnimations } from '@angel/animations';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatDrawer } from '@angular/material/sidenav';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppInitialData, MessageAPI } from 'app/core/app/app.type';
 import { AuthService } from 'app/core/auth/auth.service';
 import { LayoutService } from 'app/layout/layout.service';
 import { NotificationService } from 'app/shared/notification/notification.service';
+import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ModalSelectCourseService } from '../../shared/modal-select-course/modal-select-course.service';
 import { ModalSelectPartialService } from '../../shared/modal-select-partial/modal-select-partial.service';
+import { ModalTaskService } from '../modal-task/modal-task.service';
 import { TaskService } from '../task.service';
 import { Task } from '../task.types';
 
 @Component({
   selector: 'task-list',
   templateUrl: './list.component.html',
+  animations: angelAnimations,
 })
 export class TaskListComponent implements OnInit {
-  @ViewChild('matDrawer', { static: true }) matDrawer!: MatDrawer;
   count: number = 0;
   tasks$!: Observable<Task[]>;
 
-  openMatDrawer: boolean = false;
+  query: string = '';
 
   private data!: AppInitialData;
 
-  drawerMode!: 'side' | 'over';
   searchInputControl: FormControl = new FormControl();
   selectedTask!: Task;
 
@@ -42,16 +41,14 @@ export class TaskListComponent implements OnInit {
    */
   constructor(
     private _store: Store<{ global: AppInitialData }>,
-    private _activatedRoute: ActivatedRoute,
     private _changeDetectorRef: ChangeDetectorRef,
-    private _router: Router,
-    private _angelMediaWatcherService: AngelMediaWatcherService,
     private _taskService: TaskService,
     private _notificationService: NotificationService,
     private _layoutService: LayoutService,
     private _authService: AuthService,
     private _modalSelectCourseService: ModalSelectCourseService,
-    private _modalSelectPartialService: ModalSelectPartialService
+    private _modalSelectPartialService: ModalSelectPartialService,
+    private _modalTaskService: ModalTaskService
   ) {}
 
   ngOnInit(): void {
@@ -124,6 +121,7 @@ export class TaskListComponent implements OnInit {
       .pipe(
         takeUntil(this._unsubscribeAll),
         switchMap((query) => {
+          this.query = query;
           /**
            * Search
            */
@@ -134,43 +132,6 @@ export class TaskListComponent implements OnInit {
         })
       )
       .subscribe();
-    /**
-     * Subscribe to media changes
-     */
-    this._angelMediaWatcherService.onMediaChange$
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(({ matchingAliases }) => {
-        /**
-         * Set the drawerMode if the given breakpoint is active
-         */
-        if (matchingAliases.includes('lg')) {
-          this.drawerMode = 'side';
-        } else {
-          this.drawerMode = 'over';
-        }
-        /**
-         * Mark for check
-         */
-        this._changeDetectorRef.markForCheck();
-      });
-    /**
-     * Subscribe to MatDrawer opened change
-     */
-    this.matDrawer.openedChange
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((opened) => {
-        this.openMatDrawer = opened;
-        if (!opened) {
-          /**
-           * Remove the selected when drawer closed
-           */
-          this.selectedTask = null!;
-          /**
-           * Mark for check
-           */
-          this._changeDetectorRef.markForCheck();
-        }
-      });
   }
   /**
    * On destroy
@@ -186,50 +147,6 @@ export class TaskListComponent implements OnInit {
   /** ----------------------------------------------------------------------------------------------------- */
   /** @ Public methods
    /** ----------------------------------------------------------------------------------------------------- */
-
-  /**
-   * Go to Tarea
-   * @param id
-   */
-  goToEntity(id: string): void {
-    /**
-     * Get the current activated route
-     */
-    let route = this._activatedRoute;
-    while (route.firstChild) {
-      route = route.firstChild;
-    }
-    /**
-     * Go to Tarea
-     */
-    this._router.navigate([this.openMatDrawer ? '../' : './', id], {
-      relativeTo: route,
-    });
-    /**
-     * Mark for check
-     */
-    this._changeDetectorRef.markForCheck();
-  }
-  /**
-   * On backdrop clicked
-   */
-  onBackdropClicked(): void {
-    /**
-     * Get the current activated route
-     */
-    let route = this._activatedRoute;
-    while (route.firstChild) {
-      route = route.firstChild;
-    }
-    /**
-     * Go to the parent route
-     */
-    this._router.navigate(['../'], { relativeTo: route });
-    /**
-     * Mark for check
-     */
-    this._changeDetectorRef.markForCheck();
-  }
   /**
    * Create Tarea
    */
@@ -283,7 +200,20 @@ export class TaskListComponent implements OnInit {
         }
       });
   }
-
+  /**
+   * openModalTask
+   * @param id_task
+   */
+  openModalTask(id_task: string): void {
+    this._modalTaskService.openModalTask(id_task);
+  }
+  /**
+   * Format the given ISO_8601 date as a relative date
+   * @param date
+   */
+  formatDateAsRelative(date: string): string {
+    return moment(date, moment.ISO_8601).locale('es').fromNow();
+  }
   /**
    * Track by function for ngFor loops
    * @param index

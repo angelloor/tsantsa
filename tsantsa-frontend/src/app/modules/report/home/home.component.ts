@@ -9,6 +9,7 @@ import { EnrollmentService } from 'app/modules/business/enrollment/enrollment.se
 import { PeriodService } from 'app/modules/business/period/period.service';
 import { ModalSelectCourseService } from 'app/modules/business/shared/modal-select-course/modal-select-course.service';
 import { ModalSelectPeriodService } from 'app/modules/business/shared/modal-select-period/modal-select-period.service';
+import { ModalSelectReportUserTaskService } from 'app/modules/business/shared/modal-select-report-user-task/modal-select-report-user-task.service';
 import { ModalSelectUserCourseService } from 'app/modules/business/shared/modal-select-user-course/modal-select-user-course.service';
 import { TaskService } from 'app/modules/business/task/task.service';
 import { UserTaskService } from 'app/modules/business/user-task/user-task.service';
@@ -44,7 +45,8 @@ export class HomeComponent implements OnInit {
     private _taskService: TaskService,
     private _userTaskService: UserTaskService,
     private _assistanceService: AssistanceService,
-    private _notificationService: NotificationService
+    private _notificationService: NotificationService,
+    private _modalSelectReportUserTaskService: ModalSelectReportUserTaskService
   ) {}
 
   ngOnInit(): void {
@@ -355,14 +357,14 @@ export class HomeComponent implements OnInit {
   reportUserTaskByUser() {
     const id_user_: string = this.data.user.id_user;
 
-    this._modalSelectUserService
-      .openModalSelectUser()
+    this._modalSelectReportUserTaskService
+      .openModalSelectReportUserTask()
       .afterClosed()
       .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((id_user: string) => {
-        if (id_user) {
+      .subscribe((data: any) => {
+        if (data) {
           this._userTaskService
-            .reportUserTaskByUser(id_user)
+            .reportUserTaskByUser(data.id_user, data.id_course, data.id_partial)
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe({
               next: async (response: any) => {
@@ -417,65 +419,65 @@ export class HomeComponent implements OnInit {
   reportAssistanceByUserAndCourse() {
     const id_user_: string = this.data.user.id_user;
 
-    // this._modalSelectUserCourseService
-    //   .openModalSelectUserCourse()
-    //   .afterClosed()
-    //   .pipe(takeUntil(this._unsubscribeAll))
-    //   .subscribe((data: any) => {
-    //     if (data) {
-    //       if (data.id_user || data.id_course) {
-    //         this._assistanceService
-    //           .reportAssistanceByUserAndCourse(data.id_user, data.id_course)
-    //           .pipe(takeUntil(this._unsubscribeAll))
-    //           .subscribe({
-    //             next: async (response: any) => {
-    //               let name_report: string = response.headers.get('name_report');
-    //               if (name_report) {
-    //                 this.pdfSource = await this._globalUtils.blobToBase64(
-    //                   response.body
-    //                 );
+    this._modalSelectUserCourseService
+      .openModalSelectUserCourse()
+      .afterClosed()
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((data: any) => {
+        if (data) {
+          if (data.id_user || data.id_course) {
+            this._assistanceService
+              .reportAssistanceByUserAndCourse(data.id_user, data.id_course)
+              .pipe(takeUntil(this._unsubscribeAll))
+              .subscribe({
+                next: async (response: any) => {
+                  let name_report: string = response.headers.get('name_report');
+                  if (name_report) {
+                    this.pdfSource = await this._globalUtils.blobToBase64(
+                      response.body
+                    );
 
-    //                 let dialogRef = this._matDialog.open(
-    //                   PreviewReportComponent,
-    //                   {
-    //                     height: ' 90vh',
-    //                     width: '90vw',
-    //                     data: {
-    //                       source: this.pdfSource,
-    //                       nameFile: name_report,
-    //                     },
-    //                   }
-    //                 );
-    //                 /**
-    //                  * subscribe to afterClosed
-    //                  */
-    //                 dialogRef.afterClosed().subscribe(() => {
-    //                   this._reportService
-    //                     .deleteReport(id_user_, name_report)
-    //                     .pipe(takeUntil(this._unsubscribeAll))
-    //                     .subscribe();
-    //                 });
-    //               } else {
-    //                 let message: MessageAPI = JSON.parse(
-    //                   response.headers.get('message')
-    //                 );
-    //                 if (message.codigo == '06-010') {
-    //                   this._notificationService.error(
-    //                     !message.descripcion
-    //                       ? '¡Error interno!, consulte al administrador.'
-    //                       : message.descripcion
-    //                   );
-    //                 }
-    //               }
-    //             },
-    //             error: () => {
-    //               this._notificationService.error(
-    //                 '¡Error interno!, consulte al administrador.'
-    //               );
-    //             },
-    //           });
-    //       }
-    //     }
-    //   });
+                    let dialogRef = this._matDialog.open(
+                      PreviewReportComponent,
+                      {
+                        height: ' 90vh',
+                        width: '90vw',
+                        data: {
+                          source: this.pdfSource,
+                          nameFile: name_report,
+                        },
+                      }
+                    );
+                    /**
+                     * subscribe to afterClosed
+                     */
+                    dialogRef.afterClosed().subscribe(() => {
+                      this._reportService
+                        .deleteReport(id_user_, name_report)
+                        .pipe(takeUntil(this._unsubscribeAll))
+                        .subscribe();
+                    });
+                  } else {
+                    let message: MessageAPI = JSON.parse(
+                      response.headers.get('message')
+                    );
+                    if (message.codigo == '06-010') {
+                      this._notificationService.error(
+                        !message.descripcion
+                          ? '¡Error interno!, consulte al administrador.'
+                          : message.descripcion
+                      );
+                    }
+                  }
+                },
+                error: () => {
+                  this._notificationService.error(
+                    '¡Error interno!, consulte al administrador.'
+                  );
+                },
+              });
+          }
+        }
+      });
   }
 }

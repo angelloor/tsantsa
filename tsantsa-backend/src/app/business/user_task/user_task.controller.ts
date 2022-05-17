@@ -148,11 +148,35 @@ export const validation = (user_task: UserTask, url: string, token: string) => {
 									.catch((error: any) => {
 										reject(error);
 									});
-							} else if (url.substring(0, 5) == '/read') {
+							} else if (url.substring(0, 10) == '/queryRead') {
 								/** set required attributes for action */
-								_user_task.response_user_task = user_task.response_user_task;
+								_user_task.user = user_task.user;
 								await _user_task
-									.read()
+									.queryRead()
+									.then((_userTasks: UserTask[]) => {
+										resolve(_userTasks);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 16) == '/byTaskQueryRead') {
+								/** set required attributes for action */
+								_user_task.task = user_task.task;
+								_user_task.user = user_task.user;
+								await _user_task
+									.byTaskQueryRead()
+									.then((_userTasks: UserTask[]) => {
+										resolve(_userTasks);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 18) == '/byCourseQueryRead') {
+								/** set required attributes for action */
+								_user_task.task = user_task.task;
+								_user_task.user = user_task.user;
+								await _user_task
+									.byCourseQueryRead()
 									.then((_userTasks: UserTask[]) => {
 										resolve(_userTasks);
 									})
@@ -186,6 +210,28 @@ export const validation = (user_task: UserTask, url: string, token: string) => {
 								_user_task.user = user_task.user;
 								await _user_task
 									.bySenderUserRead()
+									.then((_userTask: UserTask[]) => {
+										resolve(_userTask);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 11) == '/byTaskRead') {
+								/** set required attributes for action */
+								_user_task.task = user_task.task;
+								await _user_task
+									.byTaskRead()
+									.then((_userTask: UserTask[]) => {
+										resolve(_userTask);
+									})
+									.catch((error: any) => {
+										reject(error);
+									});
+							} else if (url.substring(0, 13) == '/byCourseRead') {
+								/** set required attributes for action */
+								_user_task.task = user_task.task;
+								await _user_task
+									.byCourseRead()
 									.then((_userTask: UserTask[]) => {
 										resolve(_userTask);
 									})
@@ -240,6 +286,8 @@ export const validation = (user_task: UserTask, url: string, token: string) => {
 									});
 							} else if (url.substring(0, 21) == '/reportUserTaskByUser') {
 								_user_task.user = user_task.user;
+								_user_task.task = user_task.task;
+								_user_task.response_user_task = user_task.response_user_task;
 								await _user_task
 									.reportUserTaskByUser()
 									.then((response: any) => {

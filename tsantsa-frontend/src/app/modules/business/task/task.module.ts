@@ -20,14 +20,19 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import * as moment from 'moment';
-import { TaskDetailsComponent } from './details/details.component';
 import { TaskListComponent } from './list/list.component';
+import { ModalTaskComponent } from './modal-task/modal-task.component';
+import { ModalResourceComponent } from './resource/modal-resource/modal-resource.component';
 import { TaskComponent } from './task.component';
 import { taskRoutes } from './task.routing';
-import { ModalResourceComponent } from './resource/modal-resource/modal-resource.component';
 
 @NgModule({
-  declarations: [TaskListComponent, TaskDetailsComponent, TaskComponent, ModalResourceComponent],
+  declarations: [
+    TaskListComponent,
+    TaskComponent,
+    ModalResourceComponent,
+    ModalTaskComponent,
+  ],
   imports: [
     RouterModule.forChild(taskRoutes),
     MatButtonModule,

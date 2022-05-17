@@ -61,7 +61,7 @@ export class CommentService {
               /**
                * Update the comment in the store
                */
-              this._comments.next([_comment, ...comments]);
+              this._comments.next([...comments, _comment]);
 
               return of(_comment);
             })

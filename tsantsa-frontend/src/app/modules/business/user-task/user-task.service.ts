@@ -78,22 +78,46 @@ export class UserTaskService {
     );
   }
   /**
-   * Read All UserTask
-   */
-  readAllUserTask(): Observable<UserTask[]> {
-    return this._httpClient.get<UserTask[]>(this._url + '/read/query-all').pipe(
-      tap((userTasks: UserTask[]) => {
-        this._userTasks.next(userTasks);
-      })
-    );
-  }
-  /**
    * Read UserTask by query
    * @param query
    */
   readUserTaskByQuery(query: string): Observable<UserTask[]> {
     return this._httpClient
-      .get<UserTask[]>(this._url + `/read/${query != '' ? query : 'query-all'}`)
+      .get<UserTask[]>(
+        this._url + `/queryRead/${query != '' ? query : 'query-all'}`
+      )
+      .pipe(
+        tap((userTasks: UserTask[]) => {
+          this._userTasks.next(userTasks);
+        })
+      );
+  }
+  /**
+   * byTaskQueryRead
+   * @param query
+   */
+  byTaskQueryRead(id_task: string, query: string): Observable<UserTask[]> {
+    return this._httpClient
+      .get<UserTask[]>(
+        this._url +
+          `/byTaskQueryRead/${id_task}/${query != '' ? query : 'query-all'}`
+      )
+      .pipe(
+        tap((userTasks: UserTask[]) => {
+          this._userTasks.next(userTasks);
+        })
+      );
+  }
+  /**
+   * byCourseQueryRead
+   * @param query
+   */
+  byCourseQueryRead(id_course: string, query: string): Observable<UserTask[]> {
+    return this._httpClient
+      .get<UserTask[]>(
+        this._url +
+          `/byCourseQueryRead/${id_course}/${query != '' ? query : 'query-all'}`
+      )
       .pipe(
         tap((userTasks: UserTask[]) => {
           this._userTasks.next(userTasks);
@@ -139,6 +163,44 @@ export class UserTaskService {
   bySenderUserRead(id_user_sender: string): Observable<UserTask[]> {
     return this._httpClient
       .get<UserTask[]>(this._url + `/bySenderUserRead/${id_user_sender}`)
+      .pipe(
+        tap((userTasks: UserTask[]) => {
+          if (!userTasks) {
+            this._userTasks.next([]);
+            return [];
+          } else {
+            this._userTasks.next(userTasks);
+            return userTasks;
+          }
+        })
+      );
+  }
+  /**
+   * byTaskRead
+   * @param id_task
+   */
+  byTaskRead(id_task: string): Observable<UserTask[]> {
+    return this._httpClient
+      .get<UserTask[]>(this._url + `/byTaskRead/${id_task}`)
+      .pipe(
+        tap((userTasks: UserTask[]) => {
+          if (!userTasks) {
+            this._userTasks.next([]);
+            return [];
+          } else {
+            this._userTasks.next(userTasks);
+            return userTasks;
+          }
+        })
+      );
+  }
+  /**
+   * byCourseRead
+   * @param id_course
+   */
+  byCourseRead(id_course: string): Observable<UserTask[]> {
+    return this._httpClient
+      .get<UserTask[]>(this._url + `/byCourseRead/${id_course}`)
       .pipe(
         tap((userTasks: UserTask[]) => {
           if (!userTasks) {
@@ -267,12 +329,22 @@ export class UserTaskService {
   /**
    * reportUserTaskByUser
    */
-  reportUserTaskByUser(id_user: string): Observable<any> {
+  reportUserTaskByUser(
+    id_user: string,
+    id_course: string,
+    id_partial: string
+  ): Observable<any> {
     return this._httpClient
       .post(
         this._url + `/reportUserTaskByUser`,
         {
           user: id_user,
+          task: {
+            course: {
+              id_course,
+            },
+          },
+          response_user_task: id_partial,
         },
         {
           responseType: 'blob',

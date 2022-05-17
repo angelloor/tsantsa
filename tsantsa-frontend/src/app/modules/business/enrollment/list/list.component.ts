@@ -1,3 +1,4 @@
+import { angelAnimations } from '@angel/animations';
 import { AngelAlertType } from '@angel/components/alert';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
@@ -15,6 +16,7 @@ import { Enrollment } from '../enrollment.types';
 @Component({
   selector: 'enrollment-list',
   templateUrl: './list.component.html',
+  animations: angelAnimations,
 })
 export class EnrollmentListComponent implements OnInit {
   count: number = 0;
